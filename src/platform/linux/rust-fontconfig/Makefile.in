@@ -1,0 +1,36 @@
+VPATH=%VPATH%
+
+CC ?= gcc
+CXX ?= g++
+CXXFLAGS ?=
+AR ?= ar
+RUSTC ?= rustc
+RUSTFLAGS ?=
+
+ifeq ($(CFG_OSTYPE),linux-androideabi)
+RUSTFLAGS += -L./../../android/fontconfig/src/.libs
+endif
+
+RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs')
+
+.PHONY: all
+all:	librustfontconfig.dummy
+
+%.o:	%.c
+	$(CC) $< -o $@ -c $(CFLAGS)
+
+librustfontconfig.dummy: fontconfig.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< --out-dir .
+	touch $@
+
+fontconfig-test: fontconfig.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< -o $@ --test
+
+.PHONY: check
+check: fontconfig-test
+	./fontconfig-test
+
+.PHONY: clean
+clean:
+	rm -f *.o *.a *.so *.dylib *.dll *.dummy *-test
+

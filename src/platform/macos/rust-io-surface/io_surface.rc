@@ -1,0 +1,111 @@
+// Copyright 2013 The Servo Project Developers. See the COPYRIGHT
+// file at the top-level directory of this distribution.
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
+#[link(name = "io_surface",
+	   vers = "0.1")];
+#[crate_type = "lib"];
+
+extern mod core_foundation;
+extern mod std;
+
+// Rust bindings to the IOSurface framework on Mac OS X.
+
+use core_foundation::base::{
+    AbstractCFTypeRef,
+    CFTypeID,
+    CFTypeRef,
+    CFWrapper,
+};
+use core_foundation::dictionary::{
+    CFDictionaryRef,
+    UntypedCFDictionary};
+use core_foundation::string::CFStringRef;
+
+struct __IOSurface { private: () }
+pub type IOSurfaceRef = *__IOSurface;
+
+impl AbstractCFTypeRef for IOSurfaceRef {
+    fn as_type_ref(&self) -> CFTypeRef { *self as CFTypeRef }
+
+    #[fixed_stack_segment]
+    fn type_id(_dummy: Option<IOSurfaceRef>) -> CFTypeID {
+        unsafe {
+            IOSurfaceGetTypeID()
+        }
+    }
+}
+
+pub type IOSurface = CFWrapper<IOSurfaceRef, (), ()>;
+
+pub type IOSurfaceID = u32;
+
+pub trait IOSurfaceMethods {
+    fn get_id(&self) -> IOSurfaceID;
+}
+
+#[fixed_stack_segment]
+pub fn new(properties: &UntypedCFDictionary) -> IOSurface {
+    unsafe {
+        let result = IOSurfaceCreate(*properties.contents.borrow_ref());
+        CFWrapper::wrap_owned(result)
+    }
+}
+
+#[fixed_stack_segment]
+pub fn lookup(csid: IOSurfaceID) -> IOSurface {
+    unsafe {
+        let result = IOSurfaceLookup(csid);
+        CFWrapper::wrap_owned(result)
+    }
+}
+
+impl IOSurfaceMethods for IOSurface {
+    #[fixed_stack_segment]
+    fn get_id(&self) -> IOSurfaceID {
+        unsafe {
+            IOSurfaceGetID(self.obj)
+        }
+    }
+}
+
+#[link_args="-framework IOSurface"]
+#[nolink]
+extern {
+    static kIOSurfaceAllocSize: CFStringRef;
+    static kIOSurfaceWidth: CFStringRef;
+    static kIOSurfaceHeight: CFStringRef;
+    static kIOSurfaceBytesPerRow: CFStringRef;
+    static kIOSurfaceBytesPerElement: CFStringRef;
+    static kIOSurfaceElementWidth: CFStringRef;
+    static kIOSurfaceElementHeight: CFStringRef;
+    static kIOSurfaceOffset: CFStringRef;
+
+    static kIOSurfacePlaneInfo: CFStringRef;
+    static kIOSurfacePlaneWidth: CFStringRef;
+    static kIOSurfacePlaneHeight: CFStringRef;
+    static kIOSurfacePlaneBytesPerRow: CFStringRef;
+    static kIOSurfacePlaneOffset: CFStringRef;
+    static kIOSurfacePlaneSize: CFStringRef;
+
+    static kIOSurfacePlaneBase: CFStringRef;
+    static kIOSurfacePlaneBytesPerElement: CFStringRef;
+    static kIOSurfacePlaneElementWidth: CFStringRef;
+    static kIOSurfacePlaneElementHeight: CFStringRef;
+
+    static kIOSurfaceCacheMode: CFStringRef;
+    static kIOSurfaceIsGlobal: CFStringRef;
+    static kIOSurfacePixelFormat: CFStringRef;
+
+    fn IOSurfaceCreate(properties: CFDictionaryRef) -> IOSurfaceRef;
+    fn IOSurfaceLookup(csid: IOSurfaceID) -> IOSurfaceRef;
+    fn IOSurfaceGetID(buffer: IOSurfaceRef) -> IOSurfaceID;
+
+    fn IOSurfaceGetTypeID() -> CFTypeID;
+}
+
