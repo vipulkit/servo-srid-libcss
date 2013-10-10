@@ -1,0 +1,57 @@
+
+
+
+ This file contains the git commit number of point release from which 
+ servo and its submodule taken.
+
+
+ 77f8dba48b21e200b4b9c6d35db853581b9804bc => Servo Release 
+
+
+ d39cec65b025ad4c6de50e778ffd1177279b5b3d src/compiler/rust (0.7-2396-gd39cec6)
+ dfae9c3e958dc086d9c0ab068cd76d196c95a433 src/compiler/rust/src/libuv (heads/master)
+ 08a3bd96ee6e1d141494f0014ede75d9871114c4 src/compiler/rust/src/llvm (remotes/origin/rust-llvm-2013-08-28)
+ d0c6dd720f90e2e8f8d8a103754195096531b531 src/platform/android/fontconfig (remotes/origin/master)
+ e74cfc256285a94b84c5b019714e922d37d0a286 src/platform/android/libexpat (heads/master)
+ 3030c434349f39dd16d330b07f3ec6db917ea882 src/platform/android/libfreetype2 (heads/master)
+ af20d6eea6eb4efe31f7f883e8d7073b2bd692a1 src/platform/linux/rust-fontconfig (heads/master)
+ 9621863ca3147412e78782122873d316b8a0f73d src/platform/linux/rust-freetype (9621863)
+ 4e8043abbf103805fd6bb3708e111a4220d4280b src/platform/linux/rust-xlib (heads/master)
+ fcc8d5865e0002d8d75f1098e956c120d8131c8d src/platform/macos/rust-cocoa (fcc8d58)
+ 7d71796ef24101422e17a4704b4a8389dd718ea3 src/platform/macos/rust-core-foundation (7d71796)
+ adb526a6ca8deee37152ef3ba1197894286e2204 src/platform/macos/rust-core-graphics (remotes/origin/crash-26-gadb526a)
+ 129e99ff088fad6ea8f3187680c15a0a3e2cc403 src/platform/macos/rust-core-text (129e99f)
+ d685aad6f6ab3559c8de5ca76520b8f1e0e21b64 src/platform/macos/rust-io-surface (remotes/origin/crash-20-gd685aad)
+ 6fbd1581ae7baede892c543c05f3509ded1ce8ed src/support/alert/rust-alert (remotes/origin/master-upgrade-15-g6fbd158)
+ 71e4819490fa05b7841aab1722335da024738389 src/support/azure/rust-azure (remotes/origin/cpu-rendering-22-g71e4819)
+ 6d44ce5cc97ccb3bfa9c06833b852921025d9b14 src/support/css/rust-css (6d44ce5)
+ a41aec5f184a9e587ad675d34b5da518d58c083d src/support/css/rust-cssparser (a41aec5)
+ 43a9dbb81bbd4fb3eb130484f87848a701ecf79e src/support/geom/rust-geom (heads/master)
+ 738b78899bb271258f55ae842e180de2c5ec87db src/support/glfw/glfw (3.0.1-31-g738b788)
+ a459a4491340f33bec7b09e33750106bfab864c9 src/support/glfw/glfw-rs (0.6-compatible-175-ga459a44)
+ 91b81ab550ce175a868b91ca3290bd9ef64954cd src/support/glut/rust-glut (heads/master)
+ 1ed1ed819a90fc6c559282d3a5c02fc8cf3fba09 src/support/harfbuzz/rust-harfbuzz (1ed1ed8)
+ c86182cef824fcb8bfb11e2e909338102dca0d38 src/support/http-client/rust-http-client (heads/master)
+ 852c2c439b2198989181d52e39e0e8cb28d64179 src/support/http/rust-http (852c2c4)
+ c0f176ddc0157b768d689bd1e78f56006b4db488 src/support/hubbub/libhubbub (heads/master)
+ df7d4e1467a2341a4b4186d848df1d1d0adf9b7c src/support/hubbub/rust-hubbub (df7d4e1)
+ 8e469443a9fec36de8eec09036f8051723ee59bc src/support/layers/rust-layers (remotes/origin/master-upgrade-16-g8e46944)
+ c2feb563c8434319f60b2e9134e250d7bc1fe27f src/support/libparserutils/libparserutils (heads/master)
+ 720128629f3395e8836e64887d2c105d94603746 src/support/netsurfcss/libcss (heads/master)
+ f69e26f4d97316063b6c20f0c71d7568d8d42a76 src/support/netsurfcss/rust-netsurfcss (f69e26f)
+ 8219c5c5137b94ae93cfb4afc1dc10a94384e1c6 src/support/nss/nspr (heads/master)
+ 949eb9848f4fa5f83756f3ab7fdf9b0d3f20d37f src/support/nss/nss (heads/master)
+ 2079b5f8da888eca65ef0e61d0a9438c794f2d98 src/support/opengles/rust-opengles (2079b5f)
+ bda7eca7c3962caadf1c25dac215519b8935b22f src/support/png/libpng (libpng-1.6.3-signed-2-gbda7eca)
+ 698124d5994d99183cbc51d07d15d1c16b0f75a4 src/support/png/rust-png (698124d)
+ 8dc1939cdf37dda742d4910e3265cf03c0fc9609 src/support/sharegl/sharegl (remotes/origin/master-upgrade-16-g8dc1939)
+ aeae6a5cd5a6ecb7fd2d3b2f806e9661ce3b2e3b src/support/skia/skia (heads/master)
+ 81aeed0b6159acdedf7dd530fb6c3bde5ddbb70a src/support/spidermonkey/mozjs (81aeed0)
+ 1a9a5c3c1462bd3b3e7905ee2834a5ba906f0214 src/support/spidermonkey/rust-mozjs (1a9a5c3)
+ fed8ed305e4bf0e3ff283da1a45768e5d2e19ed2 src/support/stb-image/rust-stb-image (fed8ed3)
+ 1c3343639571d65bc0c45cab8253dabe33aace9e src/support/wapcaplet/libwapcaplet (heads/master)
+ 881bdb753b3a51023d54b653cd88b7e266788476 src/support/wapcaplet/rust-wapcaplet (881bdb7)
+
+
+
+
