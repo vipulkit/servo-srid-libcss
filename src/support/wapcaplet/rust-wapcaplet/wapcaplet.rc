@@ -1,0 +1,134 @@
+// Copyright 2013 The Servo Project Developers. See the COPYRIGHT
+// file at the top-level directory of this distribution.
+//
+// Licensed under the Apache License, Version 2.0 <LICENSE-APACHE or
+// http://www.apache.org/licenses/LICENSE-2.0> or the MIT license
+// <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. This file may not be copied, modified, or distributed
+// except according to those terms.
+
+#[link(name = "wapcaplet",
+       vers = "0.1")];
+#[crate_type = "lib"];
+
+extern mod std;
+
+use std::libc::size_t;
+use std::ptr::{null, to_mut_unsafe_ptr};
+use std::cast::transmute;
+use std::str;
+use ll::*;
+
+pub mod ll;
+
+fn require_ok(code: lwc_error) {
+    match code {
+        lwc_error_ok => (),
+        e => fail!(fmt!("lwc error: %?", e))
+    }
+}
+
+pub struct LwcString {
+    priv string: *lwc_string,
+}
+
+impl Drop for LwcString {
+	 #[fixed_stack_segment]
+    fn drop(&self) {
+        unsafe {
+            rust_lwc_string_unref(self.string);
+        }
+    }
+}
+
+#[fixed_stack_segment]
+pub fn from_rust_string(s: &str) -> LwcString {
+    unsafe {
+        let mut interned_string = null();
+        do s.to_c_str().with_ref |cs| {
+            let code = lwc_intern_string(cs,
+                                         s.len() as size_t,
+                                         to_mut_unsafe_ptr(&mut interned_string));
+            require_ok(code);
+        }
+
+       assert!(interned_string.is_not_null());
+
+        LwcString {
+            string: interned_string
+        }
+    }
+}
+
+#[fixed_stack_segment]
+pub fn from_lwc_string(s: *lwc_string) -> LwcString {
+    unsafe {
+        rust_lwc_string_ref(s);
+        LwcString {
+            string: s
+        }
+    }
+}
+
+impl<'self> LwcString {
+    pub fn len(&self) -> uint {
+        unsafe {
+            (*self.string).len as uint
+        }
+    }
+
+    pub fn clone(&self) -> LwcString {
+        from_lwc_string(self.string)
+    }
+
+	#[fixed_stack_segment]
+    pub fn raw_reffed(&self) -> *lwc_string {
+        unsafe {
+            rust_lwc_string_ref(self.string);
+            self.string
+        }
+    }
+
+    pub fn to_str_slice(&'self self) -> &'self str {
+        unsafe {
+            let p: *u8 = transmute(self.string.offset(1));
+            transmute(str::raw::c_str_to_static_slice(p as *i8))
+        }
+    }
+}
+
+impl ToStr for LwcString {
+    fn to_str(&self) -> ~str {
+        unsafe {
+            // The string is located immediately after the handle
+            let p: *u8 = transmute(self.string.offset(1));
+            str::raw::from_buf_len(p, self.len())
+        }
+    }
+}
+
+#[test]
+fn smoke_test() {
+    let s1 = from_rust_string("test");
+    let s2 = from_lwc_string(s1.string);
+    debug!("%?", s1.len());
+    debug!("%?", s2.len());
+    assert!(s2.len() == 4);
+    let s3 = s2.to_str();
+    assert!(s3 == ~"test");
+}
+
+#[test]
+fn multithreading_test() {
+    use std::task;
+    use std::vec;
+    for i in range(0u, 100u) {
+        for _ in range(0, 50) {
+            do task::spawn {
+                let s = vec::from_elem(i + 1u, 0).to_str();
+                let s = from_rust_string(s);
+                let _t = s.clone();
+            }
+        }
+    }
+}

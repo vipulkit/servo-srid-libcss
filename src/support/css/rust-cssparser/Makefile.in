@@ -1,0 +1,37 @@
+VPATH=%VPATH%
+
+CC ?= gcc
+CXX ?= g++
+CXXFLAGS ?=
+AR ?= ar
+RUSTC ?= rustc
+RUSTFLAGS ?=
+
+COLOR_DATA_RS=$(VPATH)/color_data.rs
+RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs') $(COLOR_DATA_RS)
+
+.PHONY: all
+all:    libcssparser.dummy
+
+libcssparser.dummy: cssparser.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< --out-dir .
+	touch $@
+
+cssparser-test: cssparser.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< -o $@ --test
+
+.PHONY: check
+check: cssparser-test
+	./cssparser-test
+
+.PHONY: check-debug
+check-debug: cssparser-tests
+	echo -e "start\n break upcall_fail\n continue\n where\n continue" | gdb -q ./cssparser-tests
+
+.PHONY: clean
+clean:
+	rm -f *.o *.a *.so *.dylib *.dll *.dummy *-test
+
+
+$(COLOR_DATA_RS): make_color_data.py
+	python $< > $@

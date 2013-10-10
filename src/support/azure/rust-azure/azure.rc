@@ -1,0 +1,27 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#[link(name = "azure",
+       vers = "0.1")];
+#[crate_type = "lib"];
+
+extern mod std;
+extern mod extra;
+extern mod geom;
+extern mod layers;
+extern mod opengles;
+#[cfg(not(target_os = "android"))]
+extern mod glfw;
+
+pub use azure::*;
+
+pub mod azure_hl;
+pub mod scaled_font;
+
+#[cfg(target_os = "linux")]
+pub mod test;
+
+pub mod linkhack;
+
+pub mod azure;

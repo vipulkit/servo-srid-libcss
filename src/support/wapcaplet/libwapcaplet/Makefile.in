@@ -1,0 +1,38 @@
+VPATH=%VPATH%
+
+UNAME=$(shell uname)
+
+ifeq ($(UNAME),Darwin)
+    OSTYPE=darwin
+endif
+ifeq ($(UNAME),Linux)
+    OSTYPE=linux
+endif
+
+C_SRC= \
+    src/libwapcaplet.c \
+	$(NULL)
+
+C_OBJS = $(patsubst %.c,%.o,$(C_SRC))
+CFLAGS += -I$(VPATH)/src -I$(VPATH)/include -fPIC
+
+.PHONY: all
+all: libwapcaplet.dummy
+
+libwapcaplet.a: $(C_OBJS)
+	$(AR) rcs $@ $^
+
+%.o: %.c
+	mkdir -p `dirname $@` && $(CC) $(CFLAGS) -o $@ -c $<
+
+libwapcaplet.dummy: libwapcaplet.a
+	touch $@
+
+.PHONY: check
+check:
+
+.PHONY: clean
+clean:
+	rm -f *.so *.dylib *.dll *.dummy src/*.o
+
+

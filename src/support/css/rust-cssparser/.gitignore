@@ -1,0 +1,10 @@
+*.o
+*.a
+*.so
+*.dylib
+*.dSYM
+*.dll
+*.dummy
+*-test
+Makefile
+/color_data.rs

@@ -1,0 +1,60 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+/*!
+
+A CSS parsing and selector matching library, modeled off of NetSurf's libcss
+
+Basic operation:
+
+* Parse Stylesheets
+* Plug Stylesheets into SelectCtx's
+* Match styles to nodes with SelectCtx.select_style to create SelectResults
+* Store SelectResults for later use - these represent a node's style
+* Query properties by getting the ComputedStyle for the desired pseudo-element from the SelectResults
+* Resolve inheritance for computed styles by (not implemented)
+
+*/
+
+#[link(name = "css",
+       vers = "0.1")];
+#[crate_type = "lib"];
+
+extern mod extra;
+extern mod netsurfcss;
+extern mod wapcaplet;
+
+pub mod stylesheet;
+pub mod select;
+pub mod computed;
+pub mod complete;
+
+pub mod types;
+pub mod units;
+pub mod color;
+pub mod values;
+pub mod util;
+
+mod parser;
+
+#[cfg(test)]
+mod test;
+
+// Shortcuts to the netsurfcss types
+pub mod n {
+    pub use p = netsurfcss::properties;
+    pub use s = netsurfcss::select;
+    pub use t = netsurfcss::types;
+    pub use c = netsurfcss::computed;
+    pub use v = netsurfcss::values;
+    pub use h = netsurfcss::hint;
+    pub use u = netsurfcss::util;
+
+    pub mod ll {
+        pub use p = netsurfcss::ll::properties;
+        pub use s = netsurfcss::ll::select;
+        pub use t = netsurfcss::ll::types;
+        pub use c = netsurfcss::ll::computed;
+    }
+}

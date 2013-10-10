@@ -1,0 +1,36 @@
+VPATH=%VPATH%
+
+CC ?= gcc
+CXX ?= g++
+CXXFLAGS ?=
+AR ?= ar
+RUSTC ?= rustc
+RUSTFLAGS += -L ../libwapcaplet -L .
+CFLAGS += -fPIC -I$(VPATH)/../libwapcaplet/include
+
+RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs')
+
+.PHONY: all
+all:	libwapcaplet.dummy
+
+%.o:	%.c
+	$(CC) $< -o $@ -c $(CFLAGS)
+
+libwapcaplet.dummy: wapcaplet.rc $(RUST_SRC) librustwapcaplet.a
+	$(RUSTC) $(RUSTFLAGS) $< --out-dir .
+	touch $@
+
+wapcaplet-test: wapcaplet.rc $(RUST_SRC) librustwapcaplet.a
+	$(RUSTC) $(RUSTFLAGS) $< -o $@ --test
+
+librustwapcaplet.a: rustwapcaplet.o
+	$(AR) rcs librustwapcaplet.a rustwapcaplet.o
+
+.PHONY: check
+check: wapcaplet-test
+	./wapcaplet-test
+
+.PHONY: clean
+clean:
+	rm -f *.o *.a *.so *.dylib *.dll *.dummy *-test
+
