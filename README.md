@@ -1,4 +1,26 @@
-The Servo Parallel Browser Project
+Servo-srid-libcss
+
+Servo Browser Engine : taken from https://github.com/mozilla/servo
+
+with integration of sri-delhi-rust-libcss https://github.com/webconvforge/sri-delhi-rust-libcss
+
+modified to build servo/rust offline and integrate our libcss library.
+
+
+
+===================================================
+Readme from servo browser engine start here :->
+===================================================
+
+Thv Servo Parallel Browser Project
+-srid-libcss
+
+Servo Browser Engine : taken from https://github.com/mozilla/servo
+
+with integration of sri-delhi-rust-libcss https://github.com/webconvforge/sri-delhi-rust-libcss
+
+modified to build servo/rust offline and integrate our libcss library.
+
 
 Servo is a prototype web browser engine written in the [Rust](https://github.com/mozilla/rust)
 language. It is currently developed on 64bit OS X and 64bit Linux.
