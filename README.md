@@ -7,6 +7,27 @@ with integration of sri-delhi-rust-libcss https://github.com/webconvforge/sri-de
 modified to build servo/rust offline and integrate our libcss library.
 
 
+Location / URL / Release Info / Commit Info 
+or cuurent version of servo and its submodule is available in 
+File "CommitHashes"  in the current directory.
+
+
+to build the servo-srid-libcss run 
+./sri_delhi_build.sh
+
+to run servo 
+cd build
+./servo <PATH_TO_HTML_FILE>
+
+
+
+
+
+
+
+
+
+
 
 ===================================================
 Readme from servo browser engine start here :->
