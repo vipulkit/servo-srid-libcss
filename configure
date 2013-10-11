@@ -481,6 +481,7 @@ CFG_SUBMODULES="\
     support/libparserutils/libparserutils \
     support/netsurfcss/libcss \
     support/netsurfcss/rust-netsurfcss \
+    support/netsurfcss/sri-delhi-rust-libcss \
     support/nss/nspr \
     support/nss/nss \
     support/opengles/rust-opengles \
