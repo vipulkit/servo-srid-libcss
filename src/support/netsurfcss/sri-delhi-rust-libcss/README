@@ -1,0 +1,31 @@
+Samsung R&D Institute - Delhi
+
+Developing Rust versions of 3 libraries:
+libwapcaplet
+libparserutils
+libcss
+
+Instructions to build:
+run make in root or run make in individual folders (libwapcaplet,libparserutils,libcss).
+
+Test Code
+libcss 		--> test/libcss
+libparserutils	--> testcases-ryanc/libparserutils
+libwapcaplet 	--> testcases-ryanc/libwapcaplet
+
+Measuring Performance with respect to netsurf-libcss C build.
+# 1 Building Libcss
+make
+# 2 Entering test cases directory
+cd test/libcss
+# 3 Building test cases 
+make
+# 4 Entering performance directory
+cd ../utils
+# 5 Build performance measuring binary
+make 
+# 6 copy netsurf-libcss C implementation with name "test_select-auto"
+# Download netsurf and build libcss test case , search and copy test_select-auto
+# 7 Do performance test 
+./perform_test_avg
+
