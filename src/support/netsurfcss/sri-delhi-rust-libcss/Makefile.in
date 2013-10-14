@@ -15,14 +15,21 @@ all:
 	cd $(VPATH)/libcss; make; cd -
 	cp $(VPATH)/libwapcaplet/*.so .
 	cp $(VPATH)/libparserutils/*.so .
-	cp $(VPATH)/libcss/*.so .
-	
+	cp $(VPATH)/libcss/*.so . 
+
+libcss.dummy: css.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< --out-dir .
+	touch $@
+
+css-test: css.rc $(RUST_SRC)
+	$(RUSTC) $(RUSTFLAGS) $< -o $@ --test
+
+.PHONY: check
+check: css-test
+	./css-test
 
 .PHONY: clean
 clean:
-	cd $(VPATH)/libwapcaplet; make clean; cd -
-	cd $(VPATH)/libparserutils; make clean; cd -
-	cd $(VPATH)/libcss; make clean; cd -
-	rm -rf *.so
+	rm -f *.o *.a *.so *.dylib *.dll *.dummy *-test
 
 
