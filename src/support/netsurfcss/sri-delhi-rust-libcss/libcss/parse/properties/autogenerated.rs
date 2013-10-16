@@ -2691,7 +2691,7 @@ pub fn css__parse_counter_increment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 {
 //debug!("Entering: css__parse_counter_increment");
 	let orig_ctx = *ctx;
-	let mut error:css_error=CSS_OK;
+	let error:css_error=CSS_OK;
 	let mut token: &~css_token;
 
 	if *ctx >= vector.len() {
@@ -2802,7 +2802,7 @@ pub fn css__parse_counter_reset(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 {
 //debug!("Entering: css__parse_counter_reset");
 	let orig_ctx = *ctx;
-	let mut error:css_error=CSS_OK;
+	let error:css_error=CSS_OK;
 	let mut token: &~css_token;
 
 	if *ctx >= vector.len() {
