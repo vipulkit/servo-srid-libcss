@@ -5,8 +5,7 @@ CXX ?= g++
 CXXFLAGS ?=
 AR ?= ar
 RUSTC ?= rustc
-RUSTFLAGS += -L . -L ../libcss -L ../../libparserutils/libparserutils -L ../../wapcaplet/libwapcaplet
-
+RUSTFLAGS += -L . -L ../sri-delhi-rust-libcss
 
 RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs')
 

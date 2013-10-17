@@ -23,7 +23,7 @@ Basic operation:
 
 extern mod extra;
 extern mod netsurfcss;
-extern mod wapcaplet;
+//extern mod wapcaplet;
 
 pub mod stylesheet;
 pub mod select;

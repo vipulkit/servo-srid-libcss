@@ -471,6 +471,7 @@ CFG_SUBMODULES="\
     support/alert/rust-alert \
     support/azure/rust-azure \
     support/netsurfcss/sri-delhi-rust-libcss \
+    support/netsurfcss/rust-netsurfcss \
     support/css/rust-css \
     support/css/rust-cssparser \
     support/geom/rust-geom \
