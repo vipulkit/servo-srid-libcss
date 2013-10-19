@@ -5,7 +5,7 @@ CXX ?= g++
 CXXFLAGS ?=
 AR ?= ar
 RUSTC ?= rustc
-RUSTFLAGS += -L .
+RUSTFLAGS += -L . -L ../../netsurfcss/sri-delhi-rust-libcss
 
 RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs')
 

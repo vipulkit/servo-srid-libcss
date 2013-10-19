@@ -10,17 +10,121 @@
 #[link(name = "netsurfcss",
        vers = "0.1")];
 #[crate_type = "lib"];
-
+extern mod srid_css;
+extern mod wapcaplet;
+use srid_css::*;
 use std::libc::{c_void, size_t};
 use std::libc;
 use std::ptr;
-use util::VoidPtrLike;
+//use util::VoidPtrLike;
+
+//use srid_css::wapcaplet::*;
+use srid_css::css::*;
+use srid_css::stylesheet::*;
+use srid_css::parse::propstrings::*;
+use srid_css::include::types::*;
+use srid_css::utils::errors::*;
 
 
 pub mod ll;
 pub mod conversions;
 pub mod test;
 pub mod util;
+
+pub mod types {
+
+    pub enum CssLanguageLevel {
+        CssLevel1,
+        CssLevel2,
+        CssLevel21,
+        CssLevel3,
+        CssLevelDefault, // NB: This is not the same as the ll value
+        // NB: Sentinal variant to prevent the naive transmute conversion from working
+        CssLevelNotACLikeEnum(uint)
+    }
+
+    pub struct CssColor { b: u8, g: u8, r: u8, a: u8 }
+}
+
+pub mod stylesheet {
+    use srid_css::*;
+    use srid_css::css::*;
+    use srid_css::parse::propstrings::*;
+    use srid_css::parse::propstrings::*;
+    use srid_css::include::types::*;
+    use srid_css::utils::errors::*;
+    use wapcaplet::*;
+    use srid_css::stylesheet::*;
+    use types::{CssLanguageLevel, CssColor};
+
+    pub struct CssStylesheetParams {
+        params_version: CssStylesheetParamsVersion,
+        level: CssLanguageLevel,
+        charset: ~str,
+        url: ~str,
+        title: ~str,
+        allow_quirks: bool,
+        inline_style: bool,
+        resolve: Option<css_url_resolution_fn>,
+        import: Option<css_import_notification_fn>,
+        color: Option<css_color_resolution_fn>,
+        font: Option<css_font_resolution_fn>,
+    }
+
+
+    pub enum CssStylesheetParamsVersion {
+        CssStylesheetParamsVersion1 = 1
+    }
+
+    // Note that this must behave as if it is freezable
+    pub struct CssStylesheet {
+        priv sheet: @mut css_stylesheet,
+    }
+
+    pub fn css_stylesheet_create(params: &CssStylesheetParams) -> CssStylesheet {
+        let params = css_params {
+            params_version : CSS_PARAMS_VERSION_1,
+            level: CSS_LEVEL_21,
+            charset : Some(~"UTF-8"),
+            url : ~"foo",
+            title : ~"foo",
+            allow_quirks : false,
+            inline_style : false,
+            resolve : @resolve_url,
+            import : None,
+            color : None,
+            font : None,
+        };
+
+        let mut lwc_ref = lwc();
+        let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
+
+        let mut sheet = css::css_create(&params);
+
+        CssStylesheet {
+            sheet: sheet.stylesheet,
+        }
+    }
+
+    pub fn resolve_url(_:&str, rel:uint) -> (css_error,Option<uint>){
+
+        (CSS_OK, Some(rel.clone()))
+    }
+
+}
+
+pub mod hint {
+}
+
+pub mod select {
+}
+
+pub mod computed {
+}
+
+mod values {
+}
+
 
 pub mod properties {
 

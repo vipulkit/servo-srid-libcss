@@ -12,13 +12,13 @@ Constructs a list of css style rules from a token stream
 use util::DataStream;
 use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
 use netsurfcss::types::CssLevel21;
-use netsurfcss::CssResult;
-use wapcaplet::LwcString;
+//use netsurfcss::CssResult;
+//use wapcaplet::LwcString;
 use extra::url::Url;
-use netsurfcss::stylesheet::CssUrlResolutionFn;
+//use netsurfcss::stylesheet::CssUrlResolutionFn;
 
 fn default_params(url: Url) -> CssStylesheetParams {
-    let resolve: CssUrlResolutionFn = resolve_url;
+    //let resolve: CssUrlResolutionFn = resolve_url;
     CssStylesheetParams {
         params_version: CssStylesheetParamsVersion1,
         level: CssLevel21,
@@ -27,7 +27,7 @@ fn default_params(url: Url) -> CssStylesheetParams {
         title: ~"FIXME-css-title",
         allow_quirks: false,
         inline_style: false,
-        resolve: Some(resolve),
+        resolve: None,
         import: None,
         color: None,
         font: None,
@@ -64,6 +64,6 @@ pub fn parse_style_attribute(url: Url, data: &str) -> CssStylesheet {
     sheet
 }
 
-fn resolve_url(_base: &str, _rel: &LwcString) -> CssResult<LwcString> {
-    fail!(~"resolving url");
-}
+//fn resolve_url(_base: &str, _rel: &LwcString) -> CssResult<LwcString> {
+//    fail!(~"resolving url");
+//}

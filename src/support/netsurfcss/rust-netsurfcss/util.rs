@@ -7,11 +7,11 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
+use ll::stylesheet::css_fixed;
 
-use std::libc::c_void;
 
-// FIXME: These methods should be unsafe
-pub trait VoidPtrLike {
-    fn from_void_ptr(ptr: *c_void) -> Self;
-    fn to_void_ptr(&self) -> *c_void;
+pub fn css_fixed_to_float(f: css_fixed) -> float {
+    static BEFORE: i32 = 10;
+    f as float * 1.0f / ((1i32 << BEFORE) as float)
 }
+
