@@ -12,10 +12,10 @@ uses to query various DOM and UA properties.
 
 use stylesheet::Stylesheet;
 use computed::ComputedStyle;
-use util::VoidPtrLike;
-use wapcaplet::LwcString;
-use lwcstr_from_rust_str = wapcaplet::from_rust_string;
-use n::u::{rust_str_to_net_qname, net_qname_to_rust_str};
+//use util::VoidPtrLike;
+//use wapcaplet::LwcString;
+//use lwcstr_from_rust_str = wapcaplet::from_rust_string;
+// use n::u::{rust_str_to_net_qname, net_qname_to_rust_str};
 use types::StylesheetOrigin;
 use n;
 

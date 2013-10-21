@@ -12,6 +12,8 @@
 #[crate_type = "lib"];
 extern mod srid_css;
 extern mod wapcaplet;
+
+use srid_css::stylesheet::css_qname;
 use srid_css::*;
 use std::libc::{c_void, size_t};
 use std::libc;
@@ -32,6 +34,7 @@ pub mod test;
 pub mod util;
 
 pub mod types {
+    use ll::stylesheet::css_fixed;
 
     pub enum CssLanguageLevel {
         CssLevel1,
@@ -44,6 +47,25 @@ pub mod types {
     }
 
     pub struct CssColor { b: u8, g: u8, r: u8, a: u8 }
+
+    pub enum CssUnit {
+        CssUnitPx(css_fixed),
+        CssUnitEx(css_fixed),
+        CssUnitEm(css_fixed),
+        CssUnitIn(css_fixed),
+        CssUnitCm(css_fixed),
+        CssUnitMm(css_fixed),
+        CssUnitPt(css_fixed),
+        CssUnitPc(css_fixed),
+        CssUnitPct(css_fixed),
+        CssUnitDeg(css_fixed),
+        CssUnitGrad(css_fixed),
+        CssUnitRad(css_fixed),
+        CssUnitMs(css_fixed),
+        CssUnitS(css_fixed),
+        CssUnitHz(css_fixed),
+        CssUnitKHz(css_fixed)
+    }
 }
 
 pub mod stylesheet {
@@ -114,9 +136,549 @@ pub mod stylesheet {
 }
 
 pub mod hint {
+    use types::{CssUnit};
+    
+    // An interpretation of the delightful css_hint union
+    pub enum CssHint {
+        CssHintFontFamily(~[~str], uint),
+        CssHintLength(CssUnit),
+        CssHintDefault,
+        CssHintUnknown
+    }
 }
 
 pub mod select {
+
+    // use std::libc;
+    // use std::libc::c_void;
+    // use std::libc::types::common::c99::{uint64_t, uint32_t};
+    // use std::vec;
+    // use std::sys;
+    // use std::ptr;
+    // use ll::types::{css_origin, css_qname};
+    // use types::CssQName;
+    // use stylesheet::CssStylesheet;
+    // use properties::CssProperty;
+    // use computed::CssComputedStyle;
+    // use hint::CssHint;
+    // use util::VoidPtrLike;
+    // use ll_css_select_ctx_create = ll::select::css_select_ctx_create;
+    // use ll::select::{css_select_ctx, css_select_ctx_destroy, css_select_ctx_append_sheet, css_select_ctx_count_sheets};
+    // use ll::select::{css_select_results, css_select_style, css_select_handler};
+    // use ll::select::{CSS_SELECT_HANDLER_VERSION_1, css_select_results_destroy};
+    // use require_ok;
+    // use realloc;
+    // use realloc_ext;
+    // use std::ptr::{null, to_mut_unsafe_ptr, to_unsafe_ptr};
+    // use std::cast::transmute;
+    // use ll::errors::{css_error, CSS_OK};
+    // //use wapcaplet::ll::lwc_string;
+    // use ll::hint::css_hint;
+    // //use wapcaplet::LwcString;
+    // use conversions::{ToLl, write_ll_qname, ll_qname_to_hl_qname};
+    // //use wapcaplet::from_lwc_string;
+
+    // pub enum CssPseudoElement {
+    // CssPseudoElementNone         = 0,
+    // CssPseudoElementFirstLine   = 1,
+    // CssPseudoElementFirstLetter = 2,
+    // CssPseudoElementBefore       = 3,
+    // CssPseudoElementAfter        = 4,
+    // CssPseudoElementCount   = 5
+    // }
+
+    pub struct CssSelectCtx {
+        priv select_ctx: *css_select_ctx,
+        // Whenever a sheet is added to the select ctx we will take ownership of it
+        // to ensure that it stays alive
+        priv sheets: ~[CssStylesheet],
+    }
+
+    // impl Drop for CssSelectCtx {
+    //     #[fixed_stack_segment]
+    //     fn drop(&self) {
+    //         assert!(self.select_ctx.is_not_null());
+    //         let code = unsafe { css_select_ctx_destroy(self.select_ctx) };
+    //         require_ok(code, "destroying select ctx");
+    //     }
+    // }
+
+    // #[fixed_stack_segment]
+    // pub fn css_select_ctx_create() -> CssSelectCtx {
+    //     let mut select_ctx: *css_select_ctx = null();
+    //     let code = unsafe { ll_css_select_ctx_create(realloc_ext, null(), to_mut_unsafe_ptr(&mut select_ctx)) };
+    //     require_ok(code, "creating select context");
+    //     assert!(select_ctx.is_not_null());
+
+    //     CssSelectCtx {
+    //         select_ctx: select_ctx,
+    //         sheets: ~[]
+    //     }
+    // }
+
+    // impl CssSelectCtx {
+    //     #[fixed_stack_segment]
+    //     pub fn append_sheet(&mut self, sheet: CssStylesheet, origin: css_origin, media: uint64_t) {
+    //         let code = unsafe { css_select_ctx_append_sheet(self.select_ctx, sheet.ll_sheet(), origin, media) };
+    //         require_ok(code, "adding sheet to select ctx");
+
+    //         self.sheets.push(sheet);
+    //     }
+
+    //     #[fixed_stack_segment]
+    //     pub fn count_sheets(&self) -> uint {
+    //         let mut count = 0;
+    //         let code = unsafe { css_select_ctx_count_sheets(self.select_ctx, to_mut_unsafe_ptr(&mut count)) };
+    //         require_ok(code, "counting sheets");
+    //         return count as uint;
+    //     }
+
+    //     #[fixed_stack_segment]
+    //     pub fn select_style<N: VoidPtrLike, H: CssSelectHandler<N>>(&self, node: &N, media: uint64_t,
+    //                                                         inline_style: Option<&CssStylesheet>,
+    //                                                         handler: &H) -> CssSelectResults {
+    //         do with_untyped_handler(handler) |untyped_handler| {
+    //             let raw_handler = build_raw_handler();
+    //             let mut results: *css_select_results = null();
+    //             let inline_sheet = match inline_style {
+    //                 None => null(),
+    //                 Some(sheet) => sheet.ll_sheet(),
+    //             };
+    //             let code = unsafe { css_select_style(self.select_ctx,
+    //                                                  node.to_void_ptr(),
+    //                                                  media,
+    //                                                  inline_sheet,
+    //                                                  to_unsafe_ptr(&raw_handler),
+    //                                                  transmute(to_unsafe_ptr(untyped_handler)),
+    //                                                  to_mut_unsafe_ptr(&mut results)) };
+    //             require_ok(code, "selecting style");
+
+    //             CssSelectResults {
+    //                 results: results
+    //             }
+    //         }
+    //     }
+    // }
+
+    // fn build_raw_handler() -> css_select_handler {
+    //     css_select_handler {
+    //         handler_version: CSS_SELECT_HANDLER_VERSION_1,
+    //         node_name: raw_handler::node_name,
+    //         node_classes: raw_handler::node_classes,
+    //         node_id: raw_handler::node_id,
+    //         named_ancestor_node: raw_handler::named_ancestor_node,
+    //         named_parent_node: raw_handler::named_parent_node,
+    //         named_sibling_node: raw_handler::named_sibling_node,
+    //         named_generic_sibling_node: raw_handler::named_generic_sibling_node,
+    //         parent_node: raw_handler::parent_node,
+    //         sibling_node: raw_handler::sibling_node,
+    //         node_has_name: raw_handler::node_has_name,
+    //         node_has_class: raw_handler::node_has_class,
+    //         node_has_id: raw_handler::node_has_id,
+    //         node_has_attribute: raw_handler::node_has_attribute,
+    //         node_has_attribute_equal: raw_handler::node_has_attribute_equal,
+    //         node_has_attribute_dashmatch: raw_handler::node_has_attribute_dashmatch,
+    //         node_has_attribute_includes: raw_handler::node_has_attribute_includes,
+    //         node_has_attribute_prefix: raw_handler::node_has_attribute_prefix,
+    //         node_has_attribute_suffix: raw_handler::node_has_attribute_suffix,
+    //         node_has_attribute_substring: raw_handler::node_has_attribute_substring,
+    //         node_is_root: raw_handler::node_is_root,
+    //         node_count_siblings: raw_handler::node_count_siblings,
+    //         node_is_empty: raw_handler::node_is_empty,
+    //         node_is_link: raw_handler::node_is_link,
+    //         node_is_visited: raw_handler::node_is_visited,
+    //         node_is_hover: raw_handler::node_is_hover,
+    //         node_is_active: raw_handler::node_is_active,
+    //         node_is_focus: raw_handler::node_is_focus,
+    //         node_is_enabled: raw_handler::node_is_enabled,
+    //         node_is_disabled: raw_handler::node_is_disabled,
+    //         node_is_checked: raw_handler::node_is_checked,
+    //         node_is_target: raw_handler::node_is_target,
+    //         node_is_lang: raw_handler::node_is_lang,
+    //         node_presentational_hint: raw_handler::node_presentational_hint,
+    //         ua_default_for_property: raw_handler::ua_default_for_property,
+    //         compute_font_size: raw_handler::compute_font_size
+    //     }
+    // }
+
+    // mod raw_handler {
+    //     use std::libc::types::common::c99::{uint32_t, int32_t};
+    //     //use wapcaplet::ll::lwc_string;
+    //     use ll::types::css_qname;
+    //     use std::libc::c_void;
+    //     use std::cast::transmute;
+    //     use ll::errors::{css_error, CSS_OK, CSS_PROPERTY_NOT_SET};
+    //     use ll::hint::css_hint;
+    //     use types;
+    //     use hint;
+    //     use properties;
+    //     use hint::CssHint;
+    //     use super::UntypedHandler;
+
+    //     fn unimpl(n: &str) -> ! {
+    //         fail!(fmt!("unimplemented css callback handler: %s", n))
+    //     }
+    //     fn unimpl_warn(what: &str) {
+    //         warn!("unimplemented css value: %?", what);
+    //     }
+    //     fn enter(n: &str) {
+    //         debug!("entering raw handler: %s", n);
+    //     }
+    //     fn ph<'a>(pw: *c_void) -> &'a UntypedHandler<'a> {
+    //         unsafe { transmute(pw) }
+    //     }
+    //     pub extern fn node_name(pw: *c_void, node: *c_void, qname: *mut css_qname) -> css_error {
+    //         enter("node_name");
+    //         (ph(pw).node_name)(node, qname)
+    //     }
+    //     pub extern fn node_classes(pw: *c_void, node: *c_void, classes: *mut **lwc_string, n_classes: *mut uint32_t) -> css_error {
+    //         enter("node_classes");
+    //         (ph(pw).node_classes)(node, classes, n_classes)
+    //     }
+    //     pub extern fn node_id(pw: *c_void, node: *c_void, id: *mut *lwc_string) -> css_error {
+    //         enter("node_id");
+    //         (ph(pw).node_id)(node, id)
+    //     }
+    //     pub extern fn named_ancestor_node(pw: *c_void,
+    //                                       node: *c_void,
+    //                                       qname: *css_qname,
+    //                                       parent: *mut *c_void) -> css_error {
+    //         enter("named_ancestor_node");
+    //         (ph(pw).named_ancestor_node)(node, qname, parent)
+    //     }
+    //     pub extern fn named_parent_node(pw: *c_void, node: *c_void, qname: *css_qname, parent: *mut *c_void) -> css_error {
+    //         enter("named_parent_node");
+    //         (ph(pw).named_parent_node)(node, qname, parent)
+    //     }
+    //     pub extern fn named_sibling_node(_pw: *c_void, node: *c_void, _qname: *css_qname, sibling: *mut *c_void) -> css_error {
+    //         unimpl_warn("named_sibling_node");
+    //         unsafe {
+    //             *sibling = node;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn named_generic_sibling_node(_pw: *c_void, _node: *c_void, _qname: *css_qname, _sibling: **c_void) -> css_error {
+    //         unimpl("named_generic_sibling_node")
+    //     }
+    //     pub extern fn parent_node(pw: *c_void, node: *c_void, parent: *mut *c_void) -> css_error {
+    //         enter("parent_node");
+    //         (ph(pw).parent_node)(node, parent)
+    //     }
+    //     pub extern fn sibling_node(_pw: *c_void, node: *c_void, sibling: *mut *c_void) -> css_error {
+    //         unimpl_warn("sibling_node");
+    //         unsafe {
+    //             *sibling = node;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_name(_pw: *c_void, _node: *c_void, _qname: *css_qname, _match_: *bool) -> css_error {
+    //         unimpl("node_has_name")
+    //     }
+    //     pub extern fn node_has_class(pw: *c_void, node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error {
+    //         enter("node_has_class");
+    //         (ph(pw).node_has_class)(node, name, match_)
+    //     }
+    //     pub extern fn node_has_id(pw: *c_void, node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error {
+    //         enter("node_has_id");
+    //         (ph(pw).node_has_id)(node, name, match_)
+    //     }
+    //     pub extern fn node_has_attribute(_pw: *c_void, _node: *c_void, _qname: *css_qname, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_attribute_equal(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute_equal");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_attribute_dashmatch(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, _match_: *bool) -> css_error {
+    //         unimpl("node_has_attribute_dashmatch")
+    //     }
+    //     pub extern fn node_has_attribute_includes(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute_includes");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_attribute_prefix(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute_prefix");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_attribute_suffix(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute_suffix");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_has_attribute_substring(_pw: *c_void, _node: *c_void, _qname: *css_qname, _value: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_has_attribute_substring");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_root(pw: *c_void, node: *c_void, match_: *mut bool) -> css_error {
+    //         enter("node_is_root");
+    //         (ph(pw).node_is_root)(node, match_)
+    //     }
+    //     pub extern fn node_count_siblings(_pw: *c_void, _node: *c_void, _same_name: bool, _after: bool, count: *mut int32_t) -> css_error {
+    //         unimpl_warn("node_count_siblings");
+    //         unsafe {
+    //             *count = 0;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_empty(_pw: *c_void, _node: *c_void, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_is_empty");
+    //         unsafe {
+    //             *match_ = true;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_link(pw: *c_void, node: *c_void, match_: *mut bool) -> css_error {
+    //         enter("node_is_link");
+    //         (ph(pw).node_is_link)(node, match_)
+    //     }
+    //     pub extern fn node_is_visited(pw: *c_void, node: *c_void, match_: *mut bool) -> css_error {
+    //         enter("node_is_visited");
+    //         (ph(pw).node_is_visited)(node, match_)
+    //     }
+    //     pub extern fn node_is_hover(_pw: *c_void, _node: *c_void, _match_: *bool) -> css_error {
+    //         unimpl_warn("node_is_hover");
+    //         CSS_OK
+    //     }
+    //     pub extern fn node_is_active(_pw: *c_void, _node: *c_void, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_is_active");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_focus(_pw: *c_void, _node: *c_void, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_is_focus");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_enabled(_pw: *c_void, _node: *c_void, _match_: *bool) -> css_error {
+    //         unimpl("node_is_enabled")
+    //     }
+    //     pub extern fn node_is_disabled(_pw: *c_void, _node: *c_void, _match_: *bool) -> css_error {
+    //         unimpl("node_is_disabled")
+    //     }
+    //     pub extern fn node_is_checked(_pw: *c_void, _node: *c_void, _match_: *bool) -> css_error {
+    //         unimpl("node_is_checked")
+    //     }
+    //     pub extern fn node_is_target(_pw: *c_void, _node: *c_void, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_is_target");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_is_lang(_pw: *c_void, _node: *c_void, _lang: *lwc_string, match_: *mut bool) -> css_error {
+    //         unimpl_warn("node_is_lang");
+    //         unsafe {
+    //             *match_ = false;
+    //             CSS_OK
+    //         }
+    //     }
+    //     pub extern fn node_presentational_hint(_pw: *c_void, _node: *c_void, _property: uint32_t, _hint: *css_hint) -> css_error {
+    //         enter("node_presentational_hint");
+    //         CSS_PROPERTY_NOT_SET
+    //     }
+    //     pub extern fn ua_default_for_property(pw: *c_void, property: uint32_t, hint: *mut css_hint) -> css_error {
+    //         enter("ua_default_for_property");
+    //         (ph(pw).ua_default_for_property)(property, hint)
+    //     }
+    //     pub extern fn compute_font_size(_pw: *c_void, parent: *css_hint, size: *mut css_hint) -> css_error {
+    //         enter("compute_font_size");
+    //         // FIXME: This should be merged with the one in rust-css, I think. --pcwalton
+    //         let parent_hint;
+    //         if parent.is_null() {
+    //             parent_hint = hint::CssHintLength(types::CssUnitPx(16 * 1024));
+    //         } else {
+    //             parent_hint = CssHint::new(properties::CssPropFontSize, parent);
+    //         }
+    //         parent_hint.write_to_ll(properties::CssPropFontSize, size);
+    //         CSS_OK
+    //     }
+    // }
+
+    // pub struct UntypedHandler<'self> {
+    //     node_name: &'self fn(node: *c_void, qname: *mut css_qname) -> css_error,
+    //     node_classes: &'self fn(node: *c_void, classes: *mut **lwc_string, n_classes: *mut uint32_t) -> css_error,
+    //     node_id: &'self fn(node: *c_void, id: *mut *lwc_string) -> css_error,
+    //     named_parent_node: &'self fn(node: *c_void, qname: *css_qname, parent: *mut *c_void) -> css_error,
+    //     parent_node: &'self fn(node: *c_void, parent: *mut *c_void) -> css_error,
+    //     node_has_class: &'self fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
+    //     node_has_id: &'self fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
+    //     named_ancestor_node: &'self fn(node: *c_void,
+    //                              qname: *css_qname,
+    //                              parent: *mut *c_void) -> css_error,
+    //     node_is_root: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
+    //     node_is_link: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
+    //     node_is_visited: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
+    //     ua_default_for_property: &'self fn(property: uint32_t, hint: *mut css_hint) -> css_error,
+    // }
+
+    // fn with_untyped_handler<N: VoidPtrLike, H: CssSelectHandler<N>, R>(handler: &H, f: &fn(&UntypedHandler) -> R) -> R {
+    //     unsafe {
+    //         let untyped_handler = UntypedHandler {
+    //             node_name: |node: *c_void, qname: *mut css_qname| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let mut hlqname = handler.node_name(&hlnode);
+    //                 write_ll_qname(&mut hlqname, qname);
+    //                 CSS_OK
+    //             },
+    //             node_classes: |node: *c_void, classes: *mut **lwc_string, n_classes: *mut uint32_t| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+                    
+    //                 let (a, b) = match handler.node_classes(&hlnode) {
+    //                     Some(classes) => {
+    //                         let class = classes.map(|e| e.raw_reffed());
+    //                         let len = classes.len();
+    //                         let size = (len * sys::size_of::<libc::intptr_t>());
+    //                         let mem = realloc(ptr::mut_null(), size as libc::size_t, null()) as *mut u8;
+    //                         ptr::copy_memory(mem, vec::raw::to_ptr(class) as *u8, size);
+    //                         (mem as **lwc_string, len as u32)
+    //                     },
+    //                     None => (null(), 0)
+    //                 };
+    //                 *classes = a;
+    //                 *n_classes = b;
+    //                 CSS_OK
+    //             },
+    //             node_id: |node: *c_void, id: *mut *lwc_string| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 *id = match handler.node_id(&hlnode) {
+    //                     Some(id) => id.raw_reffed(),
+    //                     None => null()
+    //                 };
+    //                 CSS_OK
+    //             },
+    //             named_parent_node: |node: *c_void, qname: *css_qname, parent: *mut *c_void| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let hlqname = ll_qname_to_hl_qname(qname);
+    //                 *parent = match handler.named_parent_node(&hlnode, &hlqname) {
+    //                     Some(p) => p.to_void_ptr(),
+    //                     None => null()
+    //                 };
+    //                 CSS_OK
+    //             },
+    //             parent_node: |node: *c_void, parent: *mut *c_void| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let hlparent: Option<N> = handler.parent_node(&hlnode);
+    //                 *parent = match hlparent {
+    //                     Some(ref p) => p.to_void_ptr(),
+    //                     None => null()
+    //                 };
+    //                 CSS_OK
+    //             },
+    //             node_has_class: |node: *c_void, name: *lwc_string, match_: *mut bool| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let hlname = from_lwc_string(name);
+    //                 *match_ = handler.node_has_class(&hlnode, hlname);
+    //                 CSS_OK
+    //             },
+    //             node_has_id: |node: *c_void, name: *lwc_string, match_: *mut bool| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let hlname = from_lwc_string(name);
+    //                 *match_ = handler.node_has_id(&hlnode, hlname);
+    //                 CSS_OK
+    //             },
+    //             named_ancestor_node: |node: *c_void,
+    //                                   qname: *css_qname,
+    //                                   parent: *mut *c_void| -> css_error {
+    //                 let hlnode: N = VoidPtrLike::from_void_ptr(node);
+    //                 let hlqname = ll_qname_to_hl_qname(qname);
+    //                 *parent = match handler.named_ancestor_node(&hlnode, &hlqname) {
+    //                     Some(p) => p.to_void_ptr(),
+    //                     None => null()
+    //                 };
+    //                 CSS_OK
+    //             },
+    //             node_is_root: |node: *c_void, match_: *mut bool| -> css_error {
+    //                 let hlnode = VoidPtrLike::from_void_ptr(node);
+    //                 *match_ = handler.node_is_root(&hlnode);
+    //                 CSS_OK
+    //             },
+    //             node_is_link: |node: *c_void, match_: *mut bool| -> css_error {
+    //                 let hlnode = VoidPtrLike::from_void_ptr(node);
+    //                 *match_ = handler.node_is_link(&hlnode);
+    //                 CSS_OK
+    //             },
+    //             node_is_visited: |node: *c_void, match_: *mut bool| -> css_error {
+    //                 let hlnode = VoidPtrLike::from_void_ptr(node);
+    //                 *match_ = handler.node_is_visited(&hlnode);
+    //                 CSS_OK
+    //             },
+
+    //             ua_default_for_property: |property: uint32_t, hint: *mut css_hint| -> css_error {
+    //                 use properties::property_from_uint;
+    //                 let hlproperty = property_from_uint(property);
+    //                 let hlhint = handler.ua_default_for_property(hlproperty);
+    //                 hlhint.write_to_ll(hlproperty, hint)
+    //             },
+    //         };
+
+    //         f(&untyped_handler)
+    //     }
+    // }
+
+    // pub trait CssSelectHandler<N> {
+    //     fn node_name(&self, node: &N) -> CssQName;
+    //     fn node_classes(&self, node: &N) -> Option<~[LwcString]>;
+    //     fn node_id(&self, node: &N) -> Option<LwcString>;
+    //     fn named_parent_node(&self, node: &N, qname: &CssQName) -> Option<N>;
+    //     fn parent_node(&self, node: &N) -> Option<N>;
+    //     fn node_has_class(&self, node: &N, name: LwcString) -> bool;
+    //     fn node_has_id(&self, node: &N, name: LwcString) -> bool;
+    //     fn named_ancestor_node(&self, node: &N, qname: &CssQName) -> Option<N>;
+    //     fn node_is_root(&self, node: &N) -> bool;
+    //     fn node_is_link(&self, node: &N) -> bool;
+    //     fn node_is_visited(&self, node: &N) -> bool;
+    //     fn ua_default_for_property(&self, property: CssProperty) -> CssHint;
+    // }
+
+    // pub struct CssSelectResults {
+    //     priv results: *css_select_results,
+    // }
+
+    // impl Drop for CssSelectResults {
+    //     #[fixed_stack_segment]
+    //     fn drop(&self) {
+    //         assert!(self.results.is_not_null());
+    //         let code = unsafe { css_select_results_destroy(self.results) };
+    //         require_ok(code, "destroying select results");
+    //     }
+    // }
+
+    // impl<'self> CssSelectResults {
+    //     pub fn computed_style(&'self self, element: CssPseudoElement) -> CssComputedStyle<'self> {
+    //         let element = element.to_ll();
+    //         let llstyle = unsafe { *self.results }.styles[element];
+    //         // FIXME: Rust #3926
+    //         assert!((llstyle as *c_void).is_not_null());
+
+    //         CssComputedStyle {
+    //             result_backref: self,
+    //             computed_style: llstyle
+    //         }
+    //     }
+    // }
+
 }
 
 pub mod computed {
