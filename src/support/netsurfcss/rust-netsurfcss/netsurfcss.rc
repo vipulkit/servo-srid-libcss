@@ -186,13 +186,15 @@ pub mod select {
     // CssPseudoElementAfter        = 4,
     // CssPseudoElementCount   = 5
     // }
-
-    pub struct CssSelectCtx {
-        priv select_ctx: *css_select_ctx,
+    extern mod srid_css ;
+    extern mod wapcaplet;
+    pub type CssSelectCtx = srid_css::select::select::css_select_ctx ;
+    //pub struct CssSelectCtx {
+    //    priv select_ctx: *css_select_ctx,
         // Whenever a sheet is added to the select ctx we will take ownership of it
         // to ensure that it stays alive
-        priv sheets: ~[CssStylesheet],
-    }
+    //    priv sheets: ~[CssStylesheet],
+    //}
 
     // impl Drop for CssSelectCtx {
     //     #[fixed_stack_segment]
@@ -204,17 +206,10 @@ pub mod select {
     // }
 
     // #[fixed_stack_segment]
-    // pub fn css_select_ctx_create() -> CssSelectCtx {
-    //     let mut select_ctx: *css_select_ctx = null();
-    //     let code = unsafe { ll_css_select_ctx_create(realloc_ext, null(), to_mut_unsafe_ptr(&mut select_ctx)) };
-    //     require_ok(code, "creating select context");
-    //     assert!(select_ctx.is_not_null());
-
-    //     CssSelectCtx {
-    //         select_ctx: select_ctx,
-    //         sheets: ~[]
-    //     }
-    // }
+    pub fn css_select_ctx_create() -> ~CssSelectCtx {
+	
+	srid_css::select::select::css_select_ctx_create( wapcaplet::lwc() ) 
+    }
 
     // impl CssSelectCtx {
     //     #[fixed_stack_segment]
