@@ -2,11 +2,13 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+extern mod srid_css;
+
 use color::{Color, rgba};
 use units::{Length, Px, Em};
-use netsurfcss::util::css_fixed_to_float;
+//use netsurfcss::util::css_fixed_to_float;
 use std::either::{Either, Left, Right};
-use n;
+//use n;
 use values::*;
 
 pub struct ComputedStyle<'self> {

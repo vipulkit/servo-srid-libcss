@@ -2,7 +2,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-use n;
+//use n;
+
+extern mod srid_css;
+
+use srid_css::include::types::*;
 
 pub enum StylesheetOrigin {
     OriginUA,
@@ -11,11 +15,12 @@ pub enum StylesheetOrigin {
 }
 
 impl StylesheetOrigin {
-    pub fn to_net(&self) -> n::ll::t::css_origin {
+    pub fn to_net(&self) -> css_origin {
         match *self {
-            OriginUA => n::ll::t::CSS_ORIGIN_UA,
-            OriginUser => n::ll::t::CSS_ORIGIN_USER,
-            OriginAuthor => n::ll::t::CSS_ORIGIN_AUTHOR
+            OriginUA => CSS_ORIGIN_UA,
+            OriginUser => CSS_ORIGIN_USER,
+            OriginAuthor => CSS_ORIGIN_AUTHOR
         }
     }
 }
+     

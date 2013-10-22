@@ -2,14 +2,16 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+extern mod srid_css;
+
 use std::cast;
 use color::Color;
 use select::SelectResults;
 use computed::ComputedStyle;
-use n::h::CssHintLength;
-use n::u::float_to_css_fixed;
+//use n::h::CssHintLength;
+//use n::u::float_to_css_fixed;
 use values::*;
-use n;
+//use n;
 
 pub struct CompleteSelectResults {
     inner: SelectResults

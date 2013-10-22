@@ -8,29 +8,51 @@ Constructs a list of css style rules from a token stream
 
 // TODO: fail according to the css spec instead of failing when things
 // are not as expected
+extern mod srid_css;
+extern mod wapcaplet;
 
 use util::DataStream;
-use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
-use netsurfcss::types::CssLevel21;
-use netsurfcss::CssResult;
-use wapcaplet::LwcString;
+//use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
+//use netsurfcss::types::CssLevel21;
+//use netsurfcss::CssResult;
+//use wapcaplet::LwcString;
 use extra::url::Url;
-use netsurfcss::stylesheet::CssUrlResolutionFn;
+//use netsurfcss::stylesheet::CssUrlResolutionFn;
+use srid_css::css::*;
+use srid_css::parse::propstrings::*;
+use wapcaplet::*;
+use srid_css::stylesheet::*;
+use srid_css::utils::errors::*;
+use srid_css::stylesheet::css_url_resolution_fn;
 
-fn default_params(url: Url) -> CssStylesheetParams {
-    let resolve: CssUrlResolutionFn = resolve_url;
-    CssStylesheetParams {
-        params_version: CssStylesheetParamsVersion1,
-        level: CssLevel21,
-        charset: ~"UTF-8",
-        url: url.to_str(),
-        title: ~"FIXME-css-title",
-        allow_quirks: false,
-        inline_style: false,
-        resolve: Some(resolve),
-        import: None,
-        color: None,
-        font: None,
+fn default_params(url: Url) -> css_params {
+    let resolve: css_url_resolution_fn = resolve_url;
+    // CssStylesheetParams {
+    //     params_version: CssStylesheetParamsVersion1,
+    //     level: CssLevel21,
+    //     charset: ~"UTF-8",
+    //     url: url.to_str(),
+    //     title: ~"FIXME-css-title",
+    //     allow_quirks: false,
+    //     inline_style: false,
+    //     resolve: Some(resolve),
+    //     import: None,
+    //     color: None,
+    //     font: None,
+    // }
+
+    css_params {
+        params_version : CSS_PARAMS_VERSION_1,
+        level: CSS_LEVEL_21,
+        charset : ~"UTF-8",
+        url : url.to_str(),
+        title : ~"FIXME-css-title",
+        allow_quirks : false,
+        inline_style : false,
+        resolve : resolve,
+        import : None,
+        color : None,
+        font : None,
     }
 }
 
@@ -39,31 +61,43 @@ fn default_params(url: Url) -> CssStylesheetParams {
 // so DataStream is an @fn which can't be sent to the lexer task.
 // So the DataStreamFactory gives the caller an opportunity to create
 // the data stream from inside the lexer task.
-pub fn parse_stylesheet(url: Url, input: DataStream) -> CssStylesheet {
+pub fn parse_stylesheet(url: Url, input: DataStream) -> ~css {
     let params = default_params(url);
-    let mut sheet = css_stylesheet_create(&params);
+    let mut sheet = css::css_create(&params) ; 
+    //let mut sheet = css_stylesheet_create(&params);
+
+    let mut lwc_ref = lwc();
+    let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
 
     loop {
         match input() {
             Some(data) => {
-                sheet.append_data(data);
+                sheet.css_stylesheet_append_data(lwc_ref,propstring,data);
+                //sheet.append_data(data);
             }
             None => break
         }
     }
-    sheet.data_done();
+    sheet.css_stylesheet_data_done();
+    //sheet.data_done();
     sheet
 }
 
-pub fn parse_style_attribute(url: Url, data: &str) -> CssStylesheet {
+pub fn parse_style_attribute(url: Url, data: &str) -> ~css {
     let mut params = default_params(url);
     params.inline_style = true;
-    let mut sheet = css_stylesheet_create(&params);
-    sheet.append_data(data.as_bytes());
-    sheet.data_done();
+    let mut lwc_ref = lwc();
+    let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
+    let mut sheet = css::css_create(&params) ; 
+    sheet.css_stylesheet_append_data(lwc_ref,propstring,data.as_bytes());
+    sheet.css_stylesheet_data_done();
+    //let mut sheet = css_stylesheet_create(&params);
+    //sheet.append_data(data.as_bytes());
+    //sheet.data_done();
     sheet
 }
 
-fn resolve_url(_base: &str, _rel: &LwcString) -> CssResult<LwcString> {
+extern fn resolve_url(_base: &str, _rel: uint) -> (css_error,Option<uint>) {
     fail!(~"resolving url");
+    (CSS_OK,None)
 }

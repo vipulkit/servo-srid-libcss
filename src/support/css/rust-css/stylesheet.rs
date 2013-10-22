@@ -5,26 +5,34 @@
 /*!
 CSS stylesheets, owned types, immutable after creation
 */
+extern mod srid_css;
 
 use extra::url::Url;
 use util::DataStream;
-use netsurfcss::stylesheet::CssStylesheet;
+//use netsurfcss::stylesheet::CssStylesheet;
 use parser::{parse_stylesheet, parse_style_attribute};
+use srid_css::css::*;
+use srid_css::stylesheet::*;
 
 pub struct Stylesheet {
-    inner: CssStylesheet
+    inner: @mut css_stylesheet,
+    scss : ~css
 }
 
 impl Stylesheet {
     pub fn new(url: Url, input: DataStream) -> Stylesheet {
+        let mut scss = parse_stylesheet(url, input) ;
         Stylesheet {
-            inner: parse_stylesheet(url, input)
+            inner:scss.stylesheet,
+            scss: scss
         }
     }
 
     pub fn from_attribute(url: Url, data: &str) -> Stylesheet {
+            let mut scss = parse_style_attribute(url, data) ;
         Stylesheet {
-            inner: parse_style_attribute(url, data)
+            inner: scss.stylesheet,
+            scss: scss
         }
     }
 }

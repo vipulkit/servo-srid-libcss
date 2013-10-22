@@ -22,8 +22,10 @@ Basic operation:
 #[crate_type = "lib"];
 
 extern mod extra;
-extern mod netsurfcss;
+//extern mod netsurfcss;
 extern mod wapcaplet;
+extern mod parserutils;
+extern mod srid_css;
 
 pub mod stylesheet;
 pub mod select;
@@ -42,7 +44,7 @@ mod parser;
 mod test;
 
 // Shortcuts to the netsurfcss types
-pub mod n {
+/*pub mod n {
     pub use p = netsurfcss::properties;
     pub use s = netsurfcss::select;
     pub use t = netsurfcss::types;
@@ -57,4 +59,5 @@ pub mod n {
         pub use t = netsurfcss::ll::types;
         pub use c = netsurfcss::ll::computed;
     }
-}
+}*/
+
