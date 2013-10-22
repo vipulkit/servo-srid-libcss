@@ -208,7 +208,7 @@ pub mod select {
     // #[fixed_stack_segment]
     pub fn css_select_ctx_create() -> ~CssSelectCtx {
 	
-	srid_css::select::select::css_select_ctx_create( wapcaplet::lwc() ) 
+	   srid_css::select::select::css_select_ctx::css_select_ctx_create( wapcaplet::lwc() ) 
     }
 
     // impl CssSelectCtx {
