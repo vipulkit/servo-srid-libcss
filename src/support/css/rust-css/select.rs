@@ -10,6 +10,8 @@ about the DOM are encapsulated in the `SelectHandler` type which the `SelectCtx`
 uses to query various DOM and UA properties.
 */
 extern mod srid_css;
+extern mod wapcaplet;
+extern mod std;
 
 use stylesheet::Stylesheet;
 use computed::ComputedStyle;
@@ -19,11 +21,15 @@ use computed::ComputedStyle;
 //use n::u::{rust_str_to_net_qname, net_qname_to_rust_str};
 use types::StylesheetOrigin;
 //use n;
+use srid_css::stylesheet::*;
 use srid_css::select::select::*;
 use srid_css::select::common::*;
+use srid_css::include::types::*;
+use std::libc::*;
+use wapcaplet::*;
 
 pub struct SelectCtx {
-    inner: n::s::CssSelectCtx
+    inner: css_select_ctx
 }
 
 /**
@@ -33,10 +39,12 @@ The `SelectCtx` takes ownership of any number of `Stylesheet` objects,
 encapsulates the cascade. Individual node styles can be requested with
 the `select_style` method.
 */
+pub type  VoidPtrLike = *c_void ;
+
 impl SelectCtx {
     pub fn new() -> SelectCtx {
         SelectCtx {
-            inner: n::s::css_select_ctx_create()
+            inner: css_select_ctx::css_select_ctx_create()
         }
     }
 
@@ -49,7 +57,7 @@ impl SelectCtx {
             Stylesheet { inner: inner } => inner
         };
 
-        self.inner.append_sheet(sheet, origin.to_net(), n::ll::t::CSS_MEDIA_SCREEN)
+        self.inner.css_select_ctx_append_sheet(sheet, origin.to_net(), CSS_MEDIA_SCREEN)
     }
 
     /**
@@ -71,7 +79,7 @@ impl SelectCtx {
         SelectResults {
             inner: self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
                 node,
-                n::ll::t::CSS_MEDIA_SCREEN,
+                CSS_MEDIA_SCREEN,
                 inner_inline_style,
                 &inner_handler)
         }
@@ -82,14 +90,14 @@ impl SelectCtx {
 Represents the 'style' of a single node, including it's pseudo-elements.
 */
 pub struct SelectResults {
-    inner: n::s::CssSelectResults
+    inner: @mut css_select_results
 }
 
 impl<'self> SelectResults {
     /** Retrieve the computed style of a single pseudo-element */
     pub fn computed_style(&'self self) -> ComputedStyle<'self> {
         ComputedStyle {
-            inner: self.inner.computed_style(n::s::CssPseudoElementNone)
+            inner: self.inner.computed_style(CSS_PSEUDO_ELEMENT_NONE)
         }
     }
 }
@@ -123,9 +131,10 @@ impl<'self, N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
 }
 
 impl<N, H: SelectHandler<N>> n::s::CssSelectHandler<N> for SelectHandlerWrapper<N, H> {
-    fn node_name(&self, node: &N) -> n::t::CssQName {
+    fn node_name(&self, node: &N) -> css_qname {
         do self.inner_ref().with_node_name(node) |name| {
-            rust_str_to_net_qname(name)
+            // TODO use wapcaplet 
+            css_qname{name:0, ns:0}
         }
     }
 
@@ -150,24 +159,24 @@ impl<N, H: SelectHandler<N>> n::s::CssSelectHandler<N> for SelectHandlerWrapper<
         }
     }
 
-    fn named_parent_node(&self, node: &N, qname: &n::t::CssQName) -> Option<N> {
-        self.inner_ref().named_parent_node(node, net_qname_to_rust_str(qname))
+    fn named_parent_node(&self, node: &N, qname: &mut css_qname) -> Option<N> {
+        self.inner_ref().named_parent_node(node, qname.name)
     }
 
     fn parent_node(&self, node: &N) -> Option<N> {
         self.inner_ref().parent_node(node)
     }
 
-    fn node_has_class(&self, node: &N, name: LwcString) -> bool {
-        self.inner_ref().node_has_class(node, name.to_str_slice())
+    fn node_has_class(&self, node: &N, name: ~str) -> bool {
+        self.inner_ref().node_has_class(node, name)
     }
 
-    fn node_has_id(&self, node: &N, name: LwcString) -> bool {
-        self.inner_ref().node_has_id(node, name.to_str_slice())
+    fn node_has_id(&self, node: &N, name: ~str) -> bool {
+        self.inner_ref().node_has_id(node, name)
     }
 
-    fn named_ancestor_node(&self, node: &N, qname: &n::t::CssQName) -> Option<N> {
-        self.inner_ref().named_ancestor_node(node, net_qname_to_rust_str(qname))
+    fn named_ancestor_node(&self, node: &N, qname: &mut css_qname) -> Option<N> {
+        self.inner_ref().named_ancestor_node(node,qname.name)
     }
 
     fn node_is_root(&self, node: &N) -> bool {
@@ -184,9 +193,22 @@ impl<N, H: SelectHandler<N>> n::s::CssSelectHandler<N> for SelectHandlerWrapper<
         false
     }
 
-    fn ua_default_for_property(&self, property: n::p::CssProperty) -> n::h::CssHint {
+    fn ua_default_for_property(&self, property: u32 ) -> @mut css_hint {
         warn!("not specifiying ua default for property %?", property);
-        n::h::CssHintDefault
+        @mut css_hint{
+                hint_type:HINT_LENGTH,
+                status:0,
+                clip:None,
+                content:None,
+                counters:None,
+                length:None,
+                position:None,
+                color:None,
+                fixed:None,
+                integer:None,
+                string:None,
+                strings:None
+        }
     }
 }
 
