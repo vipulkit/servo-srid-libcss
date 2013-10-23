@@ -138,14 +138,14 @@ impl<N, H: SelectHandler<N>> n::s::CssSelectHandler<N> for SelectHandlerWrapper<
         }
     }
 
-    fn node_classes(&self, node: &N) -> Option<~[LwcString]> {
+    fn node_classes(&self, node: &N) -> Option<~[str]> {
         do self.inner_ref().with_node_classes(node) |node_classes_opt| {
            do node_classes_opt.map |s| {
                debug!("SelectHandlerWrapper::node_classes - classes: %?", *s);
                let mut v = ~[];
                for t in s.split_iter(' ') {
                    debug!("SelectHandlerWrapper::node_classes - class: %?", t);
-                   if t != "" { v.push(lwcstr_from_rust_str(t)) }
+                   if t != "" { v.push(t) }
                }
                debug!("SelectHandlerWrapper::classes: %?", v);
                v
@@ -153,9 +153,10 @@ impl<N, H: SelectHandler<N>> n::s::CssSelectHandler<N> for SelectHandlerWrapper<
         }
     }
 
-    fn node_id(&self, node: &N) -> Option<LwcString> {
+    fn node_id(&self, node: &N) -> Option<~str> {
         do self.inner_ref().with_node_id(node) |node_id_opt| {
-            node_id_opt.map(|s| lwcstr_from_rust_str(*s))
+            //node_id_opt.map(|s| lwcstr_from_rust_str(*s))
+            node_id_opt
         }
     }
 
