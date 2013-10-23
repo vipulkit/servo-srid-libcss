@@ -6,7 +6,7 @@ extern mod srid_css;
 use srid_css::select::common::*;
 use srid_css::include::types::*;
 use srid_css::include::properties::*;
-//use srid_css::util;
+use srid_css::stylesheet::*;
 
 
 
@@ -223,10 +223,10 @@ fn convert_net_border_style(style: css_border_style_e) -> CSSValue<CSSBorderStyl
 fn convert_net_border_width(width: css_border_width_e) -> CSSValue<CSSBorderWidth> {
     match width {
 
-        CSS_BORDER_WIDTH_INHERIT    => Inherit
-        CSS_BORDER_WIDTH_THIN       => Specified(CSSBorderWidthThin)
-        CSS_BORDER_WIDTH_MEDIUM    => Specified(CSSBorderWidthMedium)
-        CSS_BORDER_WIDTH_THICK     => Specified(CSSBorderWidthThick)
+        CSS_BORDER_WIDTH_INHERIT    => Inherit,
+        CSS_BORDER_WIDTH_THIN       => Specified(CSSBorderWidthThin),
+        CSS_BORDER_WIDTH_MEDIUM    => Specified(CSSBorderWidthMedium),
+        CSS_BORDER_WIDTH_THICK     => Specified(CSSBorderWidthThick),
         CSS_BORDER_WIDTH_WIDTH(width)  => Specified(CSSBorderWidthLength(convert_net_unit_to_length(width)))
         
     }
