@@ -1,8 +1,8 @@
-use wapcaplet::*;
+//use wapcaplet::*;
 
 use bytecode::opcodes::*;
 use bytecode::bytecode::*;
-
+use libwapcaplet::wapcaplet::*;
 use include::properties::*;
 use include::types::*;
 

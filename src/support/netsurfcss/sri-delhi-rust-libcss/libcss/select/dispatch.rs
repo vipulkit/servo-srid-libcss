@@ -12,7 +12,9 @@ use select::properties::properties::*;
 use include::types::*;
 use std::ptr::*;
 use std::vec::from_elem;
-use wapcaplet::*;
+//use wapcaplet::*;
+
+use libwapcaplet::wapcaplet::*;
 //use extra::arc;
 
 

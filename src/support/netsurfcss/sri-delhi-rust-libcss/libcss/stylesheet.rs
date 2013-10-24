@@ -1,5 +1,7 @@
 use std::managed::*;
-use wapcaplet::*;
+// //use wapcaplet::*;
+
+use libwapcaplet::wapcaplet::*;
 
 use bytecode::bytecode::*;
 

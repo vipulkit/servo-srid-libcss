@@ -2,10 +2,11 @@
 // CSS-FONT-FACE implementation/data-structs starts here 
 // ===========================================================================================================
 
-use wapcaplet::*;
+//use wapcaplet::*;
 
 use include::font_face::*;
 use include::properties::*;
+use libwapcaplet::wapcaplet::*;
 
 use lex::lexer::*;
 
