@@ -333,7 +333,7 @@ impl css_select_ctx {
         /* Base element style is guaranteed to exist */
         state.results.styles[0] = (Some(css_computed_style_create()));
 
-        error = ((handler.parent_node))(node, &mut parent);
+        error = ((handler.parent_node))(state.pw, node, &mut parent);
         match error {
             CSS_OK=>{},
             x =>  {
@@ -342,7 +342,7 @@ impl css_select_ctx {
         }
 
         /* Get node's name */
-        error = ((handler.node_name))(node, &mut state.element);
+        error = ((handler.node_name))(state.pw, node, &mut state.element);
         match error {
             CSS_OK=>{},
             x =>  {
@@ -1461,7 +1461,7 @@ impl css_select_ctx {
             /* Find candidate node */
             match combinator_type {
                 CSS_COMBINATOR_ANCESTOR => {
-                    error = (state.handler.unwrap().named_ancestor_node)( 
+                    error = (state.handler.unwrap().named_ancestor_node)(state.pw,  
                             &mut self.lwc_ref, n, selector.data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1469,7 +1469,7 @@ impl css_select_ctx {
                     }
                 }   
                 CSS_COMBINATOR_PARENT => {
-                    error = (state.handler.unwrap().named_parent_node)( 
+                    error = (state.handler.unwrap().named_parent_node)( state.pw, 
                             &mut self.lwc_ref, n, selector.data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1477,7 +1477,7 @@ impl css_select_ctx {
                     }
                 }    
                 CSS_COMBINATOR_SIBLING => {
-                    error = (state.handler.unwrap().named_sibling_node)( 
+                    error = (state.handler.unwrap().named_sibling_node)(  state.pw, 
                             &mut self.lwc_ref, n, selector.data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1486,7 +1486,7 @@ impl css_select_ctx {
                 }    
                     
                 CSS_COMBINATOR_GENERIC_SIBLING => {
-                    error = (state.handler.unwrap().named_generic_sibling_node)(
+                    error = (state.handler.unwrap().named_generic_sibling_node)( state.pw, 
                             &mut self.lwc_ref, n, selector.data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1746,7 +1746,7 @@ impl css_select_ctx {
                 CSS_COMBINATOR_ANCESTOR | 
                 CSS_COMBINATOR_PARENT => {
 					//println(fmt!("n = %?", n));
-                    error = (state.handler.expect("").parent_node)(n, &mut n);
+                    error = (state.handler.expect("").parent_node)( state.pw, n, &mut n);
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1754,7 +1754,7 @@ impl css_select_ctx {
                 }
                 CSS_COMBINATOR_SIBLING |
                 CSS_COMBINATOR_GENERIC_SIBLING => {
-                    error = (state.handler.expect("").sibling_node)(n, &mut n);
+                    error = (state.handler.expect("").sibling_node)( state.pw, n, &mut n);
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1897,16 +1897,16 @@ impl css_select_ctx {
                     /* Only need to test this inside not(), since
                      * it will have been considered as a named node
                      * otherwise. */
-                    error = (state.handler.expect("").node_has_name)(&mut self.lwc_ref, state.pw, node,
+                    error = (state.handler.expect("").node_has_name)( state.pw, &mut self.lwc_ref, state.pw, node,
                             detail.qname, matched);
                 }
             }
             CSS_SELECTOR_CLASS => {
-                error = (state.handler.expect("").node_has_class)(&mut self.lwc_ref, state.pw, node,
+                error = (state.handler.expect("").node_has_class)( state.pw, &mut self.lwc_ref, state.pw, node,
                         lwc_name , matched);
             }       
             CSS_SELECTOR_ID => {
-                error = (state.handler.expect("").node_has_id)(&mut self.lwc_ref, state.pw, node,
+                error = (state.handler.expect("").node_has_id)( state.pw, &mut self.lwc_ref, state.pw, node,
                         lwc_name , matched);
             }
             CSS_SELECTOR_PSEUDO_CLASS => {
@@ -2191,11 +2191,11 @@ impl css_select_ctx {
                 }
             }
             CSS_SELECTOR_ATTRIBUTE => {
-                error = (state.handler.expect("").node_has_attribute)(&mut self.lwc_ref, node,
+                error = (state.handler.expect("").node_has_attribute)( state.pw, &mut self.lwc_ref, node,
                         detail.qname, matched);
             }
             CSS_SELECTOR_ATTRIBUTE_EQUAL => {
-                error = (state.handler.expect("").node_has_attribute_equal)( 
+                error = (state.handler.expect("").node_has_attribute_equal)( state.pw,  
                         &mut self.lwc_ref, node, detail.qname, detail.string.get_ref().clone(), 
                         matched);
             }
