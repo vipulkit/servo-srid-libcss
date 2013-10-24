@@ -775,7 +775,7 @@ pub struct css_select_handler {
 
     compute_font_size: @fn(parent: Option<@mut css_hint>, size: Option<@mut css_hint>) -> css_error,
    
-    ua_default_for_property: @fn(property:u32, hint:@mut css_hint ) -> css_error,
+    ua_default_for_property: @fn(pw:*c_void,property:u32, hint:@mut css_hint ) -> css_error,
     handler_version:uint
 }
 

@@ -39,7 +39,11 @@ The `SelectCtx` takes ownership of any number of `Stylesheet` objects,
 encapsulates the cascade. Individual node styles can be requested with
 the `select_style` method.
 */
-pub type  VoidPtrLike = *c_void ;
+// FIXME: These methods should be unsafe
+pub trait VoidPtrLike {
+    fn from_void_ptr(ptr: *c_void) -> Self;
+    fn to_void_ptr(&self) -> *c_void;
+}
 
 impl SelectCtx {
     pub fn new() -> SelectCtx {

@@ -2179,7 +2179,7 @@ pub fn css__initial_color(state:&mut css_select_state) -> css_error {
 
 	let mut error : css_error ;
 			
-	error = ((state.handler.expect("").ua_default_for_property))(CSS_PROP_COLOR as u32,hint);
+	error = ((state.handler.expect("").ua_default_for_property))(state.pw,CSS_PROP_COLOR as u32,hint);
 	match  error {
 		CSS_OK=>{},
 		x => { 
@@ -3031,7 +3031,7 @@ pub fn css__cascade_font_family(opv:u32, style:&mut css_style,
 					return CSS_BADPARM ;
 				},
 				Some(fnhandler) => {
-					error = ((fnhandler.ua_default_for_property))(
+					error = ((fnhandler.ua_default_for_property))(state.pw,
 						(CSS_PROP_FONT_FAMILY as u32), hint);
 				    match error {
 				        CSS_OK=>{
@@ -3100,7 +3100,7 @@ pub fn css__initial_font_family(state:&mut css_select_state) -> css_error {
 			return CSS_BADPARM ;
 		},
 		Some(fnhandler) => {
-			error = ((fnhandler.ua_default_for_property))(
+			error = ((fnhandler.ua_default_for_property))(state.pw,
 				(CSS_PROP_FONT_FAMILY as u32), hint);
 		    match error {
 		        CSS_OK=>{},
@@ -5658,7 +5658,7 @@ pub fn css__initial_quotes(state:&mut css_select_state) -> css_error {
 			return CSS_BADPARM ;
 		},
 		Some(fnhandler) => {
-			error = ((fnhandler.ua_default_for_property))(
+			error = ((fnhandler.ua_default_for_property))(state.pw,
 				(CSS_PROP_QUOTES as u32), hint);
 		    match error {
 		        CSS_OK=>{},
