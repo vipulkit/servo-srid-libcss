@@ -11,19 +11,19 @@ Constructs a list of css style rules from a token stream
 extern mod srid_css;
 extern mod wapcaplet;
 
-use util::DataStream;
 //use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
 //use netsurfcss::types::CssLevel21;
 //use netsurfcss::CssResult;
 //use wapcaplet::LwcString;
-use extra::url::Url;
 //use netsurfcss::stylesheet::CssUrlResolutionFn;
 use srid_css::css::*;
 use srid_css::parse::propstrings::*;
-use wapcaplet::*;
 use srid_css::stylesheet::*;
 use srid_css::utils::errors::*;
 use srid_css::stylesheet::css_url_resolution_fn;
+use wapcaplet::*;
+use extra::url::Url;
+use util::DataStream;
 
 fn default_params(url: Url) -> css_params {
     let resolve: css_url_resolution_fn = resolve_url;

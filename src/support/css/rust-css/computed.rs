@@ -3,6 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 extern mod srid_css;
+use std::either::{Either, Left, Right};
 use srid_css::select::common::*;
 use srid_css::include::types::*;
 use srid_css::include::properties::*;
@@ -10,11 +11,10 @@ use srid_css::stylesheet::*;
 
 
 
+//use netsurfcss::util::css_fixed_to_float;
+//use n;
 use color::{Color, rgba};
 use units::{Length, Px, Em};
-//use netsurfcss::util::css_fixed_to_float;
-use std::either::{Either, Left, Right};
-//use n;
 use values::*;
 
 

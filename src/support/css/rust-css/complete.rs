@@ -5,16 +5,47 @@
 extern mod srid_css;
 
 use std::cast;
+use std::cast::transmute;
 use color::Color;
 use select::SelectResults;
 use computed::ComputedStyle;
 //use n::h::CssHintLength;
 //use n::u::float_to_css_fixed;
 use values::*;
+use types::*;
+use srid_css::select::common::*;
+use srid_css::select::dispatch::*;
+use srid_css::utils::errors::*;
+use srid_css::include::types::*;
 //use n;
 
 pub struct CompleteSelectResults {
     inner: SelectResults
+}
+
+pub fn css_fixed_to_float(f: css_fixed) -> float {
+    static BEFORE: i32 = 10;
+    f as float * 1.0f / ((1i32 << BEFORE) as float)
+}
+
+pub fn float_to_css_fixed(f: float) -> css_fixed {
+    static BEFORE: i32 = 10;
+    (f * ((1 << BEFORE) as float)) as css_fixed
+}
+
+// pub type ComputeFontSizeCb = @fn(parent: &Option<CssHint>, child: &CssHint) -> CssHint;
+
+pub fn compose(parent: &CssComputedStyle, child: &mut CssComputedStyle,
+               compute_font_size: css_fnptr_compute_font_size,
+               result: &mut CssComputedStyle) {
+    let llparent = parent.computed_style;
+    let llchild = child.computed_style;
+    let pw = unsafe { transmute(&compute_font_size) };
+    let llresult = result.computed_style as *mut css_computed_style;
+    // let err = unsafe { css_computed_style_compose(llparent, llchild, compute_font_size_cb, pw, llresult) };
+    // if err != CSS_OK {
+    //     fail!(~"stylesheet composition failed")
+    // }
 }
 
 impl<'self> CompleteSelectResults {
@@ -28,55 +59,55 @@ impl<'self> CompleteSelectResults {
                            child: SelectResults) -> CompleteSelectResults {
         // New lifetime
         {
-            // let parent_computed = parent.computed_style();
-            // let child_computed = child.computed_style();
-            // //let net_parent_computed = &parent_computed.inner.inner;
-            // let net_child_computed = &/*mut*/ child_computed.inner;
-            // // FIXME: Need to get real font sizes
-            // let cb: n::c::ComputeFontSizeCb =
-            //     |parent: &Option<n::h::CssHint>, child: &n::h::CssHint| -> n::h::CssHint {
-            //     match *child {
-            //         // Handle relative units
-            //         CssHintLength(n::t::CssUnitEm(child_em)) => {
-            //             match *parent {
-            //                 Some(CssHintLength(parent_unit)) => {
-            //                     // CSS3 Values 5.1.1: Multiply parent unit by child unit.
-            //                     let mut new_value =
-            //                         n::u::css_fixed_to_float(parent_unit.to_css_fixed());
-            //                     new_value *= n::u::css_fixed_to_float(child_em);
-            //                     let unit = parent_unit.modify(n::u::float_to_css_fixed(
-            //                         new_value));
-            //                     CssHintLength(unit)
-            //                 }
-            //                 _ => n::h::CssHintLength(n::t::CssUnitPx(float_to_css_fixed(16.0))),
-            //             }
-            //         }
-            //         CssHintLength(n::t::CssUnitPct(child_pct)) => {
-            //             match *parent {
-            //                 Some(CssHintLength(parent_unit)) => {
-            //                     // CSS3 Values 5.1.1: Multiply parent unit by child unit.
-            //                     let mut new_value =
-            //                         n::u::css_fixed_to_float(parent_unit.to_css_fixed());
-            //                     new_value *= n::u::css_fixed_to_float(child_pct) / 100.0;
-            //                     let unit = parent_unit.modify(n::u::float_to_css_fixed(
-            //                         new_value));
-            //                     CssHintLength(unit)
-            //                 }
-            //                 _ => n::h::CssHintLength(n::t::CssUnitPx(float_to_css_fixed(16.0))),
-            //             }
-            //         }
-            //         // Pass through absolute units
-            //         CssHintLength(unit) => CssHintLength(unit),
-            //         _ => {
-            //             n::h::CssHintLength(n::t::CssUnitPx(float_to_css_fixed(16.0)))
-            //         }
-            //     }
-            // };
-            // // XXX: Need an aliasable &mut here
-            // let net_result_computed: &mut n::c::CssComputedStyle = unsafe { cast::transmute(net_child_computed) };
-            // let net_child_computed: &mut n::c::CssComputedStyle = unsafe { cast::transmute(&child_computed.inner) };
-            // let net_parent_computed = &parent_computed.inner.inner;
-            // n::c::compose(net_parent_computed, net_child_computed, cb, net_result_computed);
+            let parent_computed = parent.computed_style();
+            let child_computed = child.computed_style();
+            //let net_parent_computed = &parent_computed.inner.inner;
+            let net_child_computed = &/*mut*/ child_computed.inner;
+            // FIXME: Need to get real font sizes
+            let cb: css_fnptr_compute_font_size =
+                |parent: &Option<CssHint>, child: &CssHint| -> CssHint {
+                match *child {
+                    // Handle relative units
+                    CssHintLength(CSS_UNIT_EM(child_em)) => {
+                        match *parent {
+                            Some(CssHintLength(parent_unit)) => {
+                                // CSS3 Values 5.1.1: Multiply parent unit by child unit.
+                                let mut new_value =
+                                    css_fixed_to_float(parent_unit.to_css_fixed());
+                                new_value *= css_fixed_to_float(child_em);
+                                let unit = parent_unit.modify(float_to_css_fixed(
+                                    new_value));
+                                CssHintLength(unit)
+                            }
+                            _ => CssHintLength(CSS_UNIT_PX(float_to_css_fixed(16.0))),
+                        }
+                    }
+                    CssHintLength(CSS_UNIT_PT(child_pct)) => {
+                        match *parent {
+                            Some(CssHintLength(parent_unit)) => {
+                                // CSS3 Values 5.1.1: Multiply parent unit by child unit.
+                                let mut new_value =
+                                    css_fixed_to_float(parent_unit.to_css_fixed());
+                                new_value *= css_fixed_to_float(child_pct) / 100.0;
+                                let unit = parent_unit.modify(float_to_css_fixed(
+                                    new_value));
+                                CssHintLength(unit)
+                            }
+                            _ => CssHintLength(CSS_UNIT_PX(float_to_css_fixed(16.0))),
+                        }
+                    }
+                    // Pass through absolute units
+                    CssHintLength(unit) => CssHintLength(unit),
+                    _ => {
+                        CssHintLength(CSS_UNIT_PX(float_to_css_fixed(16.0)))
+                    }
+                }
+            };
+            // XXX: Need an aliasable &mut here
+            let net_result_computed: &mut CssComputedStyle = unsafe { cast::transmute(net_child_computed) };
+            let net_child_computed: &mut CssComputedStyle = unsafe { cast::transmute(&child_computed.inner) };
+            let net_parent_computed = &parent_computed.inner.inner;
+            compose(net_parent_computed, net_child_computed, cb, net_result_computed);
         }
 
         CompleteSelectResults {
