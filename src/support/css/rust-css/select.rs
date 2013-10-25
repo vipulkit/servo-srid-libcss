@@ -49,21 +49,21 @@ pub trait VoidPtrLike {
     fn to_void_ptr(&self) -> *c_void;
 }
 
-pub struct UntypedHandler<'self> {
-    node_name: &'self fn(node: *c_void, qname: *mut css_qname) -> css_error,
-    node_classes: &'self fn(node: *c_void, classes: *mut **lwc_string, n_classes: *mut uint32_t) -> css_error,
-    node_id: &'self fn(node: *c_void, id: *mut *lwc_string) -> css_error,
-    named_parent_node: &'self fn(node: *c_void, qname: *css_qname, parent: *mut *c_void) -> css_error,
-    parent_node: &'self fn(node: *c_void, parent: *mut *c_void) -> css_error,
-    node_has_class: &'self fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
-    node_has_id: &'self fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
-    named_ancestor_node: &'self fn(node: *c_void,
+pub struct UntypedHandler{
+    node_name: @fn(node: *c_void, qname: *mut css_qname) -> css_error,
+    node_classes: @fn(node: *c_void, classes: *mut **lwc_string, n_classes: *mut uint32_t) -> css_error,
+    node_id: @fn(node: *c_void, id: *mut *lwc_string) -> css_error,
+    named_parent_node: @fn(node: *c_void, qname: *css_qname, parent: *mut *c_void) -> css_error,
+    parent_node: @fn(node: *c_void, parent: *mut *c_void) -> css_error,
+    node_has_class: @fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
+    node_has_id: @fn(node: *c_void, name: *lwc_string, match_: *mut bool) -> css_error,
+    named_ancestor_node: @fn(node: *c_void,
                              qname: *css_qname,
                              parent: *mut *c_void) -> css_error,
-    node_is_root: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
-    node_is_link: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
-    node_is_visited: &'self fn(node: *c_void, match_: *mut bool) -> css_error,
-    ua_default_for_property: &'self fn(property: uint32_t, hint: *mut css_hint) -> css_error,
+    node_is_root: @fn(node: *c_void, match_: *mut bool) -> css_error,
+    node_is_link: @fn(node: *c_void, match_: *mut bool) -> css_error,
+    node_is_visited:@fn(node: *c_void, match_: *mut bool) -> css_error,
+    ua_default_for_property: @fn(property: uint32_t, hint: *mut css_hint) -> css_error,
 }
 
 fn build_css_select_handler() -> css_select_handler {
@@ -116,7 +116,7 @@ fn unimpl_warn(what: &str) {
 fn enter(n: &str) {
     debug!("entering raw handler: %s", n);
 }
-fn ph<'a>(pw: *c_void) -> &'a UntypedHandler<'a> {
+fn ph(pw: *c_void) -> @UntypedHandler {
     unsafe { transmute(pw) }
 }
 
@@ -363,9 +363,9 @@ pub struct SelectResults {
     inner: @mut css_select_results
 }
 
-impl<'self> SelectResults {
+impl SelectResults {
     /** Retrieve the computed style of a single pseudo-element */
-    pub fn computed_style(&'self self) -> ComputedStyle<'self> {
+    pub fn computed_style(&mut self) -> ComputedStyle {
         ComputedStyle {
             inner: self.inner.computed_style(CSS_PSEUDO_ELEMENT_NONE)
         }
@@ -390,7 +390,7 @@ pub trait SelectHandler<N> {
 
 pub trait CssSelectHandler<N> {
     fn node_name(&self, node: &N) -> css_qname;
-    fn node_classes(&self, node: &N) -> Option<[~str]>;
+    fn node_classes(&self, node: &N) -> Option<~[~str]>;
     fn node_id(&self, node: &N) -> Option<~str>;
     fn named_parent_node(&self, node: &N, qname: &css_qname) -> Option<N>;
     fn parent_node(&self, node: &N) -> Option<N>;
@@ -409,8 +409,8 @@ struct SelectHandlerWrapper<N, H> {
     inner: *H
 }
 
-impl<'self, N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
-    fn inner_ref(&self) -> &'self H {
+impl< N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
+    fn inner_ref(&self) -> &H {
         unsafe { &*self.inner }
     }
 }
@@ -423,7 +423,7 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
         }
     }
 
-    fn node_classes(&self, node: &N) -> Option<~[str]> {
+    fn node_classes(&self, node: &N) -> Option<~[~str]> {
         do self.inner_ref().with_node_classes(node) |node_classes_opt| {
            do node_classes_opt.map |s| {
                debug!("SelectHandlerWrapper::node_classes - classes: %?", *s);
@@ -445,7 +445,7 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
         }
     }
 
-    fn named_parent_node(&self, node: &N, qname: &mut css_qname) -> Option<N> {
+    fn named_parent_node(&self, node: &N, qname: &css_qname) -> Option<N> {
         self.inner_ref().named_parent_node(node, qname.name)
     }
 
@@ -461,7 +461,7 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
         self.inner_ref().node_has_id(node, name)
     }
 
-    fn named_ancestor_node(&self, node: &N, qname: &mut css_qname) -> Option<N> {
+    fn named_ancestor_node(&self, node: &N, qname: &css_qname) -> Option<N> {
         self.inner_ref().named_ancestor_node(node,qname.name)
     }
 
@@ -479,22 +479,9 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
         false
     }
 
-    fn ua_default_for_property(&self, property: u32 ) -> @mut css_hint {
+    fn ua_default_for_property(&self, property: css_properties_e ) -> CssHint {
         warn!("not specifiying ua default for property %?", property);
-        @mut css_hint{
-                hint_type:HINT_LENGTH,
-                status:0,
-                clip:None,
-                content:None,
-                counters:None,
-                length:None,
-                position:None,
-                color:None,
-                fixed:None,
-                integer:None,
-                string:None,
-                strings:None
-        }
+        CssHintDefault
     }
 }
 

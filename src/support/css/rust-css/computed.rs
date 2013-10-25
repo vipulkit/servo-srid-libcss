@@ -19,11 +19,11 @@ use values::*;
 
 
 
-pub struct ComputedStyle<'self> {
-    inner: css_computed_style<'self>
+pub struct ComputedStyle {
+    inner: css_computed_style
 }
 
-impl<'self> ComputedStyle<'self> {
+impl ComputedStyle {
 
     // CSS 2.1, Section 8 - Box model
 
