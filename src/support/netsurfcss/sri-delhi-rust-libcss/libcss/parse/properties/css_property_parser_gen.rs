@@ -1,7 +1,7 @@
 /*
  * This file generates parts of LibCSS.
  */
-use std::io::WriterUtil;
+// use std::io::WriterUtil;
 use std::io::*;
 use std::clone::Clone;
 
@@ -74,7 +74,6 @@ pub fn file_header(fp:@Writer) -> () {
     fp.write_line("use parse::properties::common::*;");
     fp.write_line("use utils::errors::*;");
     fp.write_line("use lex::lexer::*;");
-    fp.write_line("//use wapcaplet::*;");
     fp.write_line("use bytecode::opcodes::*;");
     fp.write_line("use bytecode::bytecode::*;");
     fp.write_line("use include::fpmath::*;");
