@@ -26,7 +26,7 @@ use srid_css::utils::errors::*;
 use srid_css::stylesheet::css_url_resolution_fn;
 
 fn default_params(url: Url) -> css_params {
-    let resolve: css_url_resolution_fn = resolve_url;
+    let resolve: css_url_resolution_fn = @resolve_url;
     // CssStylesheetParams {
     //     params_version: CssStylesheetParamsVersion1,
     //     level: CssLevel21,
@@ -44,7 +44,7 @@ fn default_params(url: Url) -> css_params {
     css_params {
         params_version : CSS_PARAMS_VERSION_1,
         level: CSS_LEVEL_21,
-        charset : ~"UTF-8",
+        charset : Some(~"UTF-8"),
         url : url.to_str(),
         title : ~"FIXME-css-title",
         allow_quirks : false,
@@ -61,43 +61,40 @@ fn default_params(url: Url) -> css_params {
 // so DataStream is an @fn which can't be sent to the lexer task.
 // So the DataStreamFactory gives the caller an opportunity to create
 // the data stream from inside the lexer task.
-pub fn parse_stylesheet(url: Url, input: DataStream) -> ~css {
+pub fn parse_stylesheet(url: Url, input: DataStream) -> @mut css_stylesheet {
     let params = default_params(url);
     let mut sheet = css::css_create(&params) ; 
     //let mut sheet = css_stylesheet_create(&params);
 
-    let mut lwc_ref = lwc();
-    let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
+    let propstring = css_propstrings::css_propstrings(lwc_ref.get_mut_ref());
 
     loop {
         match input() {
             Some(data) => {
-                sheet.css_stylesheet_append_data(lwc_ref,propstring,data);
+                sheet.css_stylesheet_append_data(&propstring,data);
                 //sheet.append_data(data);
             }
             None => break
         }
     }
-    sheet.css_stylesheet_data_done();
+    sheet.css_stylesheet_data_done(&propstring);
     //sheet.data_done();
-    sheet
+    sheet.stylesheet
 }
 
-pub fn parse_style_attribute(url: Url, data: &str) -> ~css {
+pub fn parse_style_attribute(url: Url, data: &str) -> @mut css_stylesheet {
     let mut params = default_params(url);
     params.inline_style = true;
-    let mut lwc_ref = lwc();
-    let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
+    let propstring = css_propstrings::css_propstrings(lwc_ref.get_mut_ref());
     let mut sheet = css::css_create(&params) ; 
-    sheet.css_stylesheet_append_data(lwc_ref,propstring,data.as_bytes());
-    sheet.css_stylesheet_data_done();
+    sheet.css_stylesheet_append_data(&propstring,data.as_bytes().to_owned());
+    sheet.css_stylesheet_data_done(&propstring);
     //let mut sheet = css_stylesheet_create(&params);
     //sheet.append_data(data.as_bytes());
     //sheet.data_done();
-    sheet
+    sheet.stylesheet
 }
 
-extern fn resolve_url(_base: &str, _rel: uint) -> (css_error,Option<uint>) {
+pub fn resolve_url(_base: &str, _rel: uint) -> (css_error,Option<uint>) {
     fail!(~"resolving url");
-    (CSS_OK,None)
 }

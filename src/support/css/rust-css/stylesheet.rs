@@ -16,23 +16,20 @@ use srid_css::stylesheet::*;
 
 pub struct Stylesheet {
     inner: @mut css_stylesheet,
-    scss : ~css
 }
 
 impl Stylesheet {
     pub fn new(url: Url, input: DataStream) -> Stylesheet {
         let mut scss = parse_stylesheet(url, input) ;
         Stylesheet {
-            inner:scss.stylesheet,
-            scss: scss
+            inner:scss
         }
     }
 
     pub fn from_attribute(url: Url, data: &str) -> Stylesheet {
             let mut scss = parse_style_attribute(url, data) ;
         Stylesheet {
-            inner: scss.stylesheet,
-            scss: scss
+            inner: scss
         }
     }
 }
