@@ -54,7 +54,7 @@ impl<'self> CssSelectResults {
         }
     }
 }
-/*
+
 impl<'self> ComputedStyle<'self> {
 
     // CSS 2.1, Section 8 - Box model
@@ -62,7 +62,7 @@ impl<'self> ComputedStyle<'self> {
     pub fn margin_top(&self) -> CSSValue<CSSMargin> {
         convert_net_margin(self.inner.margin_top())
     }
-
+    /*
     pub fn margin_right(&self) -> CSSValue<CSSMargin> {
         convert_net_margin(self.inner.margin_right())
     }
@@ -218,13 +218,13 @@ impl<'self> ComputedStyle<'self> {
     pub fn text_decoration(&self) -> CSSValue<CSSTextDecoration> {
         convert_net_text_decoration_value(self.inner.text_decoration())
     }
-
+    */
     // CSS 2.1, Section 17 - Tables
 
     // CSS 2.1, Section 18 - User interface
 
 }
-*/
+
 
 fn convert_net_color(color:  css_color) -> Color {
     rgba( (color&0x00FF0000 >> 16) as u8, 
@@ -391,7 +391,7 @@ fn convert_net_font_family_value(value: css_font_family_e) -> CSSValue<~[CSSFont
     }
 }
 
-fn convert_net_font_size_value(value: css_font_size_e) -> CSSValue<CSSFontSize> {
+fn convert_net_font_size_value(value: css_font_size_e,size:css_unit) -> CSSValue<CSSFontSize> {
     use units::*;
     match value {
         CSS_FONT_SIZE_INHERIT => Inherit,
@@ -404,7 +404,7 @@ fn convert_net_font_size_value(value: css_font_size_e) -> CSSValue<CSSFontSize> 
         CSS_FONT_SIZE_XX_LARGE => Specified(CSSFontSizeAbsoluteSize(XXLarge)),
         CSS_FONT_SIZE_LARGER => Specified(CSSFontSizeRelativeSize(Larger)),
         CSS_FONT_SIZE_SMALLER => Specified(CSSFontSizeRelativeSize(Smaller)),
-        CSS_FONT_SIZE_DIMENSION(size) => {
+        CSS_FONT_SIZE_DIMENSION => {
             match convert_net_unit_to_length_or_percent(size) {
                 Left(val) => Specified(CSSFontSizeLength(val)),
                 Right(val) => Specified(CSSFontSizePercentage(val))
@@ -468,11 +468,11 @@ fn convert_net_text_decoration_value(value: css_text_decoration_e) -> CSSValue<C
     }
 }
 
-fn convert_net_line_height_value(value: css_line_height_e) -> CSSValue<CSSLineHeight> {
+fn convert_net_line_height_value(value: css_line_height_e, v:css_unit) -> CSSValue<CSSLineHeight> {
     match value {
         CSS_LINE_HEIGHT_INHERIT => Inherit,
-        CSS_LINE_HEIGHT_NUMBER(n) => Specified(CSSLineHeightNumber(css_fixed_to_float(n))),
-        CSS_LINE_HEIGHT_DIMENSION(v) => {
+        CSS_LINE_HEIGHT_NUMBER => Specified(CSSLineHeightNumber(css_fixed_to_float(v as i32))),
+        CSS_LINE_HEIGHT_DIMENSION => {
             match convert_net_unit_to_length_or_percent(v) {
                 Left(val) => Specified(CSSLineHeightLength(val)),
                 Right(val) => Specified(CSSLineHeightPercentage(val))
@@ -482,7 +482,7 @@ fn convert_net_line_height_value(value: css_line_height_e) -> CSSValue<CSSLineHe
     }
 }
 
-fn convert_net_vertical_align_value(value: css_vertical_align_e) -> CSSValue<CSSVerticalAlign> {
+fn convert_net_vertical_align_value(value: css_vertical_align_e, v:css_unit) -> CSSValue<CSSVerticalAlign> {
     match value {
 
         CSS_VERTICAL_ALIGN_INHERIT => Inherit,
@@ -494,7 +494,7 @@ fn convert_net_vertical_align_value(value: css_vertical_align_e) -> CSSValue<CSS
         CSS_VERTICAL_ALIGN_MIDDLE => Specified(CSSVerticalAlignMiddle),
         CSS_VERTICAL_ALIGN_BOTTOM => Specified(CSSVerticalAlignBottom),
         CSS_VERTICAL_ALIGN_TEXT_BOTTOM => Specified(CSSVerticalAlignTextBottom),
-        CSS_VERTICAL_ALIGN_SET(v) => {
+        CSS_VERTICAL_ALIGN_SET => {
             match convert_net_unit_to_length_or_percent(v) {
                 Left(val) => Specified(CSSVerticalAlignLength(val)),
                 Right(val) => Specified(CSSVerticalAlignPercentage(val))
@@ -503,23 +503,23 @@ fn convert_net_vertical_align_value(value: css_vertical_align_e) -> CSSValue<CSS
     }
 }
 
-fn convert_net_unit_to_length(unit: css_unit) -> Length {
-    match convert_net_unit_to_length_or_percent(unit) {
+fn convert_net_unit_to_length(unit: css_unit, len:css_fixed) -> Length {
+    match convert_net_unit_to_length_or_percent(unit,len) {
         Left(v) => v,
         Right(*) => fail!(~"unexpected percentage unit"),
     }
 }
 
-fn convert_net_unit_to_length_or_percent(unit: css_unit) -> Either<Length, float> {
+fn convert_net_unit_to_length_or_percent(unit: css_unit,l : css_fixed) -> Either<Length, float> {
     match unit {
-        CSS_UNIT_PX(l) => Left(Px(css_fixed_to_float(l))),
-        CSS_UNIT_EM(l) => Left(Em(css_fixed_to_float(l))),
-        CSS_UNIT_PT(l) => Left(Px(css_fixed_to_float(l) / 72f * 96f)),
-        CSS_UNIT_CM(l) => Left(Px(css_fixed_to_float(l) / 2.54f * 96f)),
-        CSS_UNIT_MM(l) => Left(Px(css_fixed_to_float(l) / 25.4f * 96f)),
-        CSS_UNIT_IN(l) => Left(Px(css_fixed_to_float(l) / 1f * 96f)),
-        CSS_UNIT_PC(l) => Left(Px(css_fixed_to_float(l) / 6f * 96f)),
-        CSS_UNIT_PCT(p) => Right(css_fixed_to_float(p)),
+        CSS_UNIT_PX => Left(Px(css_fixed_to_float(l))),
+        CSS_UNIT_EM => Left(Em(css_fixed_to_float(l))),
+        CSS_UNIT_PT => Left(Px(css_fixed_to_float(l) / 72f * 96f)),
+        CSS_UNIT_CM => Left(Px(css_fixed_to_float(l) / 2.54f * 96f)),
+        CSS_UNIT_MM => Left(Px(css_fixed_to_float(l) / 25.4f * 96f)),
+        CSS_UNIT_IN => Left(Px(css_fixed_to_float(l) / 1f * 96f)),
+        CSS_UNIT_PC => Left(Px(css_fixed_to_float(l) / 6f * 96f)),
+        CSS_UNIT_PCT => Right(css_fixed_to_float(l)),
         _ => unimpl("unit")
     }
 }
