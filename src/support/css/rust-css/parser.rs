@@ -9,7 +9,7 @@ Constructs a list of css style rules from a token stream
 // TODO: fail according to the css spec instead of failing when things
 // are not as expected
 extern mod srid_css;
-extern mod wapcaplet;
+//extern mod wapcaplet;
 
 use util::DataStream;
 //use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
@@ -20,7 +20,7 @@ use extra::url::Url;
 //use netsurfcss::stylesheet::CssUrlResolutionFn;
 use srid_css::css::*;
 use srid_css::parse::propstrings::*;
-use wapcaplet::*;
+use srid_css::libwapcaplet::wapcaplet::*;
 use srid_css::stylesheet::*;
 use srid_css::utils::errors::*;
 use srid_css::stylesheet::css_url_resolution_fn;

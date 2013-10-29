@@ -9,7 +9,7 @@ extern mod parserutils;
 extern mod std;
 
 pub mod libwapcaplet {
-    pub wapcaplet;
+    pub mod wapcaplet;
 } 
 
 pub mod include {

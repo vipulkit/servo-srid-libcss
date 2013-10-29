@@ -14,10 +14,10 @@ RUST_SRC=$(shell find $(VPATH)/. -type f -name '*.rs')
 all:	libcss.dummy
 
 libcss.dummy:
-	$(VPATH)/../../../../build/x86_64-unknown-linux-gnu/src/compiler/rust/x86_64-unknown-linux-gnu/stage2/bin/rustc -v
+	#$(VPATH)/../../../../build/x86_64-unknown-linux-gnu/src/compiler/rust/x86_64-unknown-linux-gnu/stage2/bin/rustc -v
 	$(RUSTC) -v
-	$(RUSTCSERVO) -v
-	$(RUSTC) -O $(VPATH)/libwapcaplet/wapcaplet.rs
+	#$(RUSTCSERVO) -v
+	#$(RUSTC) -O $(VPATH)/libwapcaplet/wapcaplet.rs
 	export LD_LIBRARY_PATH=.:$(VPATH)/libparserutils/:$LD_LIBRARY_PATH
 	gcc -fPIC -shared $(VPATH)/libparserutils/input/iconv_wrapper.c -o libiconv_wrapper.so
 	#rm -f aliases.rs
@@ -31,7 +31,7 @@ libcss.dummy:
 	#cd $(VPATH)/libwapcaplet; make; cd -
 	#cd $(VPATH)/libparserutils; make; cd -
 	#cd $(VPATH)/libcss; make; cd -
-	cp $(VPATH)/libwapcaplet/*.so .
+	#cp $(VPATH)/libwapcaplet/*.so .
 	cp $(VPATH)/libparserutils/*.so .
 	cp $(VPATH)/libcss/*.so .
 

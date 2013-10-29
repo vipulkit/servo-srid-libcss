@@ -21,6 +21,7 @@ use types::StylesheetOrigin;
 //use n;
 use srid_css::select::select::*;
 use srid_css::select::common::*;
+use srid_css::libwapcaplet::wapcaplet::*;
 
 pub struct SelectCtx {
     inner: n::s::CssSelectCtx
