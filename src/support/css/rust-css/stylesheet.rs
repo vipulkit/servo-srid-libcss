@@ -11,7 +11,7 @@ use extra::url::Url;
 use util::DataStream;
 //use netsurfcss::stylesheet::CssStylesheet;
 use parser::{parse_stylesheet, parse_style_attribute};
-use srid_css::css::*;
+//use srid_css::css::*;
 use srid_css::stylesheet::*;
 
 pub struct Stylesheet {
@@ -20,14 +20,14 @@ pub struct Stylesheet {
 
 impl Stylesheet {
     pub fn new(url: Url, input: DataStream) -> Stylesheet {
-        let mut scss = parse_stylesheet(url, input) ;
+        let scss = parse_stylesheet(url, input) ;
         Stylesheet {
             inner:scss
         }
     }
 
     pub fn from_attribute(url: Url, data: &str) -> Stylesheet {
-            let mut scss = parse_style_attribute(url, data) ;
+            let scss = parse_style_attribute(url, data) ;
         Stylesheet {
             inner: scss
         }

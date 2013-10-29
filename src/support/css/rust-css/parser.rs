@@ -66,7 +66,7 @@ pub fn parse_stylesheet(url: Url, input: DataStream) -> @mut css_stylesheet {
     let mut sheet = css::css_create(&params) ; 
     //let mut sheet = css_stylesheet_create(&params);
 
-    let propstring = css_propstrings::css_propstrings(lwc_ref.get_mut_ref());
+    let propstring = unsafe { css_propstrings::css_propstrings(lwc_ref.get_mut_ref()) };
 
     loop {
         match input() {
@@ -85,7 +85,7 @@ pub fn parse_stylesheet(url: Url, input: DataStream) -> @mut css_stylesheet {
 pub fn parse_style_attribute(url: Url, data: &str) -> @mut css_stylesheet {
     let mut params = default_params(url);
     params.inline_style = true;
-    let propstring = css_propstrings::css_propstrings(lwc_ref.get_mut_ref());
+    let propstring = unsafe { css_propstrings::css_propstrings(lwc_ref.get_mut_ref()) };
     let mut sheet = css::css_create(&params) ; 
     sheet.css_stylesheet_append_data(&propstring,data.as_bytes().to_owned());
     sheet.css_stylesheet_data_done(&propstring);
