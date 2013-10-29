@@ -1,5 +1,5 @@
-use wapcaplet::*;
-
+//use wapcaplet::*;
+use libwapcaplet::wapcaplet::*;
 use bytecode::bytecode::*;
 use bytecode::opcodes::*;
 

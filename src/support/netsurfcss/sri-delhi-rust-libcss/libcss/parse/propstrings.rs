@@ -1,6 +1,7 @@
 
-use wapcaplet::*;
+//use wapcaplet::*;
 use stylesheet::*;
+use libwapcaplet::wapcaplet::*;
 
 pub enum index_property {
      // Universal selector 

@@ -1,12 +1,12 @@
 extern mod extra;
 extern mod std;
 extern mod css;
-extern mod wapcaplet;
+// extern mod wapcaplet;
 extern mod dumpcomputed;
 // extern mod dump2;
 
 use css::css::*;
-use wapcaplet::*;
+use css::libwapcaplet::wapcaplet::*;
 use std::cast;
 use std::libc;
 use std::ptr;
@@ -81,14 +81,14 @@ pub struct line_ctx {
 } 
 
 pub fn select_test(file:~str) {
-    
-    let mut lwc_ref = lwc();
+    lwc();
+    let lwc_ref = unsafe{lwc_ref.get_mut_ref()};
     let mut lwc_attr_class : Option<uint>;
     let mut lwc_attr_id : Option<uint>;
 
     lwc_attr_class = Some(lwc_ref.lwc_intern_string(&"class"));
     lwc_attr_id = Some(lwc_ref.lwc_intern_string(&"id"));
-    let propstring = css_propstrings::css_propstrings(&mut lwc_ref);
+    let propstring = css_propstrings::css_propstrings(lwc_ref);
     let ctx : @mut line_ctx = @mut line_ctx{
         //explen:0,
         //expused:0,
@@ -136,7 +136,7 @@ pub fn select_test(file:~str) {
         let mut line_string: ~str = line.to_str(); 
         line_string.push_char('\n');
         // debug!("Handling line =%?=",copy line_string);
-        handle_line(&mut line_string, &mut lwc_ref, &propstring , ctx, css_stylesheet_create_time, 
+        handle_line(&mut line_string, lwc_ref, &propstring , ctx, css_stylesheet_create_time, 
                 css_stylesheet_append_data_time, 
                 css_select_style_time, 
                 css_stylesheet_data_done_time  );
@@ -210,7 +210,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
                 len = ctx.sheets.len() -1;
                 let start_time = time::precise_time_ns();
                 assert!( 
-                        match ctx.sheets[len].sheet.css_stylesheet_data_done(lwc_ref , propstring_ref) {
+                        match ctx.sheets[len].sheet.css_stylesheet_data_done( propstring_ref) {
                                 CSS_OK=>{true},
                                 _=>{false}
                         });
@@ -229,7 +229,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
                 len = ctx.sheets.len() -1;
                 let start_time = time::precise_time_ns();
                 assert!( 
-                        match ctx.sheets[len].sheet.css_stylesheet_data_done(lwc_ref , propstring_ref) {
+                        match ctx.sheets[len].sheet.css_stylesheet_data_done( propstring_ref) {
                             CSS_OK=>{true},
                             _=>{false}
                         });
@@ -242,7 +242,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
             else {
                 len = ctx.sheets.len() -1;
                 let start_time = time::precise_time_ns();
-                let error = ctx.sheets[len].sheet.css_stylesheet_append_data(lwc_ref , propstring_ref , data.as_bytes().to_owned());
+                let error = ctx.sheets[len].sheet.css_stylesheet_append_data( propstring_ref , data.as_bytes().to_owned());
                 let end_time = time::precise_time_ns();
                 *css_stylesheet_append_data_time += (end_time - start_time);
 
@@ -263,7 +263,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
         else if (ctx.inexp) {
             // debug!("in ctx inexp");
             /* This marks end of testcase, so run it */
-            run_test(ctx, lwc_ref.clone(), css_select_style_time);
+            run_test(ctx, lwc_ref, css_select_style_time);
             //ctx.expused = 0;
 
             ctx.intree = false;
@@ -292,7 +292,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
         else if ( ctx.insheet ) {
             len = ctx.sheets.len() -1;
             let start_time = time::precise_time_ns();
-            error = ctx.sheets[len].sheet.css_stylesheet_append_data(lwc_ref , propstring_ref , data.as_bytes().to_owned());
+            error = ctx.sheets[len].sheet.css_stylesheet_append_data( propstring_ref , data.as_bytes().to_owned());
             let end_time = time::precise_time_ns();
             *css_stylesheet_append_data_time += (end_time - start_time);
             assert!( match error {
@@ -715,7 +715,7 @@ fn to_lower(string:&str) -> ~str {
     str::from_utf8(lower)
 }
 
-pub fn run_test( ctx:@mut line_ctx, lwc_ref:~lwc, css_select_style_time:@mut u64) {
+pub fn run_test( ctx:@mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:@mut u64) {
     //debug!("\n Entering run test =%?=",ctx) ;
     let mut select: ~css_select_ctx;
     let mut results: @mut css_select_results;
@@ -723,7 +723,7 @@ pub fn run_test( ctx:@mut line_ctx, lwc_ref:~lwc, css_select_style_time:@mut u64
     let mut i:u32=0;
     let mut buf:~str= ~"";
  
-    select = css_select_ctx::css_select_ctx_create(lwc_ref);
+    select = css_select_ctx::css_select_ctx_create();
 
     while i < (ctx.sheets.len() as u32) {
         // let ds_sheet = dump_sheet(ctx.sheets[i].sheet.stylesheet);
@@ -831,7 +831,7 @@ pub fn run_test( ctx:@mut line_ctx, lwc_ref:~lwc, css_select_style_time:@mut u64
     }
 
     assert!(results.styles[ctx.pseudo_element].is_some());
-    dump_computed_style(results.styles[ctx.pseudo_element].unwrap(),  &mut select.lwc_ref, &mut buf);
+    dump_computed_style(results.styles[ctx.pseudo_element].unwrap(), lwc_ref, &mut buf);
 
 
     // debug!(fmt!(" CSS Selection result is =%?",results));

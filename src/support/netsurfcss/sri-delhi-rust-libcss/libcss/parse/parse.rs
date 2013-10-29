@@ -4,7 +4,9 @@ use lex::lexer::*;
 use utils::errors::*;
 use parse::propstrings::*;
 
-use wapcaplet::*;
+use libwapcaplet::wapcaplet::*;
+
+//use wapcaplet::*;
 //use std::cast::*;
 use std::str::*;
 

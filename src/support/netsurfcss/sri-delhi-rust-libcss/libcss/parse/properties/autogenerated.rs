@@ -10,10 +10,10 @@ use include::properties::*;
 use parse::properties::common::*;
 use utils::errors::*;
 use lex::lexer::*;
-use wapcaplet::*;
 use bytecode::opcodes::*;
 use bytecode::bytecode::*;
 use include::fpmath::*;
+use libwapcaplet::wapcaplet::*;
 
 /**
  * #Generated from:
@@ -2691,7 +2691,7 @@ pub fn css__parse_counter_increment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 {
 //debug!("Entering: css__parse_counter_increment");
 	let orig_ctx = *ctx;
-	let error:css_error=CSS_OK;
+	let mut error:css_error=CSS_OK;
 	let mut token: &~css_token;
 
 	if *ctx >= vector.len() {
@@ -2802,7 +2802,7 @@ pub fn css__parse_counter_reset(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 {
 //debug!("Entering: css__parse_counter_reset");
 	let orig_ctx = *ctx;
-	let error:css_error=CSS_OK;
+	let mut error:css_error=CSS_OK;
 	let mut token: &~css_token;
 
 	if *ctx >= vector.len() {
