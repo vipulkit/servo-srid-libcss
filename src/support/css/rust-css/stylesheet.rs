@@ -15,7 +15,7 @@ use parser::{parse_stylesheet, parse_style_attribute};
 use srid_css::stylesheet::*;
 
 pub struct Stylesheet {
-    inner: @mut css_stylesheet,
+    inner: uint
 }
 
 impl Stylesheet {
