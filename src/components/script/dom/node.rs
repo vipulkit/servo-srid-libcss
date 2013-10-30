@@ -21,7 +21,7 @@ use std::libc::c_void;
 use std::unstable::raw::Box;
 use extra::arc::Arc;
 use js::jsapi::{JSObject, JSContext};
-use netsurfcss::util::VoidPtrLike;
+use newcss::select::VoidPtrLike;
 use newcss::complete::CompleteSelectResults;
 use servo_util::tree::{TreeNode, TreeNodeRef};
 use servo_util::range::Range;
