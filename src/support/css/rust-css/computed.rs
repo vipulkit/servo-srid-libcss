@@ -281,7 +281,7 @@ impl<'self> ComputedStyle<'self> {
 
     pub fn border_bottom_color(&self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_bottom_color())
-         let (value, length) = css_computed_border_right_color(self.computed_style.expect("computed style border bottom color is none"));
+         let (value, length) = css_computed_border_bottom_color(self.computed_style.expect("computed style border bottom color is none"));
         convert_net_color_value(unsafe { transmute(value as uint)}, length);
     }
 
