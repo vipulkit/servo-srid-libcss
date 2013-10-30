@@ -479,6 +479,7 @@ CFG_SUBMODULES="\
     support/hubbub/libhubbub \
     support/hubbub/rust-hubbub \
     support/layers/rust-layers \
+    support/libparserutils/libparserutils \
     support/nss/nspr \
     support/nss/nss \
     support/opengles/rust-opengles \
