@@ -10,7 +10,8 @@ use layout::incremental;
 
 use script::dom::node::{AbstractNode, LayoutView};
 use newcss::complete::CompleteSelectResults;
-use newcss::select::{SelectCtx, SelectResults};
+use newcss::select::SelectCtx;
+use newcss::computed::SelectResults;
 use servo_util::tree::TreeNodeRef;
 
 pub trait MatchMethods {

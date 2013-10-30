@@ -61,7 +61,7 @@ fn default_params(url: Url) -> css_params {
 // so DataStream is an @fn which can't be sent to the lexer task.
 // So the DataStreamFactory gives the caller an opportunity to create
 // the data stream from inside the lexer task.
-pub fn parse_stylesheet(url: Url, input: DataStream) -> @mut css_stylesheet {
+pub fn parse_stylesheet(url: Url, input: DataStream) -> uint {
     let params = default_params(url);
     let mut sheet = css::css_create(&params) ; 
     //let mut sheet = css_stylesheet_create(&params);
@@ -79,10 +79,12 @@ pub fn parse_stylesheet(url: Url, input: DataStream) -> @mut css_stylesheet {
     }
     sheet.css_stylesheet_data_done(&propstring);
     //sheet.data_done();
-    sheet.stylesheet
+    //sheet.stylesheet
+
+    0
 }
 
-pub fn parse_style_attribute(url: Url, data: &str) -> @mut css_stylesheet {
+pub fn parse_style_attribute(url: Url, data: &str) -> uint {
     let mut params = default_params(url);
     params.inline_style = true;
     let propstring = unsafe { css_propstrings::css_propstrings(lwc_ref.get_mut_ref()) };
@@ -92,7 +94,9 @@ pub fn parse_style_attribute(url: Url, data: &str) -> @mut css_stylesheet {
     //let mut sheet = css_stylesheet_create(&params);
     //sheet.append_data(data.as_bytes());
     //sheet.data_done();
-    sheet.stylesheet
+    //sheet.stylesheet
+
+    0
 }
 
 pub fn resolve_url(_base: &str, _rel: uint) -> (css_error,Option<uint>) {
