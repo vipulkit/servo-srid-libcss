@@ -9,13 +9,10 @@ use units::{Length, Px, Em};
 use std::either::{Either, Left, Right};
 //use n;
 use values::*;
-use srid_css::css::*;
 use srid_css::include::types::*;
-use srid_css::parse::propstrings::*;
 use srid_css::libwapcaplet::wapcaplet::*;
 use srid_css::stylesheet::*;
 use srid_css::select::common::*;
-use srid_css::select::dispatch::*;
 use srid_css::include::properties::*;
 use srid_css::select::computed::*;
 use std::cast::*;
@@ -342,28 +339,85 @@ impl<'self> ComputedStyle<'self> {
         let value = css_computed_float(self.computed_style.expect("computed style float is none"));
         convert_net_float_value(unsafe { transmute(value as uint)})
     }
-    
-/*
+
+
     pub fn clear(&self) -> CSSValue<CSSClear> {
-        convert_net_clear_value(self.inner.clear())
+        //convert_net_clear_value(self.inner.clear())
+        let value = css_computed_clear(self.computed_style.expect("computed style clear is none"));
+        convert_net_clear_value(unsafe { transmute(value as uint)})
     }
 
     // CSS 2.1, Section 10 - Visual formatting model details
 
     pub fn width(&self) -> CSSValue<CSSWidth> {
-        convert_net_width_value(self.inner.width())
+        //convert_net_width_value(self.inner.width())
+        let (value, olength, ounit) = css_computed_width(self.computed_style.expect("computed style width is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
+        {
+            length = olength.expect("")
+        }
+        if (ounit.is_some())
+        {
+            unit = ounit.expect("");
+        }
+              
+        convert_net_width_value( unsafe { transmute(value as uint)},  unit, length)
+
     }
 
     pub fn height(&self) -> CSSValue<CSSHeight> {
-        convert_net_height_value(self.inner.height())
+        //convert_net_height_value(self.inner.height())
+        let (value, olength, ounit) = css_computed_height(self.computed_style.expect("computed style height is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
+        {
+            length = olength.expect("")
+        }
+        if (ounit.is_some())
+        {
+            unit = ounit.expect("");
+        }
+              
+        convert_net_height_value(unsafe {transmute(value as uint)},  unit, length)
     }
 
     pub fn line_height(&self) -> CSSValue<CSSLineHeight> {
-        convert_net_line_height_value(self.inner.line_height())
+        //convert_net_line_height_value(self.inner.line_height())
+
+        let (value, olength, ounit) = css_computed_line_height(self.computed_style.expect("computed style line height is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
+        {
+            length = olength.expect("")
+        }
+        if (ounit.is_some())
+        {
+            unit = ounit.expect("");
+        }
+              
+        convert_net_line_height_value(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn vertical_align(&self) -> CSSValue<CSSVerticalAlign> {
-        convert_net_vertical_align_value(self.inner.vertical_align())
+        //convert_net_vertical_align_value(self.inner.vertical_align())
+        let (value, olength, ounit) = css_computed_vertical_align(self.computed_style.expect("computed style vertical align is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
+        {
+            length = olength.expect("")
+        }
+        if (ounit.is_some())
+        {
+            unit = ounit.expect("");
+        }
+              
+        convert_net_vertical_align_value(unsafe { transmute(value as uint)},  unit, length)
     }
 
     // CSS 2.1, Section 11 - Visual effects
@@ -375,41 +429,83 @@ impl<'self> ComputedStyle<'self> {
     // CSS 2.1, Section 14 - Colors and Backgrounds
 
     pub fn background_color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.background_color())
+        //convert_net_color_value(self.inner.background_color())
+        let (value, length) = css_computed_background_color(self.computed_style.expect("computed style background color is none"));
+
+        let mut len = 0;
+        if length.is_some()
+        {
+            len = length.expect("")
+        }
+        convert_net_color_value(unsafe { transmute(value as uint)}, len)
     }
 
     pub fn color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.color())
+        //convert_net_color_value(self.inner.color())
+        let (value, length) = css_computed_color(self.computed_style.expect("computed style  color is none"));
+        let mut len = 0;
+        if length.is_some()
+        {
+            len = length.expect("")
+        }
+        convert_net_color_value(unsafe { transmute(value as uint)}, len)
     }
 
     // CSS 2.1, Section 15 - Fonts
 
     pub fn font_family(&self) -> CSSValue<~[CSSFontFamily]> {
-        convert_net_font_family_value(self.inner.font_family())
+       // convert_net_font_family_value(self.inner.font_family())
+       let (value, namesi) = css_computed_font_family(self.computed_style.expect("computed style font family is none"));
+       convert_net_font_family_value(unsafe { transmute(value as uint)}, namesi)
     }
 
+
     pub fn font_style(&self) -> CSSValue<CSSFontStyle> {
-        convert_net_font_style_value(self.inner.font_style())
+        //convert_net_font_style_value(self.inner.font_style())
+        let value = css_computed_font_style(self.computed_style.expect("computed font style is none"));
+        convert_net_font_style_value(unsafe { transmute(value as uint)})
+
     }
 
     pub fn font_weight(&self) -> CSSValue<CSSFontWeight> {
-        convert_net_font_weight_value(self.inner.font_weight())
+        //convert_net_font_weight_value(self.inner.font_weight())
+        let value = css_computed_font_weight(self.computed_style.expect("computed font weight is none"));
+        convert_net_font_weight_value(unsafe { transmute(value as uint)})
+
     }
 
     pub fn font_size(&self) -> CSSValue<CSSFontSize> {
-        convert_net_font_size_value(self.inner.font_size())
+        //convert_net_font_size_value(self.inner.font_size())
+
+        let (value, olength, ounit) = css_computed_font_size(self.computed_style.expect("computed style font size value is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
+        {
+            length = olength.expect("")
+        }
+        if (ounit.is_some())
+        {
+            unit = ounit.expect("");
+        }
+              
+        convert_net_font_size_value(unsafe { transmute(value as uint)},  unit, length)
     }
 
     // CSS 2.1, Section 16 - Text
 
     pub fn text_align(&self) -> CSSValue<CSSTextAlign> {
-        convert_net_text_align_value(self.inner.text_align())
+        //convert_net_text_align_value(self.inner.text_align())
+        let value = css_computed_text_align(self.computed_style.expect("computed text align is none"));
+        convert_net_text_align_value(unsafe { transmute(value as uint)})
     }
 
     pub fn text_decoration(&self) -> CSSValue<CSSTextDecoration> {
-        convert_net_text_decoration_value(self.inner.text_decoration())
+        //convert_net_text_decoration_value(self.inner.text_decoration())
+        let value = css_computed_text_decoration(self.computed_style.expect("computed text decoration is none"));
+        convert_net_text_decoration_value(unsafe { transmute(value as uint)})
     }
-    */
     // CSS 2.1, Section 17 - Tables
 
     // CSS 2.1, Section 18 - User interface
@@ -426,6 +522,7 @@ fn convert_net_color(color:  css_color) -> Color {
 }
 
 fn convert_net_color_value(color: css_color_e, value:u32) -> CSSValue<Color> {
+    
     match color {
         CSS_COLOR_INHERIT => Inherit,
         CSS_COLOR_COLOR => Specified(convert_net_color(value))
@@ -568,8 +665,11 @@ fn convert_net_position_value(value: css_position_e) -> CSSValue<CSSPosition> {
     }
 }
 
-fn convert_net_font_family_value(value: css_font_family_e) -> CSSValue<~[CSSFontFamily]> {
+fn convert_net_font_family_value(value: css_font_family_e, names:~[uint]) -> CSSValue<~[CSSFontFamily]> {
     use units::{Serif, SansSerif, Cursive, Fantasy, Monospace};
+    if (names.len() != 0){
+        return Specified(names.map(|&n| CSSFontFamilyFamilyName(unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(n) )));
+    }
 
     match value {
         CSS_FONT_FAMILY_INHERIT => Inherit,
@@ -578,7 +678,6 @@ fn convert_net_font_family_value(value: css_font_family_e) -> CSSValue<~[CSSFont
         CSS_FONT_FAMILY_CURSIVE => Specified(~[CSSFontFamilyGenericFamily(Cursive)]),
         CSS_FONT_FAMILY_FANTASY => Specified(~[CSSFontFamilyGenericFamily(Fantasy)]),
         CSS_FONT_FAMILY_MONOSPACE => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
-        //css_font_family_e(names) => Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
     }
 }
 
