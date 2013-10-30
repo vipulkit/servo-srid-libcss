@@ -24,7 +24,7 @@ Basic operation:
 extern mod extra;
 //extern mod netsurfcss;
 //extern mod wapcaplet;
-extern mod parserutils;
+// extern mod parserutils;
 extern mod srid_css;
 
 pub mod stylesheet;

@@ -15,7 +15,7 @@ extern mod geom;
 extern mod gfx (name = "gfx");
 extern mod hubbub;
 extern mod js;
-extern mod netsurfcss;
+//extern mod netsurfcss;
 extern mod newcss (name = "css");
 extern mod cssparser;
 extern mod servo_net (name = "net");
