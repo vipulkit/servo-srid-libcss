@@ -18,6 +18,7 @@ use srid_css::select::common::*;
 use srid_css::select::dispatch::*;
 use srid_css::include::properties::*;
 use srid_css::select::computed::*;
+use std::cast::*;
 
 use color::{Color, rgba};
 
@@ -60,85 +61,237 @@ impl<'self> ComputedStyle<'self> {
     // CSS 2.1, Section 8 - Box model
 
     pub fn margin_top(&self) -> CSSValue<CSSMargin> {
-        convert_net_margin(self.inner.margin_top())
+        //convert_net_margin(self.margin_top());
+        let (value, length, unit) = css_computed_margin_top(self.computed_style.expect("computed style margin top is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
-    /*
+    
     pub fn margin_right(&self) -> CSSValue<CSSMargin> {
-        convert_net_margin(self.inner.margin_right())
+        //convert_net_margin(self.inner.margin_right())
+        let (value, length, unit) = css_computed_margin_right(self.computed_style.expect("computed style margin right is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn margin_bottom(&self) -> CSSValue<CSSMargin> {
-        convert_net_margin(self.inner.margin_bottom())
+        //convert_net_margin(self.inner.margin_bottom())
+        let (value, length, unit) = css_computed_margin_bottom(self.computed_style.expect("computed style margin bottom is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn margin_left(&self) -> CSSValue<CSSMargin> {
-        convert_net_margin(self.inner.margin_left())
+        //convert_net_margin(self.inner.margin_left())
+        let (value, length, unit) = css_computed_margin_left(self.computed_style.expect("computed style margin left is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn padding_top(&self) -> CSSValue<CSSPadding> {
-        convert_net_padding(self.inner.padding_top())
+        //convert_net_padding(self.inner.padding_top())
+
+        let (value, length, unit) = css_computed_padding_top(self.computed_style.expect("computed style padding top is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+
     }
 
     pub fn padding_right(&self) -> CSSValue<CSSPadding> {
-        convert_net_padding(self.inner.padding_right())
+        //convert_net_padding(self.inner.padding_right())
+        let (value, length, unit) = css_computed_padding_right(self.computed_style.expect("computed style padding right is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn padding_bottom(&self) -> CSSValue<CSSPadding> {
-        convert_net_padding(self.inner.padding_bottom())
+        //convert_net_padding(self.inner.padding_bottom())
+        let (value, length, unit) = css_computed_padding_bottom(self.computed_style.expect("computed style padding bottom is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn padding_left(&self) -> CSSValue<CSSPadding> {
-        convert_net_padding(self.inner.padding_left())
+        //convert_net_padding(self.inner.padding_left())
+        let (value, length, unit) = css_computed_padding_left(self.computed_style.expect("computed style padding left top is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        
     }
 
     pub fn border_top_style(&self) -> CSSValue<CSSBorderStyle> {
-        convert_net_border_style(self.inner.border_top_style())
+        //convert_net_border_style(self.inner.border_top_style())
+        let value = css_computed_border_top_style(self.computed_style.expect("computed style border top style is none"));
+        convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
     pub fn border_right_style(&self) -> CSSValue<CSSBorderStyle> {
-        convert_net_border_style(self.inner.border_right_style())
+        //convert_net_border_style(self.inner.border_right_style())
+        let value = css_computed_border_right_style(self.computed_style.expect("computed style border right style is none"));
+        convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
     pub fn border_bottom_style(&self) -> CSSValue<CSSBorderStyle> {
-        convert_net_border_style(self.inner.border_bottom_style())
+        //convert_net_border_style(self.inner.border_bottom_style())
+        let value = css_computed_border_bottom_style(self.computed_style.expect("computed style border bottom style is none"));
+        convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
     pub fn border_left_style(&self) -> CSSValue<CSSBorderStyle> {
-        convert_net_border_style(self.inner.border_left_style())
+        //convert_net_border_style(self.inner.border_left_style())
+         let value = css_computed_border_left_style(self.computed_style.expect("computed style border left style is none"));
+        convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
     pub fn border_top_width(&self) -> CSSValue<CSSBorderWidth> {
-        convert_net_border_width(self.inner.border_top_width())
+        //convert_net_border_width(self.inner.border_top_width())
+        let (value, length, unit) = css_computed_border_top_width(self.computed_style.expect("computed style border top width is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn border_right_width(&self) -> CSSValue<CSSBorderWidth> {
-        convert_net_border_width(self.inner.border_right_width())
+        //convert_net_border_width(self.inner.border_right_width())
+        let (value, length, unit) = css_computed_border_right_width(self.computed_style.expect("computed style border right width is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn border_bottom_width(&self) -> CSSValue<CSSBorderWidth> {
-        convert_net_border_width(self.inner.border_bottom_width())
+        //convert_net_border_width(self.inner.border_bottom_width())
+        let (value, length, unit) = css_computed_border_bottom_width(self.computed_style.expect("computed style border bottom width is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn border_left_width(&self) -> CSSValue<CSSBorderWidth> {
-        convert_net_border_width(self.inner.border_left_width())
+        //convert_net_border_width(self.inner.border_left_width())
+        let (value, length, unit) = css_computed_border_left_width(self.computed_style.expect("computed style border left width is none"));
+        if (length.is_none())
+        {
+            length = Some(0);
+        }
+        if (unit.is_none())
+        {
+            unit = Some(CSS_UNIT_PX);
+        }
+      
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
     }
 
     pub fn border_top_color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.border_top_color())
+        //convert_net_color_value(self.inner.border_top_color())
+        let (value, length) = css_computed_border_top_color(self.computed_style.expect("computed style border top color is none"));
+        convert_net_color_value(unsafe { transmute(value as uint)}, length);
     }
 
     pub fn border_right_color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.border_right_color())
+        //convert_net_color_value(self.inner.border_right_color())
+        let (value, length) = css_computed_border_right_color(self.computed_style.expect("computed style border right color is none"));
+        convert_net_color_value(unsafe { transmute(value as uint)}, length);
     }
 
     pub fn border_bottom_color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.border_bottom_color())
+        //convert_net_color_value(self.inner.border_bottom_color())
+         let (value, length) = css_computed_border_right_color(self.computed_style.expect("computed style border bottom color is none"));
+        convert_net_color_value(unsafe { transmute(value as uint)}, length);
     }
 
     pub fn border_left_color(&self) -> CSSValue<Color> {
-        convert_net_color_value(self.inner.border_left_color())
-    }
+        //convert_net_color_value(self.inner.border_left_color())
 
+        let (value, length) = css_computed_border_left_color(self.computed_style.expect("computed style border left color is none"));
+        convert_net_color_value(unsafe { transmute(value as uint)}, length);
+    }
+/*
     // CSS 2.1, Section 9 - Visual formatting model
 
     pub fn display(&self, root: bool) -> CSSValue<CSSDisplay> {
@@ -257,23 +410,23 @@ fn convert_net_border_style(style: css_border_style_e) -> CSSValue<CSSBorderStyl
     }
 }
 
-fn convert_net_border_width(width: css_border_width_e, value:css_unit) -> CSSValue<CSSBorderWidth> {
+fn convert_net_border_width(width: css_border_width_e, value:css_unit, l:css_fixed) -> CSSValue<CSSBorderWidth> {
     match width {
 
         CSS_BORDER_WIDTH_INHERIT    => Inherit,
         CSS_BORDER_WIDTH_THIN       => Specified(CSSBorderWidthThin),
         CSS_BORDER_WIDTH_MEDIUM    => Specified(CSSBorderWidthMedium),
         CSS_BORDER_WIDTH_THICK     => Specified(CSSBorderWidthThick),
-        CSS_BORDER_WIDTH_WIDTH  => Specified(CSSBorderWidthLength(convert_net_unit_to_length(value)))
+        CSS_BORDER_WIDTH_WIDTH  => Specified(CSSBorderWidthLength(convert_net_unit_to_length(value, l)))
 
     }
 }
 
-fn convert_net_margin(margin: css_margin_e, value:css_unit) -> CSSValue<CSSMargin> {
+fn convert_net_margin(margin: css_margin_e, value:css_unit, l:css_fixed) -> CSSValue<CSSMargin> {
     match margin {
         CSS_MARGIN_INHERIT   => Inherit,
         CSS_MARGIN_SET => {
-            let length = convert_net_unit_to_length_or_percent(value);
+            let length = convert_net_unit_to_length_or_percent(value, l);
                 match length {
                     Left(abs) => Specified(CSSMarginLength(abs)),
                     Right(percent) => Specified(CSSMarginPercentage(percent))
@@ -284,11 +437,11 @@ fn convert_net_margin(margin: css_margin_e, value:css_unit) -> CSSValue<CSSMargi
     }
 }
 
-fn convert_net_padding(padding: css_padding_e, value:css_unit) -> CSSValue<CSSPadding> {
+fn convert_net_padding(padding: css_padding_e, value:css_unit, l:css_fixed) -> CSSValue<CSSPadding> {
     match padding {
         CSS_PADDING_INHERIT => Inherit,
         CSS_PADDING_SET => {
-            let length = convert_net_unit_to_length_or_percent(value);
+            let length = convert_net_unit_to_length_or_percent(value, l);
             match length {
                 Left(abs) => Specified(CSSPaddingLength(abs)),
                 Right(percent) => Specified(CSSPaddingPercentage(percent))
