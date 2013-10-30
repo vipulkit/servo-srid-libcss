@@ -1915,7 +1915,7 @@ impl css_select_ctx {
                         lwc_name , matched);
             }
             CSS_SELECTOR_PSEUDO_CLASS => {
-                error = (state.handler.expect("").node_is_root)( node, is_root);
+                error = (state.handler.expect("").node_is_root)(state.pw, node, is_root);
                 match error {
                     CSS_OK => {},
                     _=> {
@@ -2134,11 +2134,11 @@ impl css_select_ctx {
                             node, matched);
                 } 
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.link.expect("") ) ) { 
-                    error = (state.handler.expect("").node_is_link)(
+                    error = (state.handler.expect("").node_is_link)(state.pw,
                             node, matched);
                 }
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.visited.expect("") ) ) { 
-                    error = (state.handler.expect("").node_is_visited)(
+                    error = (state.handler.expect("").node_is_visited)(state.pw,
                             node, matched);
                 }
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.hover.expect("") ) ) { 
