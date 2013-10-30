@@ -80,22 +80,6 @@ impl SelectCtx {
 }
 
 /**
-Represents the 'style' of a single node, including it's pseudo-elements.
-*/
-pub struct SelectResults {
-    inner: n::s::CssSelectResults
-}
-
-impl<'self> SelectResults {
-    /** Retrieve the computed style of a single pseudo-element */
-    pub fn computed_style(&'self self) -> ComputedStyle<'self> {
-        ComputedStyle {
-            inner: self.inner.computed_style(n::s::CssPseudoElementNone)
-        }
-    }
-}
-
-/**
 Callbacks used to query the implementation-specific DOM
 */
 pub trait SelectHandler<N> {

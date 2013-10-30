@@ -33,19 +33,23 @@ pub enum CssPseudoElement {
 
 pub struct ComputedStyle<'self> {
     //inner: css_computed_style<'self>
-    result_backref: &'self CssSelectResults,
+    result_backref: &'self SelectResults,
     computed_style: Option<@mut css_computed_style>,
 }
 
-pub struct CssSelectResults {
-    priv results: Option<@mut css_select_results>
+/**
+Represents the 'style' of a single node, including it's pseudo-elements.
+*/
+pub struct SelectResults {
+    inner: Option<@mut css_select_results>
 }
 
-impl<'self> CssSelectResults {
-    pub fn computed_style(&'self self, element: CssPseudoElement) -> ComputedStyle<'self> {
-        let element : uint = element as uint;
-        assert!(self.results.is_some());
-        let res = self.results.expect("Option is none") ;
+impl<'self> SelectResults {
+    /** Retrieve the computed style of a single pseudo-element */
+    pub fn computed_style(&'self self) -> ComputedStyle<'self> {
+        let element : uint = CssPseudoElementNone as uint;
+        assert!(self.inner.is_some());
+        let res = self.inner.expect("Option is none") ;
         let llstyle = res.styles[element];
         // FIXME: Rust #3926
     
