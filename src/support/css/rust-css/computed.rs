@@ -62,124 +62,141 @@ impl<'self> ComputedStyle<'self> {
 
     pub fn margin_top(&self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.margin_top());
-        let (value, length, unit) = css_computed_margin_top(self.computed_style.expect("computed style margin top is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_margin_top(self.computed_style.expect("computed style margin top is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_margin(unsafe { transmute(value as uint)},  unit , length)
     }
     
     pub fn margin_right(&self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_right())
-        let (value, length, unit) = css_computed_margin_right(self.computed_style.expect("computed style margin right is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_margin_right(self.computed_style.expect("computed style margin right is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn margin_bottom(&self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_bottom())
-        let (value, length, unit) = css_computed_margin_bottom(self.computed_style.expect("computed style margin bottom is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_margin_bottom(self.computed_style.expect("computed style margin bottom is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn margin_left(&self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_left())
-        let (value, length, unit) = css_computed_margin_left(self.computed_style.expect("computed style margin left is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_margin_left(self.computed_style.expect("computed style margin left is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
-      
-        convert_net_margin(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn padding_top(&self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_top())
 
-        let (value, length, unit) = css_computed_padding_top(self.computed_style.expect("computed style padding top is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_padding_top(self.computed_style.expect("computed style padding top is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
 
     }
 
     pub fn padding_right(&self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_right())
-        let (value, length, unit) = css_computed_padding_right(self.computed_style.expect("computed style padding right is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_padding_right(self.computed_style.expect("computed style padding right is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn padding_bottom(&self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_bottom())
-        let (value, length, unit) = css_computed_padding_bottom(self.computed_style.expect("computed style padding bottom is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_padding_bottom(self.computed_style.expect("computed style padding bottom is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
-      
-        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn padding_left(&self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_left())
-        let (value, length, unit) = css_computed_padding_left(self.computed_style.expect("computed style padding left top is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_padding_left(self.computed_style.expect("computed style padding left top is none"));
+
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
-      
-        convert_net_padding(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
         
     }
 
@@ -209,103 +226,120 @@ impl<'self> ComputedStyle<'self> {
 
     pub fn border_top_width(&self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_top_width())
-        let (value, length, unit) = css_computed_border_top_width(self.computed_style.expect("computed style border top width is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_border_top_width(self.computed_style.expect("computed style border top width is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn border_right_width(&self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_right_width())
-        let (value, length, unit) = css_computed_border_right_width(self.computed_style.expect("computed style border right width is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_border_right_width(self.computed_style.expect("computed style border right width is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn border_bottom_width(&self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_bottom_width())
-        let (value, length, unit) = css_computed_border_bottom_width(self.computed_style.expect("computed style border bottom width is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_border_bottom_width(self.computed_style.expect("computed style border bottom width is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn border_left_width(&self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_left_width())
-        let (value, length, unit) = css_computed_border_left_width(self.computed_style.expect("computed style border left width is none"));
-        if (length.is_none())
+        let (value, olength, ounit) = css_computed_border_left_width(self.computed_style.expect("computed style border left width is none"));
+        let mut length = 0 ;
+        let mut unit = CSS_UNIT_PX;
+        if (olength.is_some())
         {
-            length = Some(0);
+            length = olength.expect("")
         }
-        if (unit.is_none())
+        if (ounit.is_some())
         {
-            unit = Some(CSS_UNIT_PX);
+            unit = ounit.expect("");
         }
       
-        convert_net_border_width(unsafe { transmute(value as uint)},  unit.expect(""), length.expect(""))
+        convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
     pub fn border_top_color(&self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_top_color())
         let (value, length) = css_computed_border_top_color(self.computed_style.expect("computed style border top color is none"));
-        convert_net_color_value(unsafe { transmute(value as uint)}, length);
+        convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
     pub fn border_right_color(&self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_right_color())
         let (value, length) = css_computed_border_right_color(self.computed_style.expect("computed style border right color is none"));
-        convert_net_color_value(unsafe { transmute(value as uint)}, length);
+        convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
     pub fn border_bottom_color(&self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_bottom_color())
          let (value, length) = css_computed_border_bottom_color(self.computed_style.expect("computed style border bottom color is none"));
-        convert_net_color_value(unsafe { transmute(value as uint)}, length);
+        convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
     pub fn border_left_color(&self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_left_color())
 
         let (value, length) = css_computed_border_left_color(self.computed_style.expect("computed style border left color is none"));
-        convert_net_color_value(unsafe { transmute(value as uint)}, length);
+        convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
-/*
+
+
     // CSS 2.1, Section 9 - Visual formatting model
 
     pub fn display(&self, root: bool) -> CSSValue<CSSDisplay> {
-        convert_net_display_value(self.inner.display(root))
+        //convert_net_display_value(self.inner.display(root))
+        let value = css_computed_display(self.computed_style.expect("computed style display is none"), root);
+        convert_net_display_value(unsafe { transmute(value as uint)})
     }
 
     pub fn position(&self) -> CSSValue<CSSPosition> {
-        convert_net_position_value(self.inner.position())
+        //convert_net_position_value(self.inner.position())
+        let value = css_computed_position(self.computed_style.expect("computed style position is none"));
+        convert_net_position_value(unsafe { transmute(value as uint)})
+
     }
 
     pub fn float(&self) -> CSSValue<CSSFloat> {
-        convert_net_float_value(self.inner.float())
+        //convert_net_float_value(self.inner.float())
+        let value = css_computed_float(self.computed_style.expect("computed style float is none"));
+        convert_net_float_value(unsafe { transmute(value as uint)})
     }
-
+    
+/*
     pub fn clear(&self) -> CSSValue<CSSClear> {
         convert_net_clear_value(self.inner.clear())
     }
@@ -450,11 +484,11 @@ fn convert_net_padding(padding: css_padding_e, value:css_unit, l:css_fixed) -> C
     }
 }
 
-fn convert_net_width_value(value: css_width_e, wvalue: css_unit) -> CSSValue<CSSWidth> {
+fn convert_net_width_value(value: css_width_e, wvalue: css_unit, l:css_fixed) -> CSSValue<CSSWidth> {
     match value {
         CSS_WIDTH_INHERIT => Inherit,
         CSS_WIDTH_SET => {
-            let length = convert_net_unit_to_length_or_percent(wvalue);
+            let length = convert_net_unit_to_length_or_percent(wvalue, l);
             match length {
                 Left(abs) => Specified(CSSWidthLength(abs)),
                 Right(percent) => Specified(CSSWidthPercentage(percent))
@@ -464,11 +498,11 @@ fn convert_net_width_value(value: css_width_e, wvalue: css_unit) -> CSSValue<CSS
     }
 }
 
-fn convert_net_height_value(value: css_height_e , hvalue:css_unit) -> CSSValue<CSSHeight> {
+fn convert_net_height_value(value: css_height_e , hvalue:css_unit, l:css_fixed) -> CSSValue<CSSHeight> {
     match value {
         CSS_HEIGHT_INHERIT => Inherit,
         CSS_HEIGHT_SET => {
-            let length = convert_net_unit_to_length_or_percent(hvalue);
+            let length = convert_net_unit_to_length_or_percent(hvalue, l);
             match length {
                 Left(abs) => Specified(CSSHeightLength(abs)),
                 Right(percent) => Specified(CSSHeightPercentage(percent))
@@ -503,10 +537,10 @@ fn convert_net_display_value(value: css_display_e) -> CSSValue<CSSDisplay> {
 
 fn convert_net_float_value(value: css_float_e) -> CSSValue<CSSFloat> {
     match value {
-        CssFloatInherit => Inherit,
-        CssFloatLeft => Specified(CSSFloatLeft),
-        CssFloatRight => Specified(CSSFloatRight),
-        CssFloatNone => Specified(CSSFloatNone)
+        CSS_FLOAT_INHERIT => Inherit,
+        CSS_FLOAT_LEFT => Specified(CSSFloatLeft),
+        CSS_FLOAT_RIGHT  => Specified(CSSFloatRight),
+        CSS_FLOAT_NONE => Specified(CSSFloatNone)
     }
 }
 
@@ -544,7 +578,7 @@ fn convert_net_font_family_value(value: css_font_family_e) -> CSSValue<~[CSSFont
     }
 }
 
-fn convert_net_font_size_value(value: css_font_size_e,size:css_unit) -> CSSValue<CSSFontSize> {
+fn convert_net_font_size_value(value: css_font_size_e,size:css_unit, l:css_fixed) -> CSSValue<CSSFontSize> {
     use units::*;
     match value {
         CSS_FONT_SIZE_INHERIT => Inherit,
@@ -558,7 +592,7 @@ fn convert_net_font_size_value(value: css_font_size_e,size:css_unit) -> CSSValue
         CSS_FONT_SIZE_LARGER => Specified(CSSFontSizeRelativeSize(Larger)),
         CSS_FONT_SIZE_SMALLER => Specified(CSSFontSizeRelativeSize(Smaller)),
         CSS_FONT_SIZE_DIMENSION => {
-            match convert_net_unit_to_length_or_percent(size) {
+            match convert_net_unit_to_length_or_percent(size, l) {
                 Left(val) => Specified(CSSFontSizeLength(val)),
                 Right(val) => Specified(CSSFontSizePercentage(val))
             }
@@ -621,12 +655,12 @@ fn convert_net_text_decoration_value(value: css_text_decoration_e) -> CSSValue<C
     }
 }
 
-fn convert_net_line_height_value(value: css_line_height_e, v:css_unit) -> CSSValue<CSSLineHeight> {
+fn convert_net_line_height_value(value: css_line_height_e, v:css_unit, l:css_fixed) -> CSSValue<CSSLineHeight> {
     match value {
         CSS_LINE_HEIGHT_INHERIT => Inherit,
         CSS_LINE_HEIGHT_NUMBER => Specified(CSSLineHeightNumber(css_fixed_to_float(v as i32))),
         CSS_LINE_HEIGHT_DIMENSION => {
-            match convert_net_unit_to_length_or_percent(v) {
+            match convert_net_unit_to_length_or_percent(v, l) {
                 Left(val) => Specified(CSSLineHeightLength(val)),
                 Right(val) => Specified(CSSLineHeightPercentage(val))
             }
@@ -635,7 +669,7 @@ fn convert_net_line_height_value(value: css_line_height_e, v:css_unit) -> CSSVal
     }
 }
 
-fn convert_net_vertical_align_value(value: css_vertical_align_e, v:css_unit) -> CSSValue<CSSVerticalAlign> {
+fn convert_net_vertical_align_value(value: css_vertical_align_e, v:css_unit, l:css_fixed) -> CSSValue<CSSVerticalAlign> {
     match value {
 
         CSS_VERTICAL_ALIGN_INHERIT => Inherit,
@@ -648,7 +682,7 @@ fn convert_net_vertical_align_value(value: css_vertical_align_e, v:css_unit) -> 
         CSS_VERTICAL_ALIGN_BOTTOM => Specified(CSSVerticalAlignBottom),
         CSS_VERTICAL_ALIGN_TEXT_BOTTOM => Specified(CSSVerticalAlignTextBottom),
         CSS_VERTICAL_ALIGN_SET => {
-            match convert_net_unit_to_length_or_percent(v) {
+            match convert_net_unit_to_length_or_percent(v, l) {
                 Left(val) => Specified(CSSVerticalAlignLength(val)),
                 Right(val) => Specified(CSSVerticalAlignPercentage(val))
             }
@@ -690,298 +724,3 @@ pub fn float_to_css_fixed(f: float) -> css_fixed {
     static BEFORE: i32 = 10;
     (f * ((1 << BEFORE) as float)) as css_fixed
 }
-
-/*
-fn convert_net_color(color: n::t::CssColor) -> Color {
-    rgba(color.r, color.g, color.b, (color.a as float) / 255.0)
-}
-
-fn convert_net_color_value(color: n::v::CssColorValue) -> CSSValue<Color> {
-    match color {
-        n::v::CssColorInherit => Inherit,
-        n::v::CssColorColor(v) => Specified(convert_net_color(v))
-    }
-}
-
-fn convert_net_border_style(style: n::v::CssBorderStyleValue) -> CSSValue<CSSBorderStyle> {
-    match style {
-        n::v::CssBorderStyleInherit => Inherit,
-        n::v::CssBorderStyleNone => Specified(CSSBorderStyleNone),
-        n::v::CssBorderStyleHidden => Specified(CSSBorderStyleHidden),
-        n::v::CssBorderStyleDotted => Specified(CSSBorderStyleDotted),
-        n::v::CssBorderStyleDashed => Specified(CSSBorderStyleDashed),
-        n::v::CssBorderStyleSolid => Specified(CSSBorderStyleSolid),
-        n::v::CssBorderStyleDouble => Specified(CSSBorderStyleDouble),
-        n::v::CssBorderStyleGroove => Specified(CSSBorderStyleGroove),
-        n::v::CssBorderStyleRidge => Specified(CSSBorderStyleRidge),
-        n::v::CssBorderStyleInset => Specified(CSSBorderStyleInset),
-        n::v::CssBorderStyleOutset => Specified(CSSBorderStyleOutset),
-    }
-}
-
-fn convert_net_border_width(width: n::v::CssBorderWidthValue) -> CSSValue<CSSBorderWidth> {
-    match width {
-        n::v::CssBorderWidthInherit => Inherit,
-        n::v::CssBorderWidthThin => Specified(CSSBorderWidthThin),
-        n::v::CssBorderWidthMedium => Specified(CSSBorderWidthMedium),
-        n::v::CssBorderWidthThick => Specified(CSSBorderWidthThick),
-        n::v::CssBorderWidthWidth(width) => Specified(CSSBorderWidthLength(convert_net_unit_to_length(width))),
-    }
-}
-
-fn convert_net_margin(margin: n::v::CssMarginValue) -> CSSValue<CSSMargin> {
-    match margin {
-        n::v::CssMarginInherit => Inherit,
-        n::v::CssMarginSet(value) => {
-            let length = convert_net_unit_to_length_or_percent(value);
-            match length {
-                Left(abs) => Specified(CSSMarginLength(abs)),
-                Right(percent) => Specified(CSSMarginPercentage(percent))
-            }
-        }
-        n::v::CssMarginAuto => Specified(CSSMarginAuto)
-    }
-}
-
-fn convert_net_padding(padding: n::v::CssPaddingValue) -> CSSValue<CSSPadding> {
-    match padding {
-        n::v::CssPaddingInherit => Inherit,
-        n::v::CssPaddingSet(value) => {
-            let length = convert_net_unit_to_length_or_percent(value);
-            match length {
-                Left(abs) => Specified(CSSPaddingLength(abs)),
-                Right(percent) => Specified(CSSPaddingPercentage(percent))
-            }
-        }
-    }
-}
-
-fn convert_net_width_value(value: n::v::CssWidthValue) -> CSSValue<CSSWidth> {
-    match value {
-        n::v::CssWidthInherit => Inherit,
-        n::v::CssWidthSet(value) => {
-            let length = convert_net_unit_to_length_or_percent(value);
-            match length {
-                Left(abs) => Specified(CSSWidthLength(abs)),
-                Right(percent) => Specified(CSSWidthPercentage(percent))
-            }
-        }
-        n::v::CssWidthAuto => Specified(CSSWidthAuto)
-    }
-}
-
-fn convert_net_height_value(value: n::v::CssHeightValue) -> CSSValue<CSSHeight> {
-    match value {
-        n::v::CssHeightInherit => Inherit,
-        n::v::CssHeightSet(value) => {
-            let length = convert_net_unit_to_length_or_percent(value);
-            match length {
-                Left(abs) => Specified(CSSHeightLength(abs)),
-                Right(percent) => Specified(CSSHeightPercentage(percent))
-            }
-        }
-        n::v::CssHeightAuto => Specified(CSSHeightAuto)
-    }
-}
-
-fn convert_net_display_value(value: n::v::CssDisplayValue) -> CSSValue<CSSDisplay> {
-    match value {
-        n::v::CssDisplayInherit => Inherit,
-        n::v::CssDisplayInline => Specified(CSSDisplayInline),
-        n::v::CssDisplayBlock => Specified(CSSDisplayBlock),
-        n::v::CssDisplayListItem => Specified(CSSDisplayListItem),
-        n::v::CssDisplayRunIn => unimpl("display: run-in"), // FIXME: Not in CSS 2.1
-        n::v::CssDisplayInlineBlock => Specified(CSSDisplayInlineBlock),
-        n::v::CssDisplayTable => Specified(CSSDisplayTable),
-        n::v::CssDisplayInlineTable => Specified(CSSDisplayInlineTable),
-        n::v::CssDisplayTableRowGroup => Specified(CSSDisplayTableRowGroup),
-        n::v::CssDisplayTableHeaderGroup => Specified(CSSDisplayTableHeaderGroup),
-        n::v::CssDisplayTableFooterGroup => Specified(CSSDisplayTableFooterGroup),
-        n::v::CssDisplayTableRow => Specified(CSSDisplayTableRow),
-        n::v::CssDisplayTableColumnGroup => Specified(CSSDisplayTableColumnGroup),
-        n::v::CssDisplayTableColumn => Specified(CSSDisplayTableColumn),
-        n::v::CssDisplayTableCell => Specified(CSSDisplayTableCell),
-        n::v::CssDisplayTableCaption => Specified(CSSDisplayTableCaption),
-        n::v::CssDisplayNone => Specified(CSSDisplayNone)
-    }
-}
-
-fn convert_net_float_value(value: n::v::CssFloatValue) -> CSSValue<CSSFloat> {
-    match value {
-        n::v::CssFloatInherit => Inherit,
-        n::v::CssFloatLeft => Specified(CSSFloatLeft),
-        n::v::CssFloatRight => Specified(CSSFloatRight),
-        n::v::CssFloatNone => Specified(CSSFloatNone)
-    }
-}
-
-fn convert_net_clear_value(value: n::v::CssClearValue) -> CSSValue<CSSClear> {
-    match value {
-        n::v::CssClearInherit => Inherit,
-        n::v::CssClearNone => Specified(CSSClearNone),
-        n::v::CssClearLeft => Specified(CSSClearLeft),
-        n::v::CssClearRight => Specified(CSSClearRight),
-        n::v::CssClearBoth => Specified(CSSClearBoth)
-    }
-}
-
-fn convert_net_position_value(value: n::v::CssPositionValue) -> CSSValue<CSSPosition> {
-    match value {
-        n::v::CssPositionInherit => Inherit,
-        n::v::CssPositionStatic => Specified(CSSPositionStatic),
-        n::v::CssPositionRelative => Specified(CSSPositionRelative),
-        n::v::CssPositionAbsolute => Specified(CSSPositionAbsolute),
-        n::v::CssPositionFixed => Specified(CSSPositionFixed)
-    }
-}
-
-fn convert_net_font_family_value(value: n::v::CssFontFamilyValue) -> CSSValue<~[CSSFontFamily]> {
-    use units::{Serif, SansSerif, Cursive, Fantasy, Monospace};
-
-    match value {
-        n::v::CssFontFamilyInherit => Inherit,
-        n::v::CssFontFamilySerif => Specified(~[CSSFontFamilyGenericFamily(Serif)]),
-        n::v::CssFontFamilySansSerif => Specified(~[CSSFontFamilyGenericFamily(SansSerif)]),
-        n::v::CssFontFamilyCursive => Specified(~[CSSFontFamilyGenericFamily(Cursive)]),
-        n::v::CssFontFamilyFantasy => Specified(~[CSSFontFamilyGenericFamily(Fantasy)]),
-        n::v::CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
-        n::v::CssFontFamilyValue(names) => Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
-    }
-}
-
-fn convert_net_font_size_value(value: n::v::CssFontSizeValue) -> CSSValue<CSSFontSize> {
-    use units::*;
-
-    match value {
-        n::v::CssFontSizeInherit => Inherit,
-        n::v::CssFontSizeXXSmall => Specified(CSSFontSizeAbsoluteSize(XXSmall)),
-        n::v::CssFontSizeXSmall => Specified(CSSFontSizeAbsoluteSize(XSmall)),
-        n::v::CssFontSizeSmall => Specified(CSSFontSizeAbsoluteSize(Small)),
-        n::v::CssFontSizeMedium => Specified(CSSFontSizeAbsoluteSize(Medium)),
-        n::v::CssFontSizeLarge => Specified(CSSFontSizeAbsoluteSize(Large)),
-        n::v::CssFontSizeXLarge => Specified(CSSFontSizeAbsoluteSize(XLarge)),
-        n::v::CssFontSizeXXLarge => Specified(CSSFontSizeAbsoluteSize(XXLarge)),
-        n::v::CssFontSizeLarger => Specified(CSSFontSizeRelativeSize(Larger)),
-        n::v::CssFontSizeSmaller => Specified(CSSFontSizeRelativeSize(Smaller)),
-        n::v::CssFontSizeDimension(size) => {
-            match convert_net_unit_to_length_or_percent(size) {
-                Left(val) => Specified(CSSFontSizeLength(val)),
-                Right(val) => Specified(CSSFontSizePercentage(val))
-            }
-        }
-    }
-}
-
-fn convert_net_font_style_value(value: n::v::CssFontStyleValue) -> CSSValue<CSSFontStyle> {
-    match value {
-        n::v::CssFontStyleInherit => Inherit,
-        n::v::CssFontStyleNormal => Specified(CSSFontStyleNormal),
-        n::v::CssFontStyleItalic => Specified(CSSFontStyleItalic),
-        n::v::CssFontStyleOblique => Specified(CSSFontStyleOblique)
-    }
-}
-
-fn convert_net_font_weight_value(value: n::v::CssFontWeightValue) -> CSSValue<CSSFontWeight> {
-    match value {
-        n::v::CssFontWeightInherit => Inherit,
-        n::v::CssFontWeightNormal => Specified(CSSFontWeightNormal),
-        n::v::CssFontWeightBold => Specified(CSSFontWeightBold),
-        n::v::CssFontWeightBolder => Specified(CSSFontWeightBolder),
-        n::v::CssFontWeightLighter => Specified(CSSFontWeightLighter),
-        n::v::CssFontWeight100 => Specified(CSSFontWeight100),
-        n::v::CssFontWeight200 => Specified(CSSFontWeight200),
-        n::v::CssFontWeight300 => Specified(CSSFontWeight300),
-        n::v::CssFontWeight400 => Specified(CSSFontWeight400),
-        n::v::CssFontWeight500 => Specified(CSSFontWeight500),
-        n::v::CssFontWeight600 => Specified(CSSFontWeight600),
-        n::v::CssFontWeight700 => Specified(CSSFontWeight700),
-        n::v::CssFontWeight800 => Specified(CSSFontWeight800),
-        n::v::CssFontWeight900 => Specified(CSSFontWeight900),
-    }
-}
-
-fn convert_net_text_align_value(value: n::v::CssTextAlignValue) -> CSSValue<CSSTextAlign> {
-    match value {
-        n::v::CssTextAlignInherit => Inherit,
-        n::v::CssTextAlignInheritIfNonMagic => unimpl("inherit if non-magic? wtf?"),
-        n::v::CssTextAlignLeft => Specified(CSSTextAlignLeft),
-        n::v::CssTextAlignRight => Specified(CSSTextAlignRight),
-        n::v::CssTextAlignCenter => Specified(CSSTextAlignCenter),
-        n::v::CssTextAlignJustify => Specified(CSSTextAlignJustify),
-        n::v::CssTextAlignDefault => Specified(CSSTextAlignLeft),
-        n::v::CssTextAlignLibcssLeft => unimpl("text-align libcss left"),
-        n::v::CssTextAlignLibcssCenter => unimpl("text-align libcss center"),
-        n::v::CssTextAlignLibcssRight => unimpl("text-align libcss right"),
-    }
-}
-
-fn convert_net_text_decoration_value(value: n::v::CssTextDecorationValue) -> CSSValue<CSSTextDecoration> {
-    match value {
-        n::v::CssTextDecorationInherit => Inherit,
-        n::v::CssTextDecorationNone => Specified(CSSTextDecorationNone),
-        n::v::CssTextDecorationBlink => Specified(CSSTextDecorationBlink),
-        n::v::CssTextDecorationLineThrough => Specified(CSSTextDecorationLineThrough),
-        n::v::CssTextDecorationOverline => Specified(CSSTextDecorationOverline),
-        n::v::CssTextDecorationUnderline => Specified(CSSTextDecorationUnderline),
-    }
-}
-
-fn convert_net_line_height_value(value: n::v::CssLineHeightValue) -> CSSValue<CSSLineHeight> {
-    match value {
-        n::v::CssLineHeightInherit => Inherit,
-        n::v::CssLineHeightNumber(n) => Specified(CSSLineHeightNumber(css_fixed_to_float(n))),
-        n::v::CssLineHeightDimension(v) => {
-            match convert_net_unit_to_length_or_percent(v) {
-                Left(val) => Specified(CSSLineHeightLength(val)),
-                Right(val) => Specified(CSSLineHeightPercentage(val))
-            }
-        },
-        n::v::CssLineHeightNormal => Specified(CSSLineHeightNormal)
-    }
-}
-
-fn convert_net_vertical_align_value(value: n::v::CssVerticalAlignValue) -> CSSValue<CSSVerticalAlign> {
-    match value {
-        n::v::CssVerticalAlignInherit => Inherit,
-        n::v::CssVerticalAlignBaseline => Specified(CSSVerticalAlignBaseline),
-        n::v::CssVerticalAlignSub => Specified(CSSVerticalAlignSub),
-        n::v::CssVerticalAlignSuper => Specified(CSSVerticalAlignSuper),
-        n::v::CssVerticalAlignTop => Specified(CSSVerticalAlignTop),
-        n::v::CssVerticalAlignTextTop => Specified(CSSVerticalAlignTextTop),
-        n::v::CssVerticalAlignMiddle => Specified(CSSVerticalAlignMiddle),
-        n::v::CssVerticalAlignBottom => Specified(CSSVerticalAlignBottom),
-        n::v::CssVerticalAlignTextBottom => Specified(CSSVerticalAlignTextBottom),
-        n::v::CssVerticalAlignDimension(v) => {
-            match convert_net_unit_to_length_or_percent(v) {
-                Left(val) => Specified(CSSVerticalAlignLength(val)),
-                Right(val) => Specified(CSSVerticalAlignPercentage(val))
-            }
-        }
-    }
-}
-
-fn convert_net_unit_to_length(unit: n::t::CssUnit) -> Length {
-    match convert_net_unit_to_length_or_percent(unit) {
-        Left(v) => v,
-        Right(*) => fail!(~"unexpected percentage unit"),
-    }
-}
-
-fn convert_net_unit_to_length_or_percent(unit: n::t::CssUnit) -> Either<Length, float> {
-    match unit {
-        n::t::CssUnitPx(l) => Left(Px(css_fixed_to_float(l))),
-        n::t::CssUnitEm(l) => Left(Em(css_fixed_to_float(l))),
-        n::t::CssUnitPt(l) => Left(Px(css_fixed_to_float(l) / 72f * 96f)),
-        n::t::CssUnitCm(l) => Left(Px(css_fixed_to_float(l) / 2.54f * 96f)),
-        n::t::CssUnitMm(l) => Left(Px(css_fixed_to_float(l) / 25.4f * 96f)),
-        n::t::CssUnitIn(l) => Left(Px(css_fixed_to_float(l) / 1f * 96f)),
-        n::t::CssUnitPc(l) => Left(Px(css_fixed_to_float(l) / 6f * 96f)),
-        n::t::CssUnitPct(p) => Right(css_fixed_to_float(p)),
-        _ => unimpl("unit")
-    }
-}
-
-fn unimpl(what: &str) -> ! {
-    fail!(fmt!("css unimplemented %?", what))
-}
-*/
