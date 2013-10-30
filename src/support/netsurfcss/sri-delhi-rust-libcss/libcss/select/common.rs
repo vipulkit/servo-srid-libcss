@@ -726,11 +726,11 @@ pub struct css_select_handler {
 
     sibling_node: @fn(pw:*c_void, node:*c_void, sibling:*mut*c_void) -> css_error,
 
-    node_has_name: @fn(pw:*c_void, lwc_ref:&mut ~lwc, pw:*c_void,node:*c_void, qname:&css_qname, matched:&mut bool) -> css_error,
+    node_has_name: @fn(lwc_ref:&mut ~lwc, pw:*c_void,node:*c_void, qname:&css_qname, matched:&mut bool) -> css_error,
 
-    node_has_class: @fn(pw:*c_void, lwc_ref:&mut ~lwc, pw:*c_void, node:*c_void, name:uint, matched:&mut bool) -> css_error,
+    node_has_class: @fn(lwc_ref:&mut ~lwc, pw:*c_void, node:*c_void, name:uint, matched:&mut bool) -> css_error,
 
-    node_has_id: @fn(pw:*c_void, lwc_ref:&mut ~lwc, pw:*c_void, node:*c_void, name:uint, matched:&mut bool) -> css_error,
+    node_has_id: @fn(lwc_ref:&mut ~lwc, pw:*c_void, node:*c_void, name:uint, matched:&mut bool) -> css_error,
 
     node_has_attribute: @fn(pw:*c_void, lwc_ref:&mut ~lwc, node:*c_void, name:&css_qname, matched:&mut bool) -> css_error,
     

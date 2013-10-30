@@ -1902,16 +1902,16 @@ impl css_select_ctx {
                     /* Only need to test this inside not(), since
                      * it will have been considered as a named node
                      * otherwise. */
-                    error = (state.handler.expect("").node_has_name)(state.pw, lwc_ref, state.pw, node,
+                    error = (state.handler.expect("").node_has_name)(lwc_ref, state.pw, node,
                             detail.qname, matched);
                 }
             }
             CSS_SELECTOR_CLASS => {
-                error = (state.handler.expect("").node_has_class)(state.pw, lwc_ref, state.pw, node,
+                error = (state.handler.expect("").node_has_class)(lwc_ref, state.pw, node,
                         lwc_name , matched);
             }       
             CSS_SELECTOR_ID => {
-                error = (state.handler.expect("").node_has_id)(state.pw, lwc_ref, state.pw, node,
+                error = (state.handler.expect("").node_has_id)(lwc_ref, state.pw, node,
                         lwc_name , matched);
             }
             CSS_SELECTOR_PSEUDO_CLASS => {
