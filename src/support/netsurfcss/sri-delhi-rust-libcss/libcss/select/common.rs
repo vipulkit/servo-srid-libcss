@@ -746,15 +746,15 @@ pub struct css_select_handler {
 
     node_has_attribute_substring: @fn(lwc_ref:&mut ~lwc, node:*c_void, qname:&css_qname,value:uint, matched:&mut bool) -> css_error,
 
-    node_is_root: @fn(node:*c_void, matched:&mut bool) -> css_error,
+    node_is_root: @fn(pw:*c_void, node:*c_void, matched:&mut bool) -> css_error,
    
     node_count_siblings: @fn(lwc_ref:&mut ~lwc, node:*c_void, same_name:bool, after:bool, count:&mut i32) -> css_error,
     
     node_is_empty: @fn(node:*c_void, matched:&mut bool) -> css_error,
     
-    node_is_link: @fn(node:*c_void, matched:&mut bool) -> css_error,
+    node_is_link: @fn(pw:*c_void, node:*c_void, matched:&mut bool) -> css_error,
 
-    node_is_visited: @fn(node:*c_void, matched:&mut bool) -> css_error,
+    node_is_visited: @fn(pw:*c_void, node:*c_void, matched:&mut bool) -> css_error,
 
     node_is_hover: @fn(node:*c_void, matched:&mut bool) -> css_error,
 
