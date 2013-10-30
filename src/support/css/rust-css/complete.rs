@@ -12,9 +12,9 @@ use computed::*;
 //use n::u::float_to_css_fixed;
 use values::*;
 //use n;
-use srid_css::select::select::*;
-use srid_css::select::common::*;
-use srid_css::libwapcaplet::wapcaplet::*;
+//use srid_css::select::select::*;
+//use srid_css::select::common::*;
+//use srid_css::libwapcaplet::wapcaplet::*;
 
 pub struct CompleteSelectResults {
     inner: SelectResults
@@ -27,8 +27,8 @@ impl<'self> CompleteSelectResults {
         }
     }
 
-    // pub fn new_from_parent(parent: &CompleteSelectResults,
-    //                        child: SelectResults) -> CompleteSelectResults {
+    pub fn new_from_parent(parent: &CompleteSelectResults,
+                            child: SelectResults) -> CompleteSelectResults {
     //     // New lifetime
     //     {
     //         let parent_computed = parent.computed_style();
@@ -82,10 +82,10 @@ impl<'self> CompleteSelectResults {
     //         n::c::compose(net_parent_computed, net_child_computed, cb, net_result_computed);
     //     }
 
-    //     CompleteSelectResults {
-    //         inner: child
-    //     }
-    // }
+        CompleteSelectResults {
+            inner: child
+        }
+    }
 
     pub fn computed_style(&'self self) -> CompleteStyle<'self> {
         CompleteStyle {
@@ -101,7 +101,7 @@ pub struct CompleteStyle<'self> {
 impl<'self> CompleteStyle<'self> {
 
     // CSS 2.1, Section 8 - Box model
-/*
+
     pub fn margin_top(&self) -> CSSMargin {
         strip(self.inner.margin_top())
     }
@@ -264,7 +264,7 @@ impl<'self> CompleteStyle<'self> {
     // CSS 2.1, Section 17 - Tables
 
     // CSS 2.1, Section 18 - User interface
-*/
+
 }
 
 fn strip<T>(value: CSSValue<T>) -> T {
