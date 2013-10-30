@@ -15,6 +15,7 @@ use values::*;
 use srid_css::select::dispatch::*;
 use srid_css::utils::errors::*;
 use srid_css::include::types::*;
+use srid_css::include::properties::*;
 use srid_css::select::common::*;
 //use srid_css::libwapcaplet::wapcaplet::*;
 
@@ -41,7 +42,7 @@ impl<'self> CompleteSelectResults {
             let cb: css_fnptr_compute_font_size =
                 |parent: Option<@mut css_hint>, child: Option<@mut css_hint>| -> css_error {
 
-                let mut temporary_result : @mut css_hint_length ;
+                let mut temporary_result = @mut css_hint_length{value:0 , unit:CSS_UNIT_PX} ;
 
                 if child.is_some() {
                     let child_hint = child.get_ref();   
@@ -132,6 +133,9 @@ impl<'self> CompleteSelectResults {
                     }
                 }
                 //
+                child.get_ref().status = CSS_FONT_SIZE_DIMENSION as u8 ;
+                child.get_ref().length = Some(temporary_result) ;
+                child.get_ref().hint_type = HINT_LENGTH ;
                 CSS_OK
             };
             // XXX: Need an aliasable &mut here
