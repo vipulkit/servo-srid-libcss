@@ -10,10 +10,10 @@ use include::properties::*;
 use parse::properties::common::*;
 use utils::errors::*;
 use lex::lexer::*;
+use libwapcaplet::wapcaplet::*;
 use bytecode::opcodes::*;
 use bytecode::bytecode::*;
 use include::fpmath::*;
-use libwapcaplet::wapcaplet::*;
 
 /**
  * #Generated from:
@@ -36,8 +36,8 @@ use libwapcaplet::wapcaplet::*;
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_background_repeat(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_background_repeat(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_background_repeat");
 	let orig_ctx = *ctx;
@@ -102,8 +102,8 @@ pub fn css__parse_background_repeat(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_collapse(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_collapse(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_collapse");
 	let orig_ctx = *ctx;
@@ -162,8 +162,8 @@ pub fn css__parse_border_collapse(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc,
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_cue_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_cue_after(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_cue_after");
 	let orig_ctx = *ctx;
@@ -192,9 +192,9 @@ pub fn css__parse_cue_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_sheet.resolve)(_sheet.url, token.idata.get_ref().clone()) {
+		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
-				let uri_snumber = _sheet.css__stylesheet_string_add(uri);
+				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_CUE_AFTER, 0, CUE_AFTER_URI );
 				css_stylesheet::css__stylesheet_style_append(result, uri_snumber as u32)
 
@@ -238,8 +238,8 @@ pub fn css__parse_cue_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_cue_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_cue_before(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_cue_before");
 	let orig_ctx = *ctx;
@@ -268,9 +268,9 @@ pub fn css__parse_cue_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_sheet.resolve)(_sheet.url, token.idata.get_ref().clone()) {
+		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
-				let uri_snumber = _sheet.css__stylesheet_string_add(uri);
+				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_CUE_BEFORE, 0, CUE_BEFORE_URI );
 				css_stylesheet::css__stylesheet_style_append(result, uri_snumber as u32)
 
@@ -314,8 +314,8 @@ pub fn css__parse_cue_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_direction(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_direction(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_direction");
 	let orig_ctx = *ctx;
@@ -374,8 +374,8 @@ pub fn css__parse_direction(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_display(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_display(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_display");
 	let orig_ctx = *ctx;
@@ -476,8 +476,8 @@ pub fn css__parse_display(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_empty_cells(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_empty_cells(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_empty_cells");
 	let orig_ctx = *ctx;
@@ -536,8 +536,8 @@ pub fn css__parse_empty_cells(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_float(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_float(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_float");
 	let orig_ctx = *ctx;
@@ -599,8 +599,8 @@ pub fn css__parse_float(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_font_size(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_font_size(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_font_size");
 	let orig_ctx = *ctx;
@@ -660,7 +660,7 @@ pub fn css__parse_font_size(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -719,8 +719,8 @@ pub fn css__parse_font_size(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_font_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_font_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_font_style");
 	let orig_ctx = *ctx;
@@ -782,8 +782,8 @@ pub fn css__parse_font_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_font_variant(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_font_variant(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_font_variant");
 	let orig_ctx = *ctx;
@@ -842,8 +842,8 @@ pub fn css__parse_font_variant(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_height(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_height");
 	let orig_ctx = *ctx;
@@ -871,7 +871,7 @@ pub fn css__parse_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -930,8 +930,8 @@ pub fn css__parse_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_letter_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_letter_spacing(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_letter_spacing");
 	let orig_ctx = *ctx;
@@ -959,7 +959,7 @@ pub fn css__parse_letter_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1013,8 +1013,8 @@ pub fn css__parse_letter_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_line_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_line_height(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_line_height");
 	let orig_ctx = *ctx;
@@ -1057,7 +1057,7 @@ pub fn css__parse_line_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1116,8 +1116,8 @@ pub fn css__parse_line_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_max_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_max_height(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_max_height");
 	let orig_ctx = *ctx;
@@ -1145,7 +1145,7 @@ pub fn css__parse_max_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1204,8 +1204,8 @@ pub fn css__parse_max_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_max_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_max_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_max_width");
 	let orig_ctx = *ctx;
@@ -1233,7 +1233,7 @@ pub fn css__parse_max_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1292,8 +1292,8 @@ pub fn css__parse_max_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_min_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_min_height(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_min_height");
 	let orig_ctx = *ctx;
@@ -1317,7 +1317,7 @@ pub fn css__parse_min_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1376,8 +1376,8 @@ pub fn css__parse_min_height(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_min_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_min_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_min_width");
 	let orig_ctx = *ctx;
@@ -1401,7 +1401,7 @@ pub fn css__parse_min_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1460,8 +1460,8 @@ pub fn css__parse_min_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strin
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_color");
 	let orig_ctx = *ctx;
@@ -1485,7 +1485,7 @@ pub fn css__parse_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 
 		let mut color:u32;
 
-		let (value_option, color_option, res)= css__parse_color_specifier(_sheet, lwc_ref, strings, vector, ctx);
+		let (value_option, color_option, res)= css__parse_color_specifier(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx);
 		error = res;
 	//debug!("error == %? (1)" , error)
 		match res {
@@ -1534,8 +1534,8 @@ pub fn css__parse_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_padding_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_padding_side(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_padding_side");
 	let orig_ctx = *ctx;
@@ -1559,7 +1559,7 @@ pub fn css__parse_padding_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1618,11 +1618,11 @@ pub fn css__parse_padding_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_padding_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_padding_bottom(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_padding_bottom");
- return css__parse_padding_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_BOTTOM)
+ return css__parse_padding_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_BOTTOM)
 }
 /**
  * #Generated from:
@@ -1645,11 +1645,11 @@ pub fn css__parse_padding_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_padding_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_padding_left(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_padding_left");
- return css__parse_padding_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_LEFT)
+ return css__parse_padding_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_LEFT)
 }
 /**
  * #Generated from:
@@ -1672,11 +1672,11 @@ pub fn css__parse_padding_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_padding_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_padding_top(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_padding_top");
- return css__parse_padding_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_TOP)
+ return css__parse_padding_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_TOP)
 }
 /**
  * #Generated from:
@@ -1699,11 +1699,11 @@ pub fn css__parse_padding_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_padding_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_padding_right(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_padding_right");
- return css__parse_padding_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_RIGHT)
+ return css__parse_padding_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_PADDING_RIGHT)
 }
 /**
  * #Generated from:
@@ -1726,8 +1726,8 @@ pub fn css__parse_padding_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_margin_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_margin_side(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_margin_side");
 	let orig_ctx = *ctx;
@@ -1755,7 +1755,7 @@ pub fn css__parse_margin_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -1809,11 +1809,11 @@ pub fn css__parse_margin_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_margin_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_margin_top(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_margin_top");
- return css__parse_margin_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_TOP)
+ return css__parse_margin_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_TOP)
 }
 /**
  * #Generated from:
@@ -1836,11 +1836,11 @@ pub fn css__parse_margin_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_margin_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_margin_bottom(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_margin_bottom");
- return css__parse_margin_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_BOTTOM)
+ return css__parse_margin_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_BOTTOM)
 }
 /**
  * #Generated from:
@@ -1863,11 +1863,11 @@ pub fn css__parse_margin_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_margin_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_margin_left(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_margin_left");
- return css__parse_margin_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_LEFT)
+ return css__parse_margin_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_LEFT)
 }
 /**
  * #Generated from:
@@ -1890,11 +1890,11 @@ pub fn css__parse_margin_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_margin_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_margin_right(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_margin_right");
- return css__parse_margin_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_RIGHT)
+ return css__parse_margin_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_MARGIN_RIGHT)
 }
 /**
  * #Generated from:
@@ -1917,8 +1917,8 @@ pub fn css__parse_margin_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_side(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_side");
 	let orig_ctx = *ctx;
@@ -1946,7 +1946,7 @@ pub fn css__parse_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&c
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -2000,11 +2000,11 @@ pub fn css__parse_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&c
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_top(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_top");
- return css__parse_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_TOP)
+ return css__parse_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_TOP)
 }
 /**
  * #Generated from:
@@ -2027,11 +2027,11 @@ pub fn css__parse_top(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&cs
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_bottom(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_bottom");
- return css__parse_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BOTTOM)
+ return css__parse_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BOTTOM)
 }
 /**
  * #Generated from:
@@ -2054,11 +2054,11 @@ pub fn css__parse_bottom(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_left(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_left");
- return css__parse_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_LEFT)
+ return css__parse_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_LEFT)
 }
 /**
  * #Generated from:
@@ -2081,11 +2081,11 @@ pub fn css__parse_left(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&c
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_right(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_right");
- return css__parse_side(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_RIGHT)
+ return css__parse_side(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_RIGHT)
 }
 /**
  * #Generated from:
@@ -2108,8 +2108,8 @@ pub fn css__parse_right(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_side_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_border_side_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_border_side_width");
 	let orig_ctx = *ctx;
@@ -2145,7 +2145,7 @@ pub fn css__parse_border_side_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -2204,11 +2204,11 @@ pub fn css__parse_border_side_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_top_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_top_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_top_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_WIDTH)
 }
 /**
  * #Generated from:
@@ -2231,11 +2231,11 @@ pub fn css__parse_border_top_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_bottom_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_bottom_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_bottom_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_WIDTH)
 }
 /**
  * #Generated from:
@@ -2258,11 +2258,11 @@ pub fn css__parse_border_bottom_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_left_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_left_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_left_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_WIDTH)
 }
 /**
  * #Generated from:
@@ -2285,11 +2285,11 @@ pub fn css__parse_border_left_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_right_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_right_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_right_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_WIDTH)
 }
 /**
  * #Generated from:
@@ -2312,8 +2312,8 @@ pub fn css__parse_border_right_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~l
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_side_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_border_side_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_border_side_style");
 	let orig_ctx = *ctx;
@@ -2396,11 +2396,11 @@ pub fn css__parse_border_side_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_top_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_top_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_top_style");
- return css__parse_border_side_style(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_STYLE)
+ return css__parse_border_side_style(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_STYLE)
 }
 /**
  * #Generated from:
@@ -2423,11 +2423,11 @@ pub fn css__parse_border_top_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_bottom_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_bottom_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_bottom_style");
- return css__parse_border_side_style(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_STYLE)
+ return css__parse_border_side_style(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_STYLE)
 }
 /**
  * #Generated from:
@@ -2450,11 +2450,11 @@ pub fn css__parse_border_bottom_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_left_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_left_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_left_style");
- return css__parse_border_side_style(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_STYLE)
+ return css__parse_border_side_style(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_STYLE)
 }
 /**
  * #Generated from:
@@ -2477,11 +2477,11 @@ pub fn css__parse_border_left_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_right_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_right_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_right_style");
- return css__parse_border_side_style(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_STYLE)
+ return css__parse_border_side_style(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_STYLE)
 }
 /**
  * #Generated from:
@@ -2504,8 +2504,8 @@ pub fn css__parse_border_right_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~l
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_side_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style, op:css_properties_e) -> css_error
+pub fn css__parse_border_side_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style, op:css_properties_e) -> css_error
 {
 //debug!("Entering: css__parse_border_side_color");
 	let orig_ctx = *ctx;
@@ -2529,7 +2529,7 @@ pub fn css__parse_border_side_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 
 		let mut color:u32;
 
-		let (value_option, color_option, res)= css__parse_color_specifier(_sheet, lwc_ref, strings, vector, ctx);
+		let (value_option, color_option, res)= css__parse_color_specifier(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx);
 		error = res;
 	//debug!("error == %? (1)" , error)
 		match res {
@@ -2578,11 +2578,11 @@ pub fn css__parse_border_side_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_top_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_top_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_top_color");
- return css__parse_border_side_color(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_COLOR)
+ return css__parse_border_side_color(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_TOP_COLOR)
 }
 /**
  * #Generated from:
@@ -2605,11 +2605,11 @@ pub fn css__parse_border_top_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_bottom_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_bottom_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_bottom_color");
- return css__parse_border_side_color(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_COLOR)
+ return css__parse_border_side_color(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_BOTTOM_COLOR)
 }
 /**
  * #Generated from:
@@ -2632,11 +2632,11 @@ pub fn css__parse_border_bottom_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_left_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_left_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_left_color");
- return css__parse_border_side_color(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_COLOR)
+ return css__parse_border_side_color(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_LEFT_COLOR)
 }
 /**
  * #Generated from:
@@ -2659,11 +2659,11 @@ pub fn css__parse_border_left_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_border_right_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_border_right_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_border_right_color");
- return css__parse_border_side_color(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_COLOR)
+ return css__parse_border_side_color(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_BORDER_RIGHT_COLOR)
 }
 /**
  * #Generated from:
@@ -2686,8 +2686,8 @@ pub fn css__parse_border_right_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~l
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_counter_increment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_counter_increment(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_counter_increment");
 	let orig_ctx = *ctx;
@@ -2719,7 +2719,7 @@ pub fn css__parse_counter_increment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 			let mut num:css_fixed;
 			let mut pctx:uint;
 
-			let snumber = _sheet.css__stylesheet_string_add(token.idata.unwrap());
+			let snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(token.idata.unwrap());
 			css_stylesheet::css__stylesheet_style_append(result, snumber as u32);
 			consumeWhitespace(vector, ctx);
 
@@ -2797,8 +2797,8 @@ pub fn css__parse_counter_increment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_counter_reset(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_counter_reset(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_counter_reset");
 	let orig_ctx = *ctx;
@@ -2830,7 +2830,7 @@ pub fn css__parse_counter_reset(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 			let mut num:css_fixed;
 			let mut pctx:uint;
 
-			let snumber = _sheet.css__stylesheet_string_add(token.idata.unwrap());
+			let snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(token.idata.unwrap());
 			css_stylesheet::css__stylesheet_style_append(result, snumber as u32);
 			consumeWhitespace(vector, ctx);
 
@@ -2908,8 +2908,8 @@ pub fn css__parse_counter_reset(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_background_attachment(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_background_attachment(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_background_attachment");
 	let orig_ctx = *ctx;
@@ -2968,8 +2968,8 @@ pub fn css__parse_background_attachment(_sheet:@mut css_stylesheet, lwc_ref:&mut
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_background_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_background_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_background_color");
 	let orig_ctx = *ctx;
@@ -2993,7 +2993,7 @@ pub fn css__parse_background_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 
 		let mut color:u32;
 
-		let (value_option, color_option, res)= css__parse_color_specifier(_sheet, lwc_ref, strings, vector, ctx);
+		let (value_option, color_option, res)= css__parse_color_specifier(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx);
 		error = res;
 	//debug!("error == %? (1)" , error)
 		match res {
@@ -3042,8 +3042,8 @@ pub fn css__parse_background_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_caption_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_caption_side(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_caption_side");
 	let orig_ctx = *ctx;
@@ -3102,8 +3102,8 @@ pub fn css__parse_caption_side(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_clear(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_clear(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_clear");
 	let orig_ctx = *ctx;
@@ -3168,8 +3168,8 @@ pub fn css__parse_clear(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_background_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_background_image(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_background_image");
 	let orig_ctx = *ctx;
@@ -3198,9 +3198,9 @@ pub fn css__parse_background_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_sheet.resolve)(_sheet.url, token.idata.get_ref().clone()) {
+		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
-				let uri_snumber = _sheet.css__stylesheet_string_add(uri);
+				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_BACKGROUND_IMAGE, 0, BACKGROUND_IMAGE_URI );
 				css_stylesheet::css__stylesheet_style_append(result, uri_snumber as u32)
 
@@ -3244,8 +3244,8 @@ pub fn css__parse_background_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_list_style_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_list_style_image(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_list_style_image");
 	let orig_ctx = *ctx;
@@ -3274,9 +3274,9 @@ pub fn css__parse_list_style_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_sheet.resolve)(_sheet.url, token.idata.get_ref().clone()) {
+		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
-				let uri_snumber = _sheet.css__stylesheet_string_add(uri);
+				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_LIST_STYLE_IMAGE, 0, LIST_STYLE_IMAGE_URI );
 				css_stylesheet::css__stylesheet_style_append(result, uri_snumber as u32)
 
@@ -3320,8 +3320,8 @@ pub fn css__parse_list_style_image(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_list_style_position(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_list_style_position(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_list_style_position");
 	let orig_ctx = *ctx;
@@ -3380,8 +3380,8 @@ pub fn css__parse_list_style_position(_sheet:@mut css_stylesheet, lwc_ref:&mut ~
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_orphans(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_orphans(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_orphans");
 	let orig_ctx = *ctx;
@@ -3451,8 +3451,8 @@ pub fn css__parse_orphans(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_outline_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_outline_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_outline_color");
 	let orig_ctx = *ctx;
@@ -3480,7 +3480,7 @@ pub fn css__parse_outline_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 
 		let mut color:u32;
 
-		let (value_option, color_option, res)= css__parse_color_specifier(_sheet, lwc_ref, strings, vector, ctx);
+		let (value_option, color_option, res)= css__parse_color_specifier(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx);
 		error = res;
 	//debug!("error == %? (1)" , error)
 		match res {
@@ -3529,8 +3529,8 @@ pub fn css__parse_outline_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_outline_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_outline_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_outline_style");
 	let orig_ctx = *ctx;
@@ -3610,11 +3610,11 @@ pub fn css__parse_outline_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_outline_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_outline_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_outline_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_OUTLINE_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_OUTLINE_WIDTH)
 }
 /**
  * #Generated from:
@@ -3637,8 +3637,8 @@ pub fn css__parse_outline_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_overflow(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_overflow(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_overflow");
 	let orig_ctx = *ctx;
@@ -3703,8 +3703,8 @@ pub fn css__parse_overflow(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, string
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_page_break_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_page_break_after(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_page_break_after");
 	let orig_ctx = *ctx;
@@ -3772,8 +3772,8 @@ pub fn css__parse_page_break_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_page_break_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_page_break_before(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_page_break_before");
 	let orig_ctx = *ctx;
@@ -3841,8 +3841,8 @@ pub fn css__parse_page_break_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_page_break_inside(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_page_break_inside(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_page_break_inside");
 	let orig_ctx = *ctx;
@@ -3901,8 +3901,8 @@ pub fn css__parse_page_break_inside(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_pause_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_pause_after(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_pause_after");
 	let orig_ctx = *ctx;
@@ -3926,7 +3926,7 @@ pub fn css__parse_pause_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_S as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_S as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -3985,8 +3985,8 @@ pub fn css__parse_pause_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_pause_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_pause_before(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_pause_before");
 	let orig_ctx = *ctx;
@@ -4010,7 +4010,7 @@ pub fn css__parse_pause_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_S as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_S as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -4069,8 +4069,8 @@ pub fn css__parse_pause_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_pitch(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_pitch(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_pitch");
 	let orig_ctx = *ctx;
@@ -4114,7 +4114,7 @@ pub fn css__parse_pitch(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_HZ as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_HZ as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -4173,8 +4173,8 @@ pub fn css__parse_pitch(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_pitch_range(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_pitch_range(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_pitch_range");
 	let orig_ctx = *ctx;
@@ -4244,8 +4244,8 @@ pub fn css__parse_pitch_range(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_position(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_position(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_position");
 	let orig_ctx = *ctx;
@@ -4310,8 +4310,8 @@ pub fn css__parse_position(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, string
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_richness(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_richness(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_richness");
 	let orig_ctx = *ctx;
@@ -4381,8 +4381,8 @@ pub fn css__parse_richness(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, string
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_speak(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_speak(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_speak");
 	let orig_ctx = *ctx;
@@ -4444,8 +4444,8 @@ pub fn css__parse_speak(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_speak_header(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_speak_header(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_speak_header");
 	let orig_ctx = *ctx;
@@ -4504,8 +4504,8 @@ pub fn css__parse_speak_header(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_speak_numeral(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_speak_numeral(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_speak_numeral");
 	let orig_ctx = *ctx;
@@ -4564,8 +4564,8 @@ pub fn css__parse_speak_numeral(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, s
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_speak_punctuation(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_speak_punctuation(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_speak_punctuation");
 	let orig_ctx = *ctx;
@@ -4624,8 +4624,8 @@ pub fn css__parse_speak_punctuation(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_speech_rate(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_speech_rate(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_speech_rate");
 	let orig_ctx = *ctx;
@@ -4723,8 +4723,8 @@ pub fn css__parse_speech_rate(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_stress(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_stress(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_stress");
 	let orig_ctx = *ctx;
@@ -4794,8 +4794,8 @@ pub fn css__parse_stress(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_table_layout(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_table_layout(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_table_layout");
 	let orig_ctx = *ctx;
@@ -4854,8 +4854,8 @@ pub fn css__parse_table_layout(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_text_align(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_text_align(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_text_align");
 	let orig_ctx = *ctx;
@@ -4929,8 +4929,8 @@ pub fn css__parse_text_align(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_text_indent(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_text_indent(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_text_indent");
 	let orig_ctx = *ctx;
@@ -4954,7 +4954,7 @@ pub fn css__parse_text_indent(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -5008,8 +5008,8 @@ pub fn css__parse_text_indent(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_text_transform(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_text_transform(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_text_transform");
 	let orig_ctx = *ctx;
@@ -5074,8 +5074,8 @@ pub fn css__parse_text_transform(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_unicode_bidi(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_unicode_bidi(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_unicode_bidi");
 	let orig_ctx = *ctx;
@@ -5137,8 +5137,8 @@ pub fn css__parse_unicode_bidi(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_vertical_align(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_vertical_align(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_vertical_align");
 	let orig_ctx = *ctx;
@@ -5194,7 +5194,7 @@ pub fn css__parse_vertical_align(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -5248,8 +5248,8 @@ pub fn css__parse_vertical_align(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, 
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_visibility(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_visibility(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_visibility");
 	let orig_ctx = *ctx;
@@ -5311,8 +5311,8 @@ pub fn css__parse_visibility(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_volume(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_volume(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_volume");
 	let orig_ctx = *ctx;
@@ -5375,7 +5375,7 @@ pub fn css__parse_volume(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -5434,8 +5434,8 @@ pub fn css__parse_volume(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_white_space(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_white_space(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_white_space");
 	let orig_ctx = *ctx;
@@ -5503,8 +5503,8 @@ pub fn css__parse_white_space(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_widows(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_widows(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_widows");
 	let orig_ctx = *ctx;
@@ -5574,8 +5574,8 @@ pub fn css__parse_widows(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_width");
 	let orig_ctx = *ctx;
@@ -5603,7 +5603,7 @@ pub fn css__parse_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -5662,8 +5662,8 @@ pub fn css__parse_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_word_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_word_spacing(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_word_spacing");
 	let orig_ctx = *ctx;
@@ -5691,7 +5691,7 @@ pub fn css__parse_word_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -5745,8 +5745,8 @@ pub fn css__parse_word_spacing(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_z_index(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_z_index(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_z_index");
 	let orig_ctx = *ctx;
@@ -5815,8 +5815,8 @@ pub fn css__parse_z_index(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_break_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_break_after(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_break_after");
 	let orig_ctx = *ctx;
@@ -5896,8 +5896,8 @@ pub fn css__parse_break_after(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_break_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_break_before(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_break_before");
 	let orig_ctx = *ctx;
@@ -5977,8 +5977,8 @@ pub fn css__parse_break_before(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_break_inside(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_break_inside(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_break_inside");
 	let orig_ctx = *ctx;
@@ -6043,8 +6043,8 @@ pub fn css__parse_break_inside(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_count(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_count(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_count");
 	let orig_ctx = *ctx;
@@ -6118,8 +6118,8 @@ pub fn css__parse_column_count(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_fill(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_fill(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_fill");
 	let orig_ctx = *ctx;
@@ -6178,8 +6178,8 @@ pub fn css__parse_column_fill(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_gap(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_gap(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_gap");
 	let orig_ctx = *ctx;
@@ -6207,7 +6207,7 @@ pub fn css__parse_column_gap(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {
@@ -6266,8 +6266,8 @@ pub fn css__parse_column_gap(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, stri
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_rule_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_rule_color(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_rule_color");
 	let orig_ctx = *ctx;
@@ -6291,7 +6291,7 @@ pub fn css__parse_column_rule_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 
 		let mut color:u32;
 
-		let (value_option, color_option, res)= css__parse_color_specifier(_sheet, lwc_ref, strings, vector, ctx);
+		let (value_option, color_option, res)= css__parse_color_specifier(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx);
 		error = res;
 	//debug!("error == %? (1)" , error)
 		match res {
@@ -6340,8 +6340,8 @@ pub fn css__parse_column_rule_color(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_rule_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_rule_style(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_rule_style");
 	let orig_ctx = *ctx;
@@ -6424,11 +6424,11 @@ pub fn css__parse_column_rule_style(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_rule_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_rule_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_rule_width");
- return css__parse_border_side_width(_sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_COLUMN_RULE_WIDTH)
+ return css__parse_border_side_width(_stylesheet_vector, _sheet, lwc_ref, strings, vector, ctx, result, CSS_PROP_COLUMN_RULE_WIDTH)
 }
 /**
  * #Generated from:
@@ -6451,8 +6451,8 @@ pub fn css__parse_column_rule_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lw
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_span(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_span(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_span");
 	let orig_ctx = *ctx;
@@ -6511,8 +6511,8 @@ pub fn css__parse_column_span(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, str
 *   ctx is updated with the next token to process
 *     If the input is invalid, then ctx remains unchanged.
 */
-pub fn css__parse_column_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, strings:&css_propstrings,
-      vector:&~[~css_token], ctx:@mut uint, result:@mut css_style) -> css_error
+pub fn css__parse_column_width(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:uint, lwc_ref:&mut ~lwc, strings:&css_propstrings,
+      vector:&~[~css_token], ctx:&mut uint, result:&mut ~css_style) -> css_error
 {
 //debug!("Entering: css__parse_column_width");
 	let orig_ctx = *ctx;
@@ -6540,7 +6540,7 @@ pub fn css__parse_column_width(_sheet:@mut css_stylesheet, lwc_ref:&mut ~lwc, st
 
 		let mut unit:u32;
 
-		let (length_option, unit_option, res) =css__parse_unit_specifier(_sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
+		let (length_option, unit_option, res) =css__parse_unit_specifier(_stylesheet_vector, _sheet, lwc_ref, vector, ctx, UNIT_PX as u32);
 		error = res;
 	//debug!("error == %?(1)" , error)
 		match res {

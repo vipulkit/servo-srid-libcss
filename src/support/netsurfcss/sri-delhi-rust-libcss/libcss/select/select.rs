@@ -334,7 +334,11 @@ impl css_select_ctx {
         /* Base element style is guaranteed to exist */
         state.results.styles[0] = (Some(css_computed_style_create()));
 
+<<<<<<< HEAD
         error = ((state.handler.get_ref().parent_node))(node, &mut parent);
+=======
+        error = ((state.handler.get_ref().parent_node))(state.pw , node, &mut parent);
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
         match error {
             CSS_OK=>{},
             x =>  {
@@ -343,7 +347,11 @@ impl css_select_ctx {
         }
 
         /* Get node's name */
+<<<<<<< HEAD
         error = ((state.handler.get_ref().node_name))(node, &mut state.element);
+=======
+        error = ((state.handler.get_ref().node_name))(state.pw , node, &mut state.element);
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
         match error {
             CSS_OK=>{},
             x =>  {
@@ -1521,7 +1529,11 @@ impl css_select_ctx {
             /* Find candidate node */
             match combinator_type {
                 CSS_COMBINATOR_ANCESTOR => {
+<<<<<<< HEAD
                     error = (state.handler.get_ref().named_ancestor_node)( 
+=======
+                    error = (state.handler.get_ref().named_ancestor_node)( state.pw ,
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1529,7 +1541,11 @@ impl css_select_ctx {
                     }
                 }   
                 CSS_COMBINATOR_PARENT => {
+<<<<<<< HEAD
                     error = (state.handler.get_ref().named_parent_node)( 
+=======
+                    error = (state.handler.get_ref().named_parent_node)(state.pw , 
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1537,7 +1553,11 @@ impl css_select_ctx {
                     }
                 }    
                 CSS_COMBINATOR_SIBLING => {
+<<<<<<< HEAD
                     error = (state.handler.get_ref().named_sibling_node)( 
+=======
+                    error = (state.handler.get_ref().named_sibling_node)( state.pw ,
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1546,7 +1566,11 @@ impl css_select_ctx {
                 }    
                     
                 CSS_COMBINATOR_GENERIC_SIBLING => {
+<<<<<<< HEAD
                     error = (state.handler.get_ref().named_generic_sibling_node)(
+=======
+                    error = (state.handler.get_ref().named_generic_sibling_node)(state.pw ,
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1812,7 +1836,11 @@ impl css_select_ctx {
                 CSS_COMBINATOR_ANCESTOR | 
                 CSS_COMBINATOR_PARENT => {
 					//println(fmt!("n = %?", n));
+<<<<<<< HEAD
                     error = (state.handler.get_ref().parent_node)(n, &mut n);
+=======
+                    error = (state.handler.get_ref().parent_node)(state.pw ,n, &mut n);
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1820,7 +1848,11 @@ impl css_select_ctx {
                 }
                 CSS_COMBINATOR_SIBLING |
                 CSS_COMBINATOR_GENERIC_SIBLING => {
+<<<<<<< HEAD
                     error = (state.handler.get_ref().sibling_node)(n, &mut n);
+=======
+                    error = (state.handler.get_ref().sibling_node)(state.pw ,n, &mut n);
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1978,7 +2010,11 @@ impl css_select_ctx {
                         lwc_name , matched);
             }
             CSS_SELECTOR_PSEUDO_CLASS => {
+<<<<<<< HEAD
                 error = (state.handler.get_ref().node_is_root)( node, &mut is_root);
+=======
+                error = (state.handler.get_ref().node_is_root)(state.pw , node, &mut is_root);
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                 match error {
                     CSS_OK => {},
                     _=> {
@@ -2197,11 +2233,12 @@ impl css_select_ctx {
                             node, matched);
                 } 
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.link.expect("") ) ) { 
-                    error = (state.handler.get_ref().node_is_link)(
+
+                    error = (state.handler.get_ref().node_is_link)(state.pw ,
                             node, matched);
                 }
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.visited.expect("") ) ) { 
-                    error = (state.handler.get_ref().node_is_visited)(
+                    error = (state.handler.get_ref().node_is_visited)(state.pw ,
                             node, matched);
                 }
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.hover.expect("") ) ) { 
@@ -2259,11 +2296,19 @@ impl css_select_ctx {
                 }
             }
             CSS_SELECTOR_ATTRIBUTE => {
+<<<<<<< HEAD
                 error = (state.handler.get_ref().node_has_attribute)(lwc_ref, node,
                         detail.qname, matched);
             }
             CSS_SELECTOR_ATTRIBUTE_EQUAL => {
                 error = (state.handler.get_ref().node_has_attribute_equal)( 
+=======
+                error = (state.handler.get_ref().node_has_attribute)(state.pw ,lwc_ref, node,
+                        detail.qname, matched);
+            }
+            CSS_SELECTOR_ATTRIBUTE_EQUAL => {
+                error = (state.handler.get_ref().node_has_attribute_equal)( state.pw ,
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
                         lwc_ref, node, detail.qname, detail.string.get_ref().clone(), 
                         matched);
             }

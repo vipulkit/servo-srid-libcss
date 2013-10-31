@@ -862,8 +862,7 @@ pub fn run_test(_:&mut ~[css_stylesheet], _:&mut ~[~css_rule_data_type], ctx:&mu
  }
 
  #[inline] 
-fn node_name(n:*libc::c_void, qname : &mut css_qname) -> css_error {
-
+fn node_name(_:*libc::c_void,n:*libc::c_void, qname : &mut css_qname) -> css_error {
     let node : @mut node;
     let reason = "Function node_name";
     unsafe {
@@ -935,7 +934,11 @@ fn node_id(lwc_ref:&mut ~lwc, pw:*libc::c_void, n:*libc::c_void, id: &mut uint )
 }
 
 #[inline] 
+<<<<<<< HEAD
 fn named_ancestor_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, ancestor:*mut *libc::c_void) -> css_error {
+=======
+fn named_ancestor_node(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, ancestor:*mut *libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("named_ancestor_node");
     let mut node1:@mut node;
     let reason = "Function named_ancestor_node";
@@ -965,7 +968,11 @@ fn named_ancestor_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname,
 }
 
 #[inline]   
+<<<<<<< HEAD
 fn named_parent_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, parent:*mut*libc::c_void) -> css_error {
+=======
+fn named_parent_node(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, parent:*mut*libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("named_parent_node");
     let mut node1:@mut node;
     let reason = "Function named_parent_node";
@@ -989,7 +996,11 @@ fn named_parent_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, p
 }
 
 #[inline]    
+<<<<<<< HEAD
 fn named_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut* libc::c_void) -> css_error {
+=======
+fn named_sibling_node(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut* libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("named_sibling_node");
     let mut node1:@mut node;
     let reason = "Function named_sibling_node";
@@ -1013,7 +1024,11 @@ fn named_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, 
 }
 
 #[inline] 
+<<<<<<< HEAD
 fn named_generic_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut*libc::c_void) -> css_error {
+=======
+fn named_generic_sibling_node(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut*libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("named_generic_sibling_node");
     let mut node1:@mut node;
     let reason = "Function named_generic_sibling_node";
@@ -1043,7 +1058,11 @@ fn named_generic_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css
 }
 
 #[inline]    
+<<<<<<< HEAD
 fn parent_node(n:*libc::c_void, parent:*mut*libc::c_void) -> css_error {
+=======
+fn parent_node(_:*libc::c_void,n:*libc::c_void, parent:*mut*libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     let mut node1:@mut node;
     unsafe {
         node1 = ::cast::transmute(n); 
@@ -1060,7 +1079,11 @@ fn parent_node(n:*libc::c_void, parent:*mut*libc::c_void) -> css_error {
 }
 
 #[inline] 
+<<<<<<< HEAD
 fn sibling_node(n:*libc::c_void, sibling:*mut*libc::c_void) -> css_error {
+=======
+fn sibling_node(_:*libc::c_void,n:*libc::c_void, sibling:*mut*libc::c_void) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     let mut node1:@mut node;
     unsafe {
         node1 = ::cast::transmute(n);
@@ -1181,7 +1204,11 @@ fn node_has_id(lwc_ref:&mut ~lwc, pw:*libc::c_void, n:*libc::c_void, name:uint, 
 }
 
 #[inline] 
+<<<<<<< HEAD
 fn node_has_attribute(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname, matched:&mut bool) -> css_error {
+=======
+fn node_has_attribute(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname, matched:&mut bool) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("node_has_attribute");
     let mut node1:@mut node;
     unsafe {
@@ -1202,7 +1229,11 @@ fn node_has_attribute(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname, matc
 }
     
 #[inline] 
+<<<<<<< HEAD
 fn  node_has_attribute_equal(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname,value:uint, matched:&mut bool) -> css_error {
+=======
+fn  node_has_attribute_equal(_:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname,value:uint, matched:&mut bool) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     // debug!("node_has_attribute_equal");
     let mut node1:@mut node;
     unsafe {
@@ -1433,7 +1464,7 @@ fn node_has_attribute_substring(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_q
 }
 
 #[inline] 
-fn node_is_root(n:*libc::c_void, matched:&mut bool) -> css_error {
+fn node_is_root(_:*libc::c_void,n:*libc::c_void, matched:&mut bool) -> css_error {
     debug!("node_is_root");
     let mut node1:@mut node;
     unsafe {
@@ -1512,14 +1543,14 @@ fn node_is_empty(n:*libc::c_void, matched:&mut bool) -> css_error {
 }
 
 #[inline]     
-fn node_is_link(_:*libc::c_void, matched:&mut bool) -> css_error {
+fn node_is_link(_:*libc::c_void,_:*libc::c_void, matched:&mut bool) -> css_error {
     
     *matched = false;
     CSS_OK
 }
 
 #[inline] 
-fn node_is_visited(_:*libc::c_void, matched:&mut bool) -> css_error {
+fn node_is_visited(_:*libc::c_void,_:*libc::c_void, matched:&mut bool) -> css_error {
     
     *matched = false;
     CSS_OK
@@ -1583,7 +1614,11 @@ fn node_presentational_hint(_:*libc::c_void, _:u32) -> (css_error,Option<~css_hi
 }
 
 #[inline] 
+<<<<<<< HEAD
 fn ua_default_for_property(property:u32, hint:&mut ~css_hint ) -> css_error {
+=======
+fn ua_default_for_property(_:*libc::c_void,property:u32, hint:&mut ~css_hint ) -> css_error {
+>>>>>>> 9e9ec9d11c396d6a014d4984dfb8446742869bc8
     
     if property == CSS_PROP_COLOR as u32 {
         hint.color = 0xff000000;
