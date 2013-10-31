@@ -89,7 +89,7 @@ pub fn select_test(file:~str) {
     lwc_attr_class = Some(lwc_ref.lwc_intern_string(&"class"));
     lwc_attr_id = Some(lwc_ref.lwc_intern_string(&"id"));
     let propstring = css_propstrings::css_propstrings(lwc_ref);
-    let ctx : @mut line_ctx = @mut line_ctx{
+    let ctx : &mut line_ctx = &mut line_ctx{
         //explen:0,
         //expused:0,
         exp:~"",
@@ -127,16 +127,21 @@ pub fn select_test(file:~str) {
         }
     }
 
-    let css_stylesheet_create_time = @mut 0;
-    let css_stylesheet_append_data_time = @mut 0;
-    let css_select_style_time = @mut 0;
-    let css_stylesheet_data_done_time= @mut 0f;
-
+    let css_stylesheet_create_time = &mut 0;
+    let css_stylesheet_append_data_time = &mut 0;
+    let css_select_style_time = &mut 0;
+    let css_stylesheet_data_done_time= &mut 0f;
+    // let mut stylesheet_vector:~[css_stylesheet]=~[];
+    stylesheet_vector_create();
+    rule_data_list_create();
+    let stylesheet_vector = unsafe {stylesheet_vector_ref.get_mut_ref()};
+    let css_rule_data_list = unsafe {rule_data_list_ref.get_mut_ref()};
+    // let mut css_rule_data_list:~[~css_rule_data_type]=~[];
     for line in file_content.any_line_iter() {
         let mut line_string: ~str = line.to_str(); 
         line_string.push_char('\n');
         // debug!("Handling line =%?=",copy line_string);
-        handle_line(&mut line_string, lwc_ref, &propstring , ctx, css_stylesheet_create_time, 
+        handle_line(stylesheet_vector, css_rule_data_list, &mut line_string, lwc_ref, &propstring , ctx, css_stylesheet_create_time, 
                 css_stylesheet_append_data_time, 
                 css_select_style_time, 
                 css_stylesheet_data_done_time  );
@@ -144,7 +149,7 @@ pub fn select_test(file:~str) {
     }   
 
     if (ctx.tree.is_some() ) {
-        run_test(ctx, lwc_ref, css_select_style_time);
+        run_test(stylesheet_vector,css_rule_data_list, ctx, lwc_ref, css_select_style_time);
 
     }
 
@@ -152,6 +157,9 @@ pub fn select_test(file:~str) {
     io::println(fmt!("#css_stylesheet_append_data_time:%?",(*css_stylesheet_append_data_time as float/1000f))) ;
     io::println(fmt!("#css_stylesheet_data_done_time:%?",(*css_stylesheet_data_done_time/1000f))) ;
     io::println(fmt!("#css_select_style_time:%?",(*css_select_style_time as float /1000f))) ;
+
+    unsafe {stylesheet_vector_ref = None;}
+   unsafe { rule_data_list_ref = None;}
 }
 
 pub fn resolve_url(_:&str, rel:uint) -> (css_error,Option<uint>){
@@ -176,10 +184,10 @@ pub fn css_create_params() -> css_params {
      return css_param;
 }
 
-pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_propstrings , ctx:@mut line_ctx, css_stylesheet_create_time:@mut u64, 
-    css_stylesheet_append_data_time:@mut u64, 
-    css_select_style_time:@mut u64, 
-    css_stylesheet_data_done_time:@mut float
+pub fn handle_line(stylesheet_vector:&mut ~[css_stylesheet], css_rule_data_list: &mut ~[~css_rule_data_type], data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_propstrings , ctx:&mut line_ctx, css_stylesheet_create_time:&mut u64, 
+    css_stylesheet_append_data_time:&mut u64, 
+    css_select_style_time:&mut u64, 
+    css_stylesheet_data_done_time:&mut float
     ) -> bool 
 {
     let mut error : css_error ;
@@ -196,7 +204,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
             }
             else {
                 /* Assume start of stylesheet */
-                css__parse_sheet(ctx,  data,1, css_stylesheet_create_time );
+                css__parse_sheet(stylesheet_vector, ctx,  data,1, css_stylesheet_create_time );
                 // debug!("Sheet parsed 1");
                 ctx.intree = false;
                 ctx.insheet = true;
@@ -210,7 +218,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
                 len = ctx.sheets.len() -1;
                 let start_time = time::precise_time_ns();
                 assert!( 
-                        match ctx.sheets[len].sheet.css_stylesheet_data_done( propstring_ref) {
+                        match ctx.sheets[len].sheet.css_stylesheet_data_done(propstring_ref) {
                                 CSS_OK=>{true},
                                 _=>{false}
                         });
@@ -236,13 +244,13 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
                 let end_time = time::precise_time_ns();
             let css_style_diff_time = (end_time as float - start_time as float);
             *css_stylesheet_data_done_time += css_style_diff_time;
-                css__parse_sheet(ctx,  data,1, css_stylesheet_create_time);
+                css__parse_sheet(stylesheet_vector, ctx,  data,1, css_stylesheet_create_time);
                 // debug!("Sheet parsed 2");
             }
             else {
                 len = ctx.sheets.len() -1;
                 let start_time = time::precise_time_ns();
-                let error = ctx.sheets[len].sheet.css_stylesheet_append_data( propstring_ref , data.as_bytes().to_owned());
+                let error = ctx.sheets[len].sheet.css_stylesheet_append_data(propstring_ref , data.as_bytes().to_owned());
                 let end_time = time::precise_time_ns();
                 *css_stylesheet_append_data_time += (end_time - start_time);
 
@@ -263,7 +271,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
         else if (ctx.inexp) {
             // debug!("in ctx inexp");
             /* This marks end of testcase, so run it */
-            run_test(ctx, lwc_ref, css_select_style_time);
+            run_test(stylesheet_vector, css_rule_data_list, ctx, lwc_ref, css_select_style_time);
             //ctx.expused = 0;
 
             ctx.intree = false;
@@ -308,7 +316,7 @@ pub fn handle_line(data:&mut ~str, lwc_ref:&mut ~lwc, propstring_ref: &css_props
     true 
 }
 
-fn css__parse_expected(ctx: @mut line_ctx , data: &str) {
+fn css__parse_expected(ctx: &mut line_ctx , data: &str) {
 
     ctx.exp = ctx.exp + data;
 }
@@ -324,7 +332,7 @@ pub fn isspace (ch:u8)-> bool {
     } 
 }
 
-pub fn css__parse_tree(ctx:@mut line_ctx, data:&mut ~str, index:uint) {
+pub fn css__parse_tree(ctx:&mut line_ctx, data:&mut ~str, index:uint) {
 
     // debug!("\n Entering css__parse_tree ") ;
     let mut p = index;
@@ -358,7 +366,7 @@ pub fn css__parse_tree(ctx:@mut line_ctx, data:&mut ~str, index:uint) {
     }
 }
 
-pub fn css__parse_tree_data(ctx:@mut line_ctx, lwc_ref:&mut ~lwc, data:&str) {
+pub fn css__parse_tree_data(ctx:&mut line_ctx, lwc_ref:&mut ~lwc, data:&str) {
     
     // debug!("\n Entering css__parse_tree_data ") ;
     let mut p = 0;
@@ -425,7 +433,7 @@ pub fn css__parse_tree_data(ctx:@mut line_ctx, lwc_ref:&mut ~lwc, data:&str) {
     //debug!("\n Before 4  ") ;
     if (value.is_none() ) {
         /* We have an element, so create it */
-        let n : @mut node = @mut node {
+        let n : @mut node= @mut node{
             name:None,
             attrs:~[],
             parent:None,
@@ -450,22 +458,22 @@ pub fn css__parse_tree_data(ctx:@mut line_ctx, lwc_ref:&mut ~lwc, data:&str) {
             /* Find node to insert into */
             while (depth <= ctx.depth) {
                 ctx.depth -= 1;
-                ctx.current = ctx.current.expect(reason).parent;
+                ctx.current = ctx.current.get_ref().parent;
             }
             //let ctx_current = ctx.current.get();  
             //debug!("\n Before insert into current node  ") ;
             /* Insert into current node */
-            if (ctx.current.expect(reason).children.is_none()) {
+            if (ctx.current.get_ref().children.is_none()) {
                 //debug!("\n Before insert into current node == if statement ") ;
-                ctx.current.expect(reason).children = Some(n);
-                ctx.current.expect(reason).last_child = Some(n);
+                ctx.current.get_ref().children = Some(n);
+                ctx.current.get_ref().last_child = Some(n);
             } else {
                 //debug!("\n Before insert into current node == else statement ");
-                ctx.current.expect(reason).last_child.expect(reason).next = Some(n);
+                ctx.current.get_ref().last_child.expect(reason).next = Some(n);
                 //debug!("\n Before insert into current node == else statement 2") ;
-                n.prev = ctx.current.expect(reason).last_child;
+                n.prev = ctx.current.get_ref().last_child;
                 //debug!("\n Before insert into current node == else statement 3") ;
-                ctx.current.expect(reason).last_child = Some(n);
+                ctx.current.get_ref().last_child = Some(n);
             }
             //debug!("\n Before final updation  ") ;
             ctx.current = Some(ctx.current.expect(reason));  
@@ -495,7 +503,7 @@ pub fn css__parse_tree_data(ctx:@mut line_ctx, lwc_ref:&mut ~lwc, data:&str) {
 
 }
 
-pub fn css__parse_sheet(ctx:@mut line_ctx , data:&mut ~str,index:uint, css_stylesheet_create_time:@mut u64){
+pub fn css__parse_sheet(_:&mut ~[css_stylesheet], ctx:&mut line_ctx , data:&mut ~str,index:uint, css_stylesheet_create_time:&mut u64){
     
     // debug!("\n Entering css__parse_sheet ") ;
     let mut origin : css_origin = CSS_ORIGIN_AUTHOR;
@@ -643,7 +651,7 @@ pub fn css__parse_media_list(data:&mut ~str ,index:uint, media : &mut u64) -> ui
     len
 }
 
-pub fn css__parse_pseudo_list(data:&mut ~str, index:uint,ctx:@mut line_ctx) -> uint {
+pub fn css__parse_pseudo_list(data:&mut ~str, index:uint,ctx:&mut line_ctx) -> uint {
     
     // debug!("\n Entering css__parse_pseudo_list ") ;
     let string = data.slice(index, data.len()).to_owned();
@@ -715,10 +723,10 @@ fn to_lower(string:&str) -> ~str {
     str::from_utf8(lower)
 }
 
-pub fn run_test( ctx:@mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:@mut u64) {
+pub fn run_test(_:&mut ~[css_stylesheet], _:&mut ~[~css_rule_data_type], ctx:&mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:&mut u64) {
     //debug!("\n Entering run test =%?=",ctx) ;
     let mut select: ~css_select_ctx;
-    let mut results: @mut css_select_results;
+    let mut results: ~css_select_results;
 
     let mut i:u32=0;
     let mut buf:~str= ~"";
@@ -738,7 +746,7 @@ pub fn run_test( ctx:@mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:@mu
         }
         i += 1;
     }
-    let select_handler:  @mut css_select_handler = @mut css_select_handler {
+    let select_handler:  ~css_select_handler = ~css_select_handler {
         node_name: node_name,
 
         node_classes: node_classes,
@@ -831,7 +839,7 @@ pub fn run_test( ctx:@mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:@mu
     }
 
     assert!(results.styles[ctx.pseudo_element].is_some());
-    dump_computed_style(results.styles[ctx.pseudo_element].unwrap(), lwc_ref, &mut buf);
+    dump_computed_style(results.styles[ctx.pseudo_element].get_mut_ref(),  lwc_ref, &mut buf);
 
 
     // debug!(fmt!(" CSS Selection result is =%?",results));
@@ -854,7 +862,7 @@ pub fn run_test( ctx:@mut line_ctx, lwc_ref:&mut ~lwc, css_select_style_time:@mu
  }
 
  #[inline] 
-fn node_name(pw:*libc::c_void, n:*libc::c_void, qname : &mut css_qname) -> css_error {
+fn node_name(n:*libc::c_void, qname : &mut css_qname) -> css_error {
 
     let node : @mut node;
     let reason = "Function node_name";
@@ -927,7 +935,7 @@ fn node_id(lwc_ref:&mut ~lwc, pw:*libc::c_void, n:*libc::c_void, id: &mut uint )
 }
 
 #[inline] 
-fn named_ancestor_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, ancestor:*mut *libc::c_void) -> css_error {
+fn named_ancestor_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, ancestor:*mut *libc::c_void) -> css_error {
     // debug!("named_ancestor_node");
     let mut node1:@mut node;
     let reason = "Function named_ancestor_node";
@@ -957,7 +965,7 @@ fn named_ancestor_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qnam
 }
 
 #[inline]   
-fn named_parent_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, parent:*mut*libc::c_void) -> css_error {
+fn named_parent_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, parent:*mut*libc::c_void) -> css_error {
     // debug!("named_parent_node");
     let mut node1:@mut node;
     let reason = "Function named_parent_node";
@@ -981,7 +989,7 @@ fn named_parent_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:
 }
 
 #[inline]    
-fn named_sibling_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut* libc::c_void) -> css_error {
+fn named_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut* libc::c_void) -> css_error {
     // debug!("named_sibling_node");
     let mut node1:@mut node;
     let reason = "Function named_sibling_node";
@@ -1005,7 +1013,7 @@ fn named_sibling_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname
 }
 
 #[inline] 
-fn named_generic_sibling_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut*libc::c_void) -> css_error {
+fn named_generic_sibling_node(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&mut css_qname, sibling:*mut*libc::c_void) -> css_error {
     // debug!("named_generic_sibling_node");
     let mut node1:@mut node;
     let reason = "Function named_generic_sibling_node";
@@ -1035,7 +1043,7 @@ fn named_generic_sibling_node(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_voi
 }
 
 #[inline]    
-fn parent_node(pw:*libc::c_void,n:*libc::c_void, parent:*mut*libc::c_void) -> css_error {
+fn parent_node(n:*libc::c_void, parent:*mut*libc::c_void) -> css_error {
     let mut node1:@mut node;
     unsafe {
         node1 = ::cast::transmute(n); 
@@ -1052,7 +1060,7 @@ fn parent_node(pw:*libc::c_void,n:*libc::c_void, parent:*mut*libc::c_void) -> cs
 }
 
 #[inline] 
-fn sibling_node(pw:*libc::c_void,n:*libc::c_void, sibling:*mut*libc::c_void) -> css_error {
+fn sibling_node(n:*libc::c_void, sibling:*mut*libc::c_void) -> css_error {
     let mut node1:@mut node;
     unsafe {
         node1 = ::cast::transmute(n);
@@ -1173,7 +1181,7 @@ fn node_has_id(lwc_ref:&mut ~lwc, pw:*libc::c_void, n:*libc::c_void, name:uint, 
 }
 
 #[inline] 
-fn node_has_attribute(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname, matched:&mut bool) -> css_error {
+fn node_has_attribute(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname, matched:&mut bool) -> css_error {
     // debug!("node_has_attribute");
     let mut node1:@mut node;
     unsafe {
@@ -1194,7 +1202,7 @@ fn node_has_attribute(pw:*libc::c_void,lwc_ref:&mut ~lwc, n:*libc::c_void, qname
 }
     
 #[inline] 
-fn  node_has_attribute_equal(pw:*libc::c_void ,lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname,value:uint, matched:&mut bool) -> css_error {
+fn  node_has_attribute_equal(lwc_ref:&mut ~lwc, n:*libc::c_void, qname:&css_qname,value:uint, matched:&mut bool) -> css_error {
     // debug!("node_has_attribute_equal");
     let mut node1:@mut node;
     unsafe {
@@ -1570,15 +1578,15 @@ fn node_is_lang(_:*libc::c_void, _:uint, matched:&mut bool) -> css_error {
 }
 
 #[inline] 
-fn node_presentational_hint(_:*libc::c_void, _:u32) -> (css_error,Option<@mut css_hint>) {
+fn node_presentational_hint(_:*libc::c_void, _:u32) -> (css_error,Option<~css_hint>) {
     (CSS_PROPERTY_NOT_SET,None)
 }
 
 #[inline] 
-fn ua_default_for_property(pw:*libc::c_void ,property:u32, hint:@mut css_hint ) -> css_error {
+fn ua_default_for_property(property:u32, hint:&mut ~css_hint ) -> css_error {
     
     if property == CSS_PROP_COLOR as u32 {
-        hint.color = Some(0xff000000);
+        hint.color = 0xff000000;
         hint.status = CSS_COLOR_COLOR as u8;
     }
     else if property == CSS_PROP_FONT_FAMILY as u32 {
@@ -1602,35 +1610,35 @@ fn ua_default_for_property(pw:*libc::c_void ,property:u32, hint:@mut css_hint ) 
 }
 
 #[inline]
-fn compute_font_size(parent: Option<@mut css_hint>, size: Option<@mut css_hint>) -> css_error {
+fn compute_font_size(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
     // debug!("\n Entering compute ") ;
-    let mut parent_value:@mut css_hint;
-    let mut size_val : @mut css_hint;
-    let sizes:~[@mut css_hint_length] =
+    let mut parent_value:&mut ~css_hint;
+    let mut size_val : &mut ~css_hint;
+    let sizes:~[~css_hint_length] =
         ~[
-            @mut css_hint_length{value:FLTTOFIX(6.75),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(7.50),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(9.75),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(12.0),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(13.5),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(18.0),unit:CSS_UNIT_PT},
-            @mut css_hint_length{value:FLTTOFIX(24.0),unit:CSS_UNIT_PT}
+            ~css_hint_length{value:FLTTOFIX(6.75),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(7.50),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(9.75),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(12.0),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(13.5),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(18.0),unit:CSS_UNIT_PT},
+            ~css_hint_length{value:FLTTOFIX(24.0),unit:CSS_UNIT_PT}
         ];
-        let parent_size: @mut css_hint_length;
+        let parent_size: &~css_hint_length;
         
         /* Grab parent size, defaulting to medium if none */
         if parent.is_none() {
-            parent_size = sizes[CSS_FONT_SIZE_MEDIUM as uint- 1];
+            parent_size = & sizes[CSS_FONT_SIZE_MEDIUM as uint- 1];
         }
         else {
-            parent_value = *parent.get_ref();
+            parent_value = parent.unwrap();
             assert!(parent_value.status == CSS_FONT_SIZE_DIMENSION as u8);
-            assert!( match parent_value.length.unwrap().unit {
+            assert!( match parent_value.length.get_ref().unit {
                 CSS_UNIT_EM |
                 CSS_UNIT_EX=> false,
                 _=> true
             });    
-            parent_size = parent_value.length.unwrap();
+            parent_size = parent_value.length.get_ref();
         }
 
         if size.is_none() {
@@ -1645,46 +1653,46 @@ fn compute_font_size(parent: Option<@mut css_hint>, size: Option<@mut css_hint>)
 
         if size_val.status < CSS_FONT_SIZE_LARGER as u8 {
             /* Keyword -- simple */
-            size_val.length = Some(sizes[size_val.status -1]);
+            size_val.length = Some(~css_hint_length{value:sizes[size_val.status -1].value,unit:sizes[size_val.status -1].unit});
         }
         else if size_val.status == CSS_FONT_SIZE_LARGER as u8 {
             // \todo Step within table, if appropriate 
-            size_val.length.unwrap().value = css_multiply_fixed(parent_size.value, FLTTOFIX(1.2) );
-            size_val.length.unwrap().unit = parent_size.unit;
+            size_val.length.get_mut_ref().value = css_multiply_fixed(parent_size.value, FLTTOFIX(1.2) );
+            size_val.length.get_mut_ref().unit = parent_size.unit;
         }
         else if size_val.status == CSS_FONT_SIZE_SMALLER as u8 {
             // \todo Step within table, if appropriate 
-            size_val.length.unwrap().value = css_multiply_fixed(parent_size.value, FLTTOFIX(1.2) );
-            size_val.length.unwrap().unit = parent_size.unit;
+            size_val.length.get_mut_ref().value = css_multiply_fixed(parent_size.value, FLTTOFIX(1.2) );
+            size_val.length.get_mut_ref().unit = parent_size.unit;
         }
         else if (
-                    match size_val.length.unwrap().unit {
+                    match size_val.length.get_mut_ref().unit {
                         CSS_UNIT_EM |
                         CSS_UNIT_EX => true,
                         _=> false
                     }
                 ) {
                 
-            size_val.length.unwrap().value = css_multiply_fixed(size_val.length.unwrap().value,parent_size.value);
+            size_val.length.get_mut_ref().value = css_multiply_fixed(size_val.length.get_ref().value,parent_size.value);
             if (
-                match size_val.length.unwrap().unit {
+                match size_val.length.get_mut_ref().unit {
                     CSS_UNIT_EX => true,
                     _=> false
                 }
                 ) {
-                    size_val.length.unwrap().value = css_multiply_fixed(size_val.length.unwrap().value,FLTTOFIX(0.6));
+                    size_val.length.get_mut_ref().value = css_multiply_fixed(size_val.length.get_ref().value,FLTTOFIX(0.6));
             }
-            size_val.length.unwrap().unit = parent_size.unit;
+            size_val.length.get_mut_ref().unit = parent_size.unit;
         }
         else if (
-                    match size_val.length.unwrap().unit {
+                    match size_val.length.get_mut_ref().unit {
                         CSS_UNIT_PCT => true,
                         _=> false
                     }
                 ) {
             
-            size_val.length.unwrap().value = css_divide_fixed(css_multiply_fixed(size_val.length.unwrap().value,parent_size.value),FLTTOFIX(100.0));    
-            size_val.length.unwrap().unit = parent_size.unit;
+            size_val.length.get_mut_ref().value = css_divide_fixed(css_multiply_fixed(size_val.length.get_ref().value,parent_size.value),FLTTOFIX(100.0));    
+            size_val.length.get_mut_ref().unit = parent_size.unit;
         }
     size_val.status = CSS_FONT_SIZE_DIMENSION as u8;
     CSS_OK
