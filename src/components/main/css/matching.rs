@@ -15,7 +15,7 @@ use newcss::computed::SelectResults;
 use servo_util::tree::TreeNodeRef;
 
 pub trait MatchMethods {
-    fn restyle_subtree(&self, select_ctx: &SelectCtx);
+    fn restyle_subtree(&self, select_ctx: &mut SelectCtx);
 }
 
 impl MatchMethods for AbstractNode<LayoutView> {
@@ -26,7 +26,7 @@ impl MatchMethods for AbstractNode<LayoutView> {
      * the node (the reader-auxiliary box in the COW model) with the
      * computed style.
      */
-    fn restyle_subtree(&self, select_ctx: &SelectCtx) {
+    fn restyle_subtree(&self, select_ctx: &mut SelectCtx) {
         // Only elements have styles
         if self.is_element() {
             do self.with_imm_element |elem| {
