@@ -334,7 +334,9 @@ impl css_select_ctx {
         /* Base element style is guaranteed to exist */
         state.results.styles[0] = (Some(css_computed_style_create()));
 
+
         error = ((state.handler.get_ref().parent_node))(state.pw , node, &mut parent);
+
         match error {
             CSS_OK=>{},
             x =>  {
@@ -343,7 +345,9 @@ impl css_select_ctx {
         }
 
         /* Get node's name */
+
         error = ((state.handler.get_ref().node_name))(state.pw , node, &mut state.element);
+
         match error {
             CSS_OK=>{},
             x =>  {
@@ -1521,7 +1525,9 @@ impl css_select_ctx {
             /* Find candidate node */
             match combinator_type {
                 CSS_COMBINATOR_ANCESTOR => {
+
                     error = (state.handler.get_ref().named_ancestor_node)( state.pw ,
+
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1529,7 +1535,9 @@ impl css_select_ctx {
                     }
                 }   
                 CSS_COMBINATOR_PARENT => {
+
                     error = (state.handler.get_ref().named_parent_node)(state.pw , 
+
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1537,7 +1545,9 @@ impl css_select_ctx {
                     }
                 }    
                 CSS_COMBINATOR_SIBLING => {
+
                     error = (state.handler.get_ref().named_sibling_node)( state.pw ,
+
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1546,7 +1556,9 @@ impl css_select_ctx {
                 }    
                     
                 CSS_COMBINATOR_GENERIC_SIBLING => {
+
                     error = (state.handler.get_ref().named_generic_sibling_node)(state.pw ,
+
                             lwc_ref, n, stylesheet_vector[sheet].css_selectors_list[selector].data[0].qname, &mut n);
                     match error {
                         CSS_OK => {},
@@ -1812,7 +1824,9 @@ impl css_select_ctx {
                 CSS_COMBINATOR_ANCESTOR | 
                 CSS_COMBINATOR_PARENT => {
 					//println(fmt!("n = %?", n));
+
                     error = (state.handler.get_ref().parent_node)(state.pw ,n, &mut n);
+
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1820,7 +1834,9 @@ impl css_select_ctx {
                 }
                 CSS_COMBINATOR_SIBLING |
                 CSS_COMBINATOR_GENERIC_SIBLING => {
+
                     error = (state.handler.get_ref().sibling_node)(state.pw ,n, &mut n);
+
                     match error {
                         CSS_OK => {},
                         err => return err
@@ -1978,7 +1994,9 @@ impl css_select_ctx {
                         lwc_name , matched);
             }
             CSS_SELECTOR_PSEUDO_CLASS => {
+
                 error = (state.handler.get_ref().node_is_root)(state.pw , node, &mut is_root);
+
                 match error {
                     CSS_OK => {},
                     _=> {
@@ -2197,6 +2215,7 @@ impl css_select_ctx {
                             node, matched);
                 } 
                 else if ( lwc_ref.lwc_string_isequal(lwc_name , self.link.expect("") ) ) { 
+
                     error = (state.handler.get_ref().node_is_link)(state.pw ,
                             node, matched);
                 }
@@ -2259,11 +2278,13 @@ impl css_select_ctx {
                 }
             }
             CSS_SELECTOR_ATTRIBUTE => {
+
                 error = (state.handler.get_ref().node_has_attribute)(state.pw ,lwc_ref, node,
                         detail.qname, matched);
             }
             CSS_SELECTOR_ATTRIBUTE_EQUAL => {
                 error = (state.handler.get_ref().node_has_attribute_equal)( state.pw ,
+
                         lwc_ref, node, detail.qname, detail.string.get_ref().clone(), 
                         matched);
             }
