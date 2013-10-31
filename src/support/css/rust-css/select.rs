@@ -31,6 +31,7 @@ use std::cast::transmute;
 use std::ptr::{null, /*to_mut_unsafe_ptr,*/ to_unsafe_ptr};
 
 use std::libc::c_void;
+use std::io;
 
 pub trait VoidPtrLike {
     fn from_void_ptr(ptr: *c_void) -> Self;
@@ -67,7 +68,10 @@ impl SelectCtx {
     during future selector matching
     */
     pub fn append_sheet(&mut self, sheet: Stylesheet, origin: StylesheetOrigin) {
-        self.select_ctx.css_select_ctx_append_sheet(sheet.inner, origin.to_net(), srid_css::include::types::CSS_MEDIA_SCREEN as u64);
+        io::println(fmt!("append_sheet:: sheet:: %?", sheet));
+        self.select_ctx.css_select_ctx_append_sheet(sheet.inner, 
+            origin.to_net(), 
+            srid_css::include::types::CSS_MEDIA_SCREEN as u64);
 
     }
 
@@ -80,40 +84,37 @@ impl SelectCtx {
                                                              node: &N,
                                                              inline_style: Option<&Stylesheet>,
                                                              handler: &H) -> SelectResults {
-        // let inner_handler = SelectHandlerWrapper {
-        //     inner: handler
-        // };
-        // let inner_inline_style = match inline_style {
-        //     None => None,
-        //     Some(ref sheet) => Some(&sheet.inner),
-        // };
-        // SelectResults {
-        //     inner: self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
-        //         node,
-        //         n::ll::t::CSS_MEDIA_SCREEN,
-        //         inner_inline_style,
-        //         &inner_handler)
-        // }
-                let raw_handler = build_raw_handler();
-                
-                // let inline_sheet = match inline_style {
-                //     None => null(),
-                //     Some(sheet) => stylesheet_vector_ref.get_ref()[sheet],
-                // };
-                let (error, results) = self.select_ctx.css_select_style(node.to_void_ptr(),
-                                CSS_MEDIA_SCREEN as u64,
-                                Some(inline_style.get_ref().inner),
-                                raw_handler,
-                                unsafe {transmute(to_unsafe_ptr(handler))} );
-                                
-                if error as uint != CSS_OK as uint {
-                    fail!("Error in Select Style")
-                }
+        let raw_handler = build_raw_handler();
+        
+        if inline_style.is_none() {
+            let (error, results) = self.select_ctx.css_select_style(node.to_void_ptr(),
+                        CSS_MEDIA_SCREEN as u64,
+                        None,
+                        raw_handler,
+                        unsafe {transmute(to_unsafe_ptr(handler))} );
 
-                SelectResults {
-                    inner: results
-                }
+            if error as uint != CSS_OK as uint {
+                fail!("Error in Select Style")
+            }
 
+            SelectResults {
+                inner: results
+            }
+        }   else {
+            let (error, results) = self.select_ctx.css_select_style(node.to_void_ptr(),
+                        CSS_MEDIA_SCREEN as u64,
+                        Some(inline_style.get_ref().inner),
+                        raw_handler,
+                        unsafe {transmute(to_unsafe_ptr(handler))} );
+
+            if error as uint != CSS_OK as uint {
+                fail!("Error in Select Style")
+            }
+
+            SelectResults {
+                inner: results
+            }
+        }
     }
 }
 
@@ -759,6 +760,9 @@ pub mod hint {
     impl CssHint {
 
         pub fn new(property: CssProperty, mut hint: Option<&mut ~css_hint>) -> CssHint {
+            if (hint.is_none()) {
+                println("hint is none");
+            }
             let status = hint.get_ref().status as u32;
             match property {
                 CssPropFontSize => {
