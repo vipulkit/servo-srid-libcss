@@ -1,7 +1,6 @@
 
-//use wapcaplet::*;
-use stylesheet::*;
 use libwapcaplet::wapcaplet::*;
+use stylesheet::*;
 
 pub enum index_property {
      // Universal selector 
@@ -630,7 +629,7 @@ impl css_propstrings {
         let mut ele = 0;
         let mut _propstrings = ~[];
         //_propstrings.reserve_at_least(length);
-
+        
         while ele < length {
             _propstrings.push(lwc_ref.lwc_intern_string(propstrings_list[ele]));
             ele +=1;

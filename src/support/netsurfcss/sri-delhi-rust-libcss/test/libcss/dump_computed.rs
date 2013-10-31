@@ -2,7 +2,6 @@
 #[crate_type="lib"];
 
 extern mod css;
-// extern mod wapcaplet;
 
 use css::select::common::*;
 use css::select::computed::*;
@@ -68,7 +67,7 @@ fn dump_css_fixed(f: css_fixed , ptr: &mut ~str){
 fn dump_css_number(val: css_fixed , ptr: &mut ~str){
       debug!(fmt!("\n Entering dump_css_number ")) ;
     if css_int_to_fixed((val >> 10) as int) == val {
-        ptr.push_str( fmt!("%i" , (val as int >> 10)));
+        ptr.push_str( fmt!("%i" , (val as int >> 10 as int)));
     }
     else {
         dump_css_fixed(val , ptr);
@@ -132,7 +131,7 @@ fn dump_css_unit(val: css_fixed , unit: css_unit , ptr: &mut ~str) {
 }
 
 
-pub fn dump_computed_style(style:@mut css_computed_style, lwc_ref:&mut ~lwc, buf:&mut ~str) {
+pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, buf:&mut ~str) {
       debug!(fmt!("\n Entering dump_computed_style ")) ;
     let ptr = buf;
     let mut val:u8;
@@ -544,8 +543,8 @@ pub fn dump_computed_style(style:@mut css_computed_style, lwc_ref:&mut ~lwc, buf
     }
 
     /* clip */
-	let mut rect : @mut css_computed_clip_rect = 
-        @mut css_computed_clip_rect{
+	let mut rect : ~ css_computed_clip_rect = 
+        ~ css_computed_clip_rect{
             top:0,
             right:0,
             bottom:0,
@@ -561,11 +560,7 @@ pub fn dump_computed_style(style:@mut css_computed_style, lwc_ref:&mut ~lwc, buf
     } ;
 	
 	
-    let (val,rect_option) = css_computed_clip(style);
-	match rect_option{
-		Some(T) => {rect = T;}
-		None => {}
-	}
+    let (val, _) = css_computed_clip(style, &mut rect);
 
     let val_enum: css_clip_e =  unsafe {cast::transmute(val as uint)};
     match (val_enum) {
