@@ -470,6 +470,7 @@ fi
 CFG_SUBMODULES="\
     support/alert/rust-alert \
     support/azure/rust-azure \
+    support/libparserutils/libparserutils \
     support/netsurfcss/sri-delhi-rust-libcss \
     support/css/rust-css \
     support/css/rust-cssparser \
@@ -479,7 +480,6 @@ CFG_SUBMODULES="\
     support/hubbub/libhubbub \
     support/hubbub/rust-hubbub \
     support/layers/rust-layers \
-    support/libparserutils/libparserutils \
     support/nss/nspr \
     support/nss/nss \
     support/opengles/rust-opengles \
