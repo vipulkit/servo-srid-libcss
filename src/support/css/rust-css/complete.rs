@@ -4,7 +4,7 @@
 
 extern mod srid_css;
 
-use std::cast;
+//use std::cast;
 use color::Color;
 //use select::SelectResults;
 use computed::*;
@@ -34,32 +34,32 @@ impl<'self> CompleteSelectResults {
                             child: SelectResults) -> CompleteSelectResults {
         // New lifetime
         {
-            let parent_computed = parent.computed_style();
-            let child_computed = child.computed_style();
+            let mut parent_computed = parent.computed_style();
+            let mut child_computed = child.computed_style();
             //let net_parent_computed = &parent_computed.inner.inner;
             //let net_child_computed = &/*mut*/ child_computed.inner;
             // FIXME: Need to get real font sizes
             let cb: css_fnptr_compute_font_size =
-                |parent: Option<&mut ~css_hint>, child: Option<&mut ~css_hint>| -> css_error {
+                |mut parent: Option<&mut ~css_hint>, mut child: Option<&mut ~css_hint>| -> css_error {
 
                 let mut temporary_result = ~css_hint_length{value:0 , unit:CSS_UNIT_PX} ;
 
                 if child.is_some() {
-                    let child_hint = child.get_ref();   
+                    let child_hint = child.get_mut_ref();   
                     match child_hint.hint_type {
                 //         // Handle relative units
                         HINT_LENGTH=>{
                             if child_hint.length.is_some() {
-                                let child_hint_length = child_hint.length.get_ref(); 
+                                let child_hint_length = child_hint.length.get_mut_ref(); 
                                 match child_hint_length.unit {
                                     CSS_UNIT_EM => {
                                         if parent.is_some() {
-                                            let parent_hint = parent.get_ref(); 
+                                            let parent_hint = parent.get_mut_ref(); 
                                             match parent_hint.hint_type {
 
                                                 HINT_LENGTH => {
                                                         if parent_hint.length.is_some() {
-                                                            let parent_hint_length = parent_hint.length.get_ref(); 
+                                                            let parent_hint_length = parent_hint.length.get_mut_ref(); 
                                                             // CSS3 Values 5.1.1: Multiply parent unit by child unit.
                                                             let mut new_value =
                                                                 css_fixed_to_float(parent_hint_length.value);
@@ -84,12 +84,12 @@ impl<'self> CompleteSelectResults {
                                     },
                                     CSS_UNIT_PCT => {
                                         if parent.is_some() {
-                                            let parent_hint = parent.get_ref(); 
+                                            let parent_hint = parent.get_mut_ref(); 
                                             match parent_hint.hint_type {
                                                 //Some(CssHintLength(parent_unit)) => {
                                                 HINT_LENGTH => {
                                                     if parent_hint.length.is_some() {
-                                                        let parent_hint_length = parent_hint.length.get_ref(); 
+                                                        let parent_hint_length = parent_hint.length.get_mut_ref(); 
                                                         // CSS3 Values 5.1.1: Multiply parent unit by child unit.
                                                         let mut new_value =
                                                             css_fixed_to_float(parent_hint_length.value);
@@ -133,14 +133,14 @@ impl<'self> CompleteSelectResults {
                     }
                 }
                 //
-                child.get_ref().status = CSS_FONT_SIZE_DIMENSION as u8 ;
-                child.get_ref().length = Some(temporary_result) ;
-                child.get_ref().hint_type = HINT_LENGTH ;
+                child.get_mut_ref().status = CSS_FONT_SIZE_DIMENSION as u8 ;
+                child.get_mut_ref().length = Some(temporary_result) ;
+                child.get_mut_ref().hint_type = HINT_LENGTH ;
                 CSS_OK
             };
             // XXX: Need an aliasable &mut here
-            let net_result_computed = &mut child_computed.computed_style;
-            let net_child_computed  = &mut child_computed.computed_style;            
+            let net_result_computed  = &mut css_computed_style_create() ;
+            let net_child_computed  = &mut child_computed.computed_style;         
             let net_parent_computed = &mut parent_computed.inner.computed_style;
             //n::c::compose(net_parent_computed, net_child_computed, cb, net_result_computed);
             css_computed_style_compose(net_parent_computed,net_child_computed,cb,net_result_computed);
@@ -166,118 +166,118 @@ impl<'self> CompleteStyle<'self> {
 
     // CSS 2.1, Section 8 - Box model
 
-    pub fn margin_top(&self) -> CSSMargin {
+    pub fn margin_top(&'self mut self) -> CSSMargin {
         strip(self.inner.margin_top())
     }
 
-    pub fn margin_right(&self) -> CSSMargin {
+    pub fn margin_right(&'self mut self) -> CSSMargin {
         strip(self.inner.margin_right())
     }
 
-    pub fn margin_bottom(&self) -> CSSMargin {
+    pub fn margin_bottom(&'self mut self) -> CSSMargin {
         strip(self.inner.margin_bottom())
     }
 
-    pub fn margin_left(&self) -> CSSMargin {
+    pub fn margin_left(&'self mut self) -> CSSMargin {
         strip(self.inner.margin_left())
     }
 
-    pub fn padding_top(&self) -> CSSPadding {
+    pub fn padding_top(&'self mut self) -> CSSPadding {
         strip(self.inner.padding_top())
     }
 
-    pub fn padding_right(&self) -> CSSPadding {
+    pub fn padding_right(&'self mut self) -> CSSPadding {
         strip(self.inner.padding_right())
     }
 
-    pub fn padding_bottom(&self) -> CSSPadding {
+    pub fn padding_bottom(&'self mut self) -> CSSPadding {
         strip(self.inner.padding_bottom())
     }
 
-    pub fn padding_left(&self) -> CSSPadding {
+    pub fn padding_left(&'self mut self) -> CSSPadding {
         strip(self.inner.padding_left())
     }
 
-    pub fn border_top_style(&self) -> CSSBorderStyle {
+    pub fn border_top_style(&'self mut self) -> CSSBorderStyle {
         strip(self.inner.border_top_style())
     }
 
-    pub fn border_right_style(&self) -> CSSBorderStyle {
+    pub fn border_right_style(&'self mut self) -> CSSBorderStyle {
         strip(self.inner.border_right_style())
     }
-    pub fn border_bottom_style(&self) -> CSSBorderStyle {
+    pub fn border_bottom_style(&'self mut self) -> CSSBorderStyle {
         strip(self.inner.border_bottom_style())
     }
 
-    pub fn border_left_style(&self) -> CSSBorderStyle {
+    pub fn border_left_style(&'self mut self) -> CSSBorderStyle {
         strip(self.inner.border_left_style())
     }
 
-    pub fn border_top_width(&self) -> CSSBorderWidth {
+    pub fn border_top_width(&'self mut self) -> CSSBorderWidth {
         strip(self.inner.border_top_width())
     }
 
-    pub fn border_right_width(&self) -> CSSBorderWidth {
+    pub fn border_right_width(&'self mut self) -> CSSBorderWidth {
         strip(self.inner.border_right_width())
     }
 
-    pub fn border_bottom_width(&self) -> CSSBorderWidth {
+    pub fn border_bottom_width(&'self mut self) -> CSSBorderWidth {
         strip(self.inner.border_bottom_width())
     }
 
-    pub fn border_left_width(&self) -> CSSBorderWidth {
+    pub fn border_left_width(&'self mut self) -> CSSBorderWidth {
         strip(self.inner.border_left_width())
     }
 
-    pub fn border_top_color(&self) -> Color {
+    pub fn border_top_color(&'self mut self) -> Color {
         strip(self.inner.border_top_color())
     }
 
-    pub fn border_right_color(&self) -> Color {
+    pub fn border_right_color(&'self mut self) -> Color {
         strip(self.inner.border_right_color())
     }
 
-    pub fn border_bottom_color(&self) -> Color {
+    pub fn border_bottom_color(&'self mut self) -> Color {
         strip(self.inner.border_bottom_color())
     }
 
-    pub fn border_left_color(&self) -> Color {
+    pub fn border_left_color(&'self mut self) -> Color {
         strip(self.inner.border_left_color())
     }
 
     // CSS 2.1, Section 9 - Visual formatting model
 
-    pub fn display(&self, root: bool) -> CSSDisplay {
+    pub fn display(&'self mut self, root: bool) -> CSSDisplay {
         strip(self.inner.display(root))
     }
 
-    pub fn position(&self) -> CSSPosition {
+    pub fn position(&'self mut self) -> CSSPosition {
         strip(self.inner.position())
     }
 
-    pub fn float(&self) -> CSSFloat {
+    pub fn float(&'self mut self) -> CSSFloat {
         strip(self.inner.float())
     }
 
-    pub fn clear(&self) -> CSSClear {
+    pub fn clear(&'self mut self) -> CSSClear {
         strip(self.inner.clear())
     }
 
     // CSS 2.1, Section 10 - Visual formatting model details
 
-    pub fn width(&self) -> CSSWidth {
+    pub fn width(&'self mut self) -> CSSWidth {
         strip(self.inner.width())
     }
 
-    pub fn height(&self) -> CSSHeight {
+    pub fn height(&'self mut self) -> CSSHeight {
         strip(self.inner.height())
     }
 
-    pub fn line_height(&self) -> CSSLineHeight {
+    pub fn line_height(&'self mut self) -> CSSLineHeight {
         strip(self.inner.line_height())
     }
 
-    pub fn vertical_align(&self) -> CSSVerticalAlign {
+    pub fn vertical_align(&'self mut self) -> CSSVerticalAlign {
         strip(self.inner.vertical_align())
     }
 
@@ -289,46 +289,45 @@ impl<'self> CompleteStyle<'self> {
 
     // CSS 2.1, Section 14 - Colors and Backgrounds
 
-    pub fn background_color(&self) -> Color {
+    pub fn background_color(&'self mut self) -> Color {
         strip(self.inner.background_color())
     }
 
-    pub fn color(&self) -> Color {
+    pub fn color(&'self mut self) -> Color {
         strip(self.inner.color())
     }
 
     // CSS 2.1, Section 15 - Fonts
 
-    pub fn font_family(&self) -> ~[CSSFontFamily] {
+    pub fn font_family(&'self mut self) -> ~[CSSFontFamily] {
         strip(self.inner.font_family())
     }
 
-    pub fn font_style(&self) -> CSSFontStyle {
+    pub fn font_style(&'self mut self) -> CSSFontStyle {
         strip(self.inner.font_style())
     }
 
-    pub fn font_weight(&self) -> CSSFontWeight {
+    pub fn font_weight(&'self mut self) -> CSSFontWeight {
         strip(self.inner.font_weight())
     }
 
-    pub fn font_size(&self) -> CSSFontSize {
+    pub fn font_size(&'self mut self) -> CSSFontSize {
         strip(self.inner.font_size())
     }
 
-    pub fn text_decoration(&self) -> CSSTextDecoration{
+    pub fn text_decoration(&'self mut self) -> CSSTextDecoration{
         strip(self.inner.text_decoration())
     }
 
     // CSS 2.1, Section 16 - Text
 
-    pub fn text_align(&self) -> CSSTextAlign {
+    pub fn text_align(&'self mut self) -> CSSTextAlign {
         strip(self.inner.text_align())
     }
 
     // CSS 2.1, Section 17 - Tables
 
     // CSS 2.1, Section 18 - User interface
-
 }
 
 fn strip<T>(value: CSSValue<T>) -> T {

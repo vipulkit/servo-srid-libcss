@@ -6,7 +6,7 @@
 Units used by CSS
 */
 
-#[deriving(Eq)]
+#[deriving(Eq,Clone)]
 pub enum Length {
     Em(float), // normalized to 'em'
     Px(float), // normalized to 'px'
