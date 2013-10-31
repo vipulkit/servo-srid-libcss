@@ -673,6 +673,7 @@ pub enum css_pseudo_element {
     CSS_PSEUDO_ELEMENT_COUNT    = 5 
 }
 
+#[deriving(DeepClone)]
 pub struct css_select_results {
     /*
      * Array of pointers to computed styles, 

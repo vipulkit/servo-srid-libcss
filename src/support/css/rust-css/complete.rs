@@ -19,11 +19,12 @@ use srid_css::include::properties::*;
 use srid_css::select::common::*;
 //use srid_css::libwapcaplet::wapcaplet::*;
 
+#[deriving(DeepClone)]
 pub struct CompleteSelectResults {
     inner: SelectResults
 }
 
-impl<'self> CompleteSelectResults {
+impl CompleteSelectResults {
     pub fn new_root(root: SelectResults) -> CompleteSelectResults {
         CompleteSelectResults {
             inner: root
@@ -151,133 +152,134 @@ impl<'self> CompleteSelectResults {
         }
     }
 
-    pub fn computed_style(&'self self) -> CompleteStyle<'self> {
+    pub fn computed_style(&self) -> CompleteStyle {
         CompleteStyle {
             inner: self.inner.computed_style()
         }
     }
 }
 
-pub struct CompleteStyle<'self> {
-    inner: ComputedStyle<'self>
+#[deriving(DeepClone)]
+pub struct CompleteStyle {
+    inner: ComputedStyle
 }
 
-impl<'self> CompleteStyle<'self> {
+impl CompleteStyle {
 
     // CSS 2.1, Section 8 - Box model
 
-    pub fn margin_top(&'self mut self) -> CSSMargin {
+    pub fn margin_top(&mut self) -> CSSMargin {
         strip(self.inner.margin_top())
     }
 
-    pub fn margin_right(&'self mut self) -> CSSMargin {
+    pub fn margin_right(&mut self) -> CSSMargin {
         strip(self.inner.margin_right())
     }
 
-    pub fn margin_bottom(&'self mut self) -> CSSMargin {
+    pub fn margin_bottom(&mut self) -> CSSMargin {
         strip(self.inner.margin_bottom())
     }
 
-    pub fn margin_left(&'self mut self) -> CSSMargin {
+    pub fn margin_left(&mut self) -> CSSMargin {
         strip(self.inner.margin_left())
     }
 
-    pub fn padding_top(&'self mut self) -> CSSPadding {
+    pub fn padding_top(&mut self) -> CSSPadding {
         strip(self.inner.padding_top())
     }
 
-    pub fn padding_right(&'self mut self) -> CSSPadding {
+    pub fn padding_right(&mut self) -> CSSPadding {
         strip(self.inner.padding_right())
     }
 
-    pub fn padding_bottom(&'self mut self) -> CSSPadding {
+    pub fn padding_bottom(&mut self) -> CSSPadding {
         strip(self.inner.padding_bottom())
     }
 
-    pub fn padding_left(&'self mut self) -> CSSPadding {
+    pub fn padding_left(&mut self) -> CSSPadding {
         strip(self.inner.padding_left())
     }
 
-    pub fn border_top_style(&'self mut self) -> CSSBorderStyle {
+    pub fn border_top_style(&mut self) -> CSSBorderStyle {
         strip(self.inner.border_top_style())
     }
 
-    pub fn border_right_style(&'self mut self) -> CSSBorderStyle {
+    pub fn border_right_style(&mut self) -> CSSBorderStyle {
         strip(self.inner.border_right_style())
     }
-    pub fn border_bottom_style(&'self mut self) -> CSSBorderStyle {
+    pub fn border_bottom_style(&mut self) -> CSSBorderStyle {
         strip(self.inner.border_bottom_style())
     }
 
-    pub fn border_left_style(&'self mut self) -> CSSBorderStyle {
+    pub fn border_left_style(&mut self) -> CSSBorderStyle {
         strip(self.inner.border_left_style())
     }
 
-    pub fn border_top_width(&'self mut self) -> CSSBorderWidth {
+    pub fn border_top_width(&mut self) -> CSSBorderWidth {
         strip(self.inner.border_top_width())
     }
 
-    pub fn border_right_width(&'self mut self) -> CSSBorderWidth {
+    pub fn border_right_width(&mut self) -> CSSBorderWidth {
         strip(self.inner.border_right_width())
     }
 
-    pub fn border_bottom_width(&'self mut self) -> CSSBorderWidth {
+    pub fn border_bottom_width(&mut self) -> CSSBorderWidth {
         strip(self.inner.border_bottom_width())
     }
 
-    pub fn border_left_width(&'self mut self) -> CSSBorderWidth {
+    pub fn border_left_width(&mut self) -> CSSBorderWidth {
         strip(self.inner.border_left_width())
     }
 
-    pub fn border_top_color(&'self mut self) -> Color {
+    pub fn border_top_color(&mut self) -> Color {
         strip(self.inner.border_top_color())
     }
 
-    pub fn border_right_color(&'self mut self) -> Color {
+    pub fn border_right_color(&mut self) -> Color {
         strip(self.inner.border_right_color())
     }
 
-    pub fn border_bottom_color(&'self mut self) -> Color {
+    pub fn border_bottom_color(&mut self) -> Color {
         strip(self.inner.border_bottom_color())
     }
 
-    pub fn border_left_color(&'self mut self) -> Color {
+    pub fn border_left_color(&mut self) -> Color {
         strip(self.inner.border_left_color())
     }
 
     // CSS 2.1, Section 9 - Visual formatting model
 
-    pub fn display(&'self mut self, root: bool) -> CSSDisplay {
+    pub fn display(&mut self, root: bool) -> CSSDisplay {
         strip(self.inner.display(root))
     }
 
-    pub fn position(&'self mut self) -> CSSPosition {
+    pub fn position(&mut self) -> CSSPosition {
         strip(self.inner.position())
     }
 
-    pub fn float(&'self mut self) -> CSSFloat {
+    pub fn float(&mut self) -> CSSFloat {
         strip(self.inner.float())
     }
 
-    pub fn clear(&'self mut self) -> CSSClear {
+    pub fn clear(&mut self) -> CSSClear {
         strip(self.inner.clear())
     }
 
     // CSS 2.1, Section 10 - Visual formatting model details
 
-    pub fn width(&'self mut self) -> CSSWidth {
+    pub fn width(&mut self) -> CSSWidth {
         strip(self.inner.width())
     }
 
-    pub fn height(&'self mut self) -> CSSHeight {
+    pub fn height(&mut self) -> CSSHeight {
         strip(self.inner.height())
     }
 
-    pub fn line_height(&'self mut self) -> CSSLineHeight {
+    pub fn line_height(&mut self) -> CSSLineHeight {
         strip(self.inner.line_height())
     }
 
-    pub fn vertical_align(&'self mut self) -> CSSVerticalAlign {
+    pub fn vertical_align(&mut self) -> CSSVerticalAlign {
         strip(self.inner.vertical_align())
     }
 
@@ -289,39 +291,39 @@ impl<'self> CompleteStyle<'self> {
 
     // CSS 2.1, Section 14 - Colors and Backgrounds
 
-    pub fn background_color(&'self mut self) -> Color {
+    pub fn background_color(&mut self) -> Color {
         strip(self.inner.background_color())
     }
 
-    pub fn color(&'self mut self) -> Color {
+    pub fn color(&mut self) -> Color {
         strip(self.inner.color())
     }
 
     // CSS 2.1, Section 15 - Fonts
 
-    pub fn font_family(&'self mut self) -> ~[CSSFontFamily] {
+    pub fn font_family(&mut self) -> ~[CSSFontFamily] {
         strip(self.inner.font_family())
     }
 
-    pub fn font_style(&'self mut self) -> CSSFontStyle {
+    pub fn font_style(&mut self) -> CSSFontStyle {
         strip(self.inner.font_style())
     }
 
-    pub fn font_weight(&'self mut self) -> CSSFontWeight {
+    pub fn font_weight(&mut self) -> CSSFontWeight {
         strip(self.inner.font_weight())
     }
 
-    pub fn font_size(&'self mut self) -> CSSFontSize {
+    pub fn font_size(&mut self) -> CSSFontSize {
         strip(self.inner.font_size())
     }
 
-    pub fn text_decoration(&'self mut self) -> CSSTextDecoration{
+    pub fn text_decoration(&mut self) -> CSSTextDecoration{
         strip(self.inner.text_decoration())
     }
 
     // CSS 2.1, Section 16 - Text
 
-    pub fn text_align(&'self mut self) -> CSSTextAlign {
+    pub fn text_align(&mut self) -> CSSTextAlign {
         strip(self.inner.text_align())
     }
 

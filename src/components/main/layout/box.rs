@@ -392,26 +392,26 @@ impl RenderBox {
             if(!base.node.is_element()) {
                 Au(0)
             } else {
-                let style = self.style();
-                let font_size = style.font_size();
-                let width = MaybeAuto::from_width(style.width(),
+                let style = self.style().deep_clone();
+                let font_size = style.deep_clone().font_size();
+                let width = MaybeAuto::from_width(style.deep_clone().width(),
                                                   Au(0),
                                                   font_size).specified_or_zero();
-                let margin_left = MaybeAuto::from_margin(style.margin_left(),
+                let margin_left = MaybeAuto::from_margin(style.deep_clone().margin_left(),
                                                          Au(0),
                                                          font_size).specified_or_zero();
-                let margin_right = MaybeAuto::from_margin(style.margin_right(),
+                let margin_right = MaybeAuto::from_margin(style.deep_clone().margin_right(),
                                                           Au(0),
                                                           font_size).specified_or_zero();
-                let padding_left = base.model.compute_padding_length(style.padding_left(),
+                let padding_left = base.model.compute_padding_length(style.deep_clone().padding_left(),
                                                                      Au(0),
                                                                      font_size);
-                let padding_right = base.model.compute_padding_length(style.padding_right(),
+                let padding_right = base.model.compute_padding_length(style.deep_clone().padding_right(),
                                                                       Au(0),
                                                                       font_size);
-                let border_left = base.model.compute_border_width(style.border_left_width(),
+                let border_left = base.model.compute_border_width(style.deep_clone().border_left_width(),
                                                                   font_size);
-                let border_right = base.model.compute_border_width(style.border_right_width(),
+                let border_right = base.model.compute_border_width(style.deep_clone().border_right_width(),
                                                                    font_size);
 
                 width + margin_left + margin_right + padding_left + padding_right +
@@ -821,7 +821,7 @@ impl RenderBox {
 
     pub fn clear(&self) -> Option<ClearType> {
         let style = self.style();
-        match style.clear() {
+        match style.deep_clone().clear() {
             CSSClearNone => None,
             CSSClearLeft => Some(ClearLeft),
             CSSClearRight => Some(ClearRight),
@@ -837,7 +837,7 @@ impl RenderBox {
             debug!("(font style) start: %?", element.type_id());
 
             // FIXME: Too much allocation here.
-            let font_families = do my_style.font_family().map |family| {
+            let font_families = do my_style.deep_clone().font_family().map |family| {
                 match *family {
                     CSSFontFamilyFamilyName(ref family_str) => (*family_str).clone(),
                     CSSFontFamilyGenericFamily(Serif)       => ~"serif",
@@ -850,7 +850,7 @@ impl RenderBox {
             let font_families = font_families.connect(", ");
             debug!("(font style) font families: `%s`", font_families);
 
-            let font_size = match my_style.font_size() {
+            let font_size = match my_style.deep_clone().font_size() {
                 CSSFontSizeLength(Px(length)) => length,
                 // todo: this is based on a hard coded font size, should be the parent element's font size
                 CSSFontSizeLength(Em(length)) => length * 16f,
@@ -858,7 +858,7 @@ impl RenderBox {
             };
             debug!("(font style) font size: `%fpx`", font_size);
 
-            let (italic, oblique) = match my_style.font_style() {
+            let (italic, oblique) = match my_style.deep_clone().font_style() {
                 CSSFontStyleNormal => (false, false),
                 CSSFontStyleItalic => (true, false),
                 CSSFontStyleOblique => (false, true),

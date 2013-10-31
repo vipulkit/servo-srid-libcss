@@ -79,9 +79,8 @@ pub fn parse_stylesheet(url: Url, input: DataStream) -> uint {
     }
     sheet.css_stylesheet_data_done(&propstring);
     //sheet.data_done();
-    //sheet.stylesheet
+    sheet.stylesheet
 
-    0
 }
 
 pub fn parse_style_attribute(url: Url, data: &str) -> uint {
@@ -91,12 +90,8 @@ pub fn parse_style_attribute(url: Url, data: &str) -> uint {
     let mut sheet = css::css_create(&params) ; 
     sheet.css_stylesheet_append_data(&propstring,data.as_bytes().to_owned());
     sheet.css_stylesheet_data_done(&propstring);
-    //let mut sheet = css_stylesheet_create(&params);
-    //sheet.append_data(data.as_bytes());
-    //sheet.data_done();
-    //sheet.stylesheet
+    sheet.stylesheet
 
-    0
 }
 
 pub fn resolve_url(_base: &str, _rel: uint) -> (css_error,Option<uint>) {

@@ -28,41 +28,43 @@ pub enum CssPseudoElement {
     CssPseudoElementCount   = 5
 }
 
-pub struct ComputedStyle<'self> {
+#[deriving(DeepClone)]
+pub struct ComputedStyle {
     //inner: css_computed_style<'self>
-    result_backref: &'self SelectResults,
+    result_backref: SelectResults,
     computed_style: ~css_computed_style,
 }
 
 /**
 Represents the 'style' of a single node, including it's pseudo-elements.
 */
+#[deriving(DeepClone)]
 pub struct SelectResults {
     inner: Option<~css_select_results>
 }
 
-impl<'self> SelectResults {
+impl SelectResults {
     /** Retrieve the computed style of a single pseudo-element */
-    pub fn computed_style(&'self self) -> ComputedStyle<'self> {
+    pub fn computed_style(&self) -> ComputedStyle {
         let element : uint = CssPseudoElementNone as uint;
         assert!(self.inner.is_some());
         let res = self.inner.get_ref() ;
         let llstyle = res.styles[element].deep_clone().expect("");
     
         ComputedStyle {
-            result_backref: self,
+            result_backref: (*self).deep_clone(),
             computed_style: llstyle
         }
     }
 }
 
-impl<'self> ComputedStyle<'self> {
+impl ComputedStyle {
 
     // CSS 2.1, Section 8 - Box model
 
-    pub fn margin_top(&'self mut self) -> CSSValue<CSSMargin> {
+    pub fn margin_top(&mut self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.margin_top());
-        let (value, olength, ounit) = css_computed_margin_top(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_margin_top(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -77,9 +79,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_margin(unsafe { transmute(value as uint)},  unit , length)
     }
     
-    pub fn margin_right(&'self mut self) -> CSSValue<CSSMargin> {
+    pub fn margin_right(&mut self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_right())
-        let (value, olength, ounit) = css_computed_margin_right(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_margin_right(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -94,9 +96,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn margin_bottom(&'self mut self) -> CSSValue<CSSMargin> {
+    pub fn margin_bottom(&mut self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_bottom())
-        let (value, olength, ounit) = css_computed_margin_bottom(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_margin_bottom(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -111,9 +113,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn margin_left(&'self mut self) -> CSSValue<CSSMargin> {
+    pub fn margin_left(&mut self) -> CSSValue<CSSMargin> {
         //convert_net_margin(self.inner.margin_left())
-        let (value, olength, ounit) = css_computed_margin_left(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_margin_left(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -127,10 +129,10 @@ impl<'self> ComputedStyle<'self> {
         convert_net_margin(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn padding_top(&'self mut self) -> CSSValue<CSSPadding> {
+    pub fn padding_top(&mut self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_top())
 
-        let (value, olength, ounit) = css_computed_padding_top(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_padding_top(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -147,9 +149,9 @@ impl<'self> ComputedStyle<'self> {
 
     }
 
-    pub fn padding_right(&'self mut self) -> CSSValue<CSSPadding> {
+    pub fn padding_right(&mut self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_right())
-        let (value, olength, ounit) = css_computed_padding_right(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_padding_right(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -165,9 +167,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn padding_bottom(&'self mut self) -> CSSValue<CSSPadding> {
+    pub fn padding_bottom(&mut self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_bottom())
-        let (value, olength, ounit) = css_computed_padding_bottom(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_padding_bottom(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -182,9 +184,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_padding(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn padding_left(&'self mut self) -> CSSValue<CSSPadding> {
+    pub fn padding_left(&mut self) -> CSSValue<CSSPadding> {
         //convert_net_padding(self.inner.padding_left())
-        let (value, olength, ounit) = css_computed_padding_left(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_padding_left(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -200,33 +202,33 @@ impl<'self> ComputedStyle<'self> {
         
     }
 
-    pub fn border_top_style(&'self mut self) -> CSSValue<CSSBorderStyle> {
+    pub fn border_top_style(&mut self) -> CSSValue<CSSBorderStyle> {
         //convert_net_border_style(self.inner.border_top_style())
-        let value = css_computed_border_top_style(&'self mut self.computed_style);
+        let value = css_computed_border_top_style(&mut self.computed_style);
         convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
-    pub fn border_right_style(&'self mut self) -> CSSValue<CSSBorderStyle> {
+    pub fn border_right_style(&mut self) -> CSSValue<CSSBorderStyle> {
         //convert_net_border_style(self.inner.border_right_style())
-        let value = css_computed_border_right_style(&'self mut self.computed_style);
+        let value = css_computed_border_right_style(&mut self.computed_style);
         convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
-    pub fn border_bottom_style(&'self mut self) -> CSSValue<CSSBorderStyle> {
+    pub fn border_bottom_style(&mut self) -> CSSValue<CSSBorderStyle> {
         //convert_net_border_style(self.inner.border_bottom_style())
-        let value = css_computed_border_bottom_style(&'self mut self.computed_style);
+        let value = css_computed_border_bottom_style(&mut self.computed_style);
         convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
-    pub fn border_left_style(&'self mut self) -> CSSValue<CSSBorderStyle> {
+    pub fn border_left_style(&mut self) -> CSSValue<CSSBorderStyle> {
         //convert_net_border_style(self.inner.border_left_style())
-         let value = css_computed_border_left_style(&'self mut self.computed_style);
+         let value = css_computed_border_left_style(&mut self.computed_style);
         convert_net_border_style(unsafe { transmute(value as uint)})
     }
 
-    pub fn border_top_width(&'self mut self) -> CSSValue<CSSBorderWidth> {
+    pub fn border_top_width(&mut self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_top_width())
-        let (value, olength, ounit) = css_computed_border_top_width(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_border_top_width(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -241,9 +243,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn border_right_width(&'self mut self) -> CSSValue<CSSBorderWidth> {
+    pub fn border_right_width(&mut self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_right_width())
-        let (value, olength, ounit) = css_computed_border_right_width(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_border_right_width(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -258,9 +260,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn border_bottom_width(&'self mut self) -> CSSValue<CSSBorderWidth> {
+    pub fn border_bottom_width(&mut self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_bottom_width())
-        let (value, olength, ounit) = css_computed_border_bottom_width(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_border_bottom_width(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -275,9 +277,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn border_left_width(&'self mut self) -> CSSValue<CSSBorderWidth> {
+    pub fn border_left_width(&mut self) -> CSSValue<CSSBorderWidth> {
         //convert_net_border_width(self.inner.border_left_width())
-        let (value, olength, ounit) = css_computed_border_left_width(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_border_left_width(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -292,65 +294,65 @@ impl<'self> ComputedStyle<'self> {
         convert_net_border_width(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn border_top_color(&'self mut self) -> CSSValue<Color> {
+    pub fn border_top_color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_top_color())
-        let (value, length) = css_computed_border_top_color(&'self mut self.computed_style);
+        let (value, length) = css_computed_border_top_color(&mut self.computed_style);
         convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
-    pub fn border_right_color(&'self mut self) -> CSSValue<Color> {
+    pub fn border_right_color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_right_color())
-        let (value, length) = css_computed_border_right_color(&'self mut self.computed_style);
+        let (value, length) = css_computed_border_right_color(&mut self.computed_style);
         convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
-    pub fn border_bottom_color(&'self mut self) -> CSSValue<Color> {
+    pub fn border_bottom_color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_bottom_color())
-         let (value, length) = css_computed_border_bottom_color(&'self mut self.computed_style);
+         let (value, length) = css_computed_border_bottom_color(&mut self.computed_style);
         convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
-    pub fn border_left_color(&'self mut self) -> CSSValue<Color> {
+    pub fn border_left_color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.border_left_color())
 
-        let (value, length) = css_computed_border_left_color(&'self mut self.computed_style);
+        let (value, length) = css_computed_border_left_color(&mut self.computed_style);
         convert_net_color_value(unsafe { transmute(value as uint)}, length)
     }
 
 
     // CSS 2.1, Section 9 - Visual formatting model
 
-    pub fn display(&'self mut self, root: bool) -> CSSValue<CSSDisplay> {
+    pub fn display(&mut self, root: bool) -> CSSValue<CSSDisplay> {
         //convert_net_display_value(self.inner.display(root))
-        let value = css_computed_display(&'self mut self.computed_style, root);
+        let value = css_computed_display(&mut self.computed_style, root);
         convert_net_display_value(unsafe { transmute(value as uint)})
     }
 
-    pub fn position(&'self mut self) -> CSSValue<CSSPosition> {
+    pub fn position(&mut self) -> CSSValue<CSSPosition> {
         //convert_net_position_value(self.inner.position())
-        let value = css_computed_position(&'self mut self.computed_style);
+        let value = css_computed_position(&mut self.computed_style);
         convert_net_position_value(unsafe { transmute(value as uint)})
 
     }
 
-    pub fn float(&'self mut self) -> CSSValue<CSSFloat> {
+    pub fn float(&mut self) -> CSSValue<CSSFloat> {
         //convert_net_float_value(self.inner.float())
-        let value = css_computed_float(&'self mut self.computed_style);
+        let value = css_computed_float(&mut self.computed_style);
         convert_net_float_value(unsafe { transmute(value as uint)})
     }
 
 
-    pub fn clear(&'self mut self) -> CSSValue<CSSClear> {
+    pub fn clear(&mut self) -> CSSValue<CSSClear> {
         //convert_net_clear_value(self.inner.clear())
-        let value = css_computed_clear(&'self mut self.computed_style);
+        let value = css_computed_clear(&mut self.computed_style);
         convert_net_clear_value(unsafe { transmute(value as uint)})
     }
 
     // CSS 2.1, Section 10 - Visual formatting model details
 
-    pub fn width(&'self mut self) -> CSSValue<CSSWidth> {
+    pub fn width(&mut self) -> CSSValue<CSSWidth> {
         //convert_net_width_value(self.inner.width())
-        let (value, olength, ounit) = css_computed_width(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_width(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -366,9 +368,9 @@ impl<'self> ComputedStyle<'self> {
 
     }
 
-    pub fn height(&'self mut self) -> CSSValue<CSSHeight> {
+    pub fn height(&mut self) -> CSSValue<CSSHeight> {
         //convert_net_height_value(self.inner.height())
-        let (value, olength, ounit) = css_computed_height(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_height(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -383,10 +385,10 @@ impl<'self> ComputedStyle<'self> {
         convert_net_height_value(unsafe {transmute(value as uint)},  unit, length)
     }
 
-    pub fn line_height(&'self mut self) -> CSSValue<CSSLineHeight> {
+    pub fn line_height(&mut self) -> CSSValue<CSSLineHeight> {
         //convert_net_line_height_value(self.inner.line_height())
 
-        let (value, olength, ounit) = css_computed_line_height(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_line_height(&mut self.computed_style);
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
         if (olength.is_some())
@@ -401,9 +403,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_line_height_value(unsafe { transmute(value as uint)},  unit, length)
     }
 
-    pub fn vertical_align(&'self mut self) -> CSSValue<CSSVerticalAlign> {
+    pub fn vertical_align(&mut self) -> CSSValue<CSSVerticalAlign> {
         //convert_net_vertical_align_value(self.inner.vertical_align())
-        let (value, olength, ounit) = css_computed_vertical_align(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_vertical_align(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -427,9 +429,9 @@ impl<'self> ComputedStyle<'self> {
 
     // CSS 2.1, Section 14 - Colors and Backgrounds
 
-    pub fn background_color(&'self mut self) -> CSSValue<Color> {
+    pub fn background_color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.background_color())
-        let (value, length) = css_computed_background_color(&'self mut self.computed_style);
+        let (value, length) = css_computed_background_color(&mut self.computed_style);
 
         let mut len = 0;
         if length.is_some()
@@ -439,9 +441,9 @@ impl<'self> ComputedStyle<'self> {
         convert_net_color_value(unsafe { transmute(value as uint)}, len)
     }
 
-    pub fn color(&'self mut self) -> CSSValue<Color> {
+    pub fn color(&mut self) -> CSSValue<Color> {
         //convert_net_color_value(self.inner.color())
-        let (value, length) = css_computed_color(&'self mut self.computed_style);
+        let (value, length) = css_computed_color(&mut self.computed_style);
         let mut len = 0;
         if length.is_some()
         {
@@ -452,31 +454,31 @@ impl<'self> ComputedStyle<'self> {
 
     // CSS 2.1, Section 15 - Fonts
 
-    pub fn font_family(&'self mut self) -> CSSValue<~[CSSFontFamily]> {
+    pub fn font_family(&mut self) -> CSSValue<~[CSSFontFamily]> {
        // convert_net_font_family_value(self.inner.font_family())
-       let (value, namesi) = css_computed_font_family(&'self mut self.computed_style);
+       let (value, namesi) = css_computed_font_family(&mut self.computed_style);
        convert_net_font_family_value(unsafe { transmute(value as uint)}, namesi)
     }
 
 
-    pub fn font_style(&'self mut self) -> CSSValue<CSSFontStyle> {
+    pub fn font_style(&mut self) -> CSSValue<CSSFontStyle> {
         //convert_net_font_style_value(self.inner.font_style())
-        let value = css_computed_font_style(&'self mut self.computed_style);
+        let value = css_computed_font_style(&mut self.computed_style);
         convert_net_font_style_value(unsafe { transmute(value as uint)})
 
     }
 
-    pub fn font_weight(&'self mut self) -> CSSValue<CSSFontWeight> {
+    pub fn font_weight(&mut self) -> CSSValue<CSSFontWeight> {
         //convert_net_font_weight_value(self.inner.font_weight())
-        let value = css_computed_font_weight(&'self mut self.computed_style);
+        let value = css_computed_font_weight(&mut self.computed_style);
         convert_net_font_weight_value(unsafe { transmute(value as uint)})
 
     }
 
-    pub fn font_size(&'self mut self) -> CSSValue<CSSFontSize> {
+    pub fn font_size(&mut self) -> CSSValue<CSSFontSize> {
         //convert_net_font_size_value(self.inner.font_size())
 
-        let (value, olength, ounit) = css_computed_font_size(&'self mut self.computed_style);
+        let (value, olength, ounit) = css_computed_font_size(&mut self.computed_style);
 
         let mut length = 0 ;
         let mut unit = CSS_UNIT_PX;
@@ -494,15 +496,15 @@ impl<'self> ComputedStyle<'self> {
 
     // CSS 2.1, Section 16 - Text
 
-    pub fn text_align(&'self mut self) -> CSSValue<CSSTextAlign> {
+    pub fn text_align(&mut self) -> CSSValue<CSSTextAlign> {
         //convert_net_text_align_value(self.inner.text_align())
-        let value = css_computed_text_align(&'self mut self.computed_style);
+        let value = css_computed_text_align(&mut self.computed_style);
         convert_net_text_align_value(unsafe { transmute(value as uint)})
     }
 
-    pub fn text_decoration(&'self mut self) -> CSSValue<CSSTextDecoration> {
+    pub fn text_decoration(&mut self) -> CSSValue<CSSTextDecoration> {
         //convert_net_text_decoration_value(self.inner.text_decoration())
-        let value = css_computed_text_decoration(&'self mut self.computed_style);
+        let value = css_computed_text_decoration(&mut self.computed_style);
         convert_net_text_decoration_value(unsafe { transmute(value as uint)})
     }
     // CSS 2.1, Section 17 - Tables
