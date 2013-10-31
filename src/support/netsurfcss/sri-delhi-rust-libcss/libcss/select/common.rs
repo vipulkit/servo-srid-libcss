@@ -7,6 +7,7 @@ use libwapcaplet::wapcaplet::*;
 use std::libc::*;
 use std::clone::Clone;
 
+#[deriving(DeepClone)]
 pub enum css_computed_content_item_type {
     CSS_COMPUTED_CONTENT_NONE       = 0,
     CSS_COMPUTED_CONTENT_STRING     = 1,
@@ -20,6 +21,7 @@ pub enum css_computed_content_item_type {
     CSS_COMPUTED_CONTENT_NO_CLOSE_QUOTE = 9
 }
 
+#[deriving(DeepClone)]
 pub enum css_hint_data_type{
     CLIP_RECT,
     COLOR,
@@ -288,7 +290,7 @@ pub static CSS_PAGE_BREAK_INSIDE_MASK : int =  0xc0;
 
 /////////////////////////////////////////////
 
-
+#[deriving(DeepClone)]
 pub struct css_computed_counter {
     name:uint ,
     value:i32
@@ -303,12 +305,14 @@ impl Clone for css_computed_counter {
     }  
 }
 
+#[deriving(DeepClone)]
 pub struct css_computed_content_item_counter {
     name:uint,
     sep:Option<uint>,
     style:u8
 }
 
+#[deriving(DeepClone)]
 pub struct css_computed_content_item {
   
     item_type:css_computed_content_item_type,
@@ -327,6 +331,7 @@ impl Clone for css_computed_content_item {
     }  
 }
 
+#[deriving(DeepClone)]
 pub struct css_computed_uncommon {
 /*
  * border_spacing         1 + 2(4)    2(4)
@@ -399,7 +404,7 @@ pub struct css_computed_uncommon {
     content:~[~css_computed_content_item],
 }
 
-
+#[deriving(DeepClone)]
 pub struct css_computed_page {
 /*
  * page_break_after       3
@@ -410,9 +415,11 @@ pub struct css_computed_page {
  */
     bits:~[u8],//~[u8, ..1]
 } 
-    
+
+#[deriving(DeepClone)]
 pub struct css_aural ;
 
+#[deriving(DeepClone)]
 pub struct css_computed_style {
 /*
  * background_attachment      2

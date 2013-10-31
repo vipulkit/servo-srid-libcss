@@ -1066,7 +1066,7 @@ impl dispatch_table {
 
 // function pointer : used in "css__compute_absolute_values" function 
 ///////////////////////////////////////////////////////////////////////
-pub type css_fnptr_compute_font_size =  extern fn(parent:Option<&mut ~css_hint>,
+pub type css_fnptr_compute_font_size =  ~fn(parent:Option<&mut ~css_hint>,
                                                 size:Option<&mut ~css_hint> ) 
                                                     -> css_error ;
 
