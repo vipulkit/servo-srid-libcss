@@ -264,7 +264,7 @@ pub fn font_face_src_parse_spec_or_name(stylesheet_vector:&mut ~[css_stylesheet]
 
     match token.token_type {
         CSS_TOKEN_URI => {
-            match (*stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.unwrap())
+            match (stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.unwrap())
             { 
                 (CSS_OK,loc) => location =loc,
                 (error,_) => return (error,None)

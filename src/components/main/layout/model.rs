@@ -96,19 +96,19 @@ impl Zero for BoxModel {
 
 impl BoxModel {
     /// Populates the box model parameters from the given computed style.
-    pub fn compute_borders(&mut self, style: CompleteStyle) {
+    pub fn compute_borders(&mut self, style: &CompleteStyle) {
         // Compute the borders.
-        self.border.top = self.compute_border_width(style.deep_clone().border_top_width(), style.deep_clone().font_size());
-        self.border.right = self.compute_border_width(style.deep_clone().border_right_width(), style.deep_clone().font_size());
-        self.border.bottom = self.compute_border_width(style.deep_clone().border_bottom_width(), style.deep_clone().font_size());
-        self.border.left = self.compute_border_width(style.deep_clone().border_left_width(), style.deep_clone().font_size());
+        self.border.top = self.compute_border_width(style.border_top_width(), style.font_size());
+        self.border.right = self.compute_border_width(style.border_right_width(), style.font_size());
+        self.border.bottom = self.compute_border_width(style.border_bottom_width(), style.font_size());
+        self.border.left = self.compute_border_width(style.border_left_width(), style.font_size());
     }
 
-    pub fn compute_padding(&mut self, style: CompleteStyle, containing_width: Au) {
-        self.padding.top = self.compute_padding_length(style.deep_clone().padding_top(), containing_width, style.deep_clone().font_size());
-        self.padding.right = self.compute_padding_length(style.deep_clone().padding_right(), containing_width, style.deep_clone().font_size());
-        self.padding.bottom = self.compute_padding_length(style.deep_clone().padding_bottom(), containing_width, style.deep_clone().font_size());
-        self.padding.left = self.compute_padding_length(style.deep_clone().padding_left(), containing_width, style.deep_clone().font_size());
+    pub fn compute_padding(&mut self, style: &CompleteStyle, containing_width: Au) {
+        self.padding.top = self.compute_padding_length(style.padding_top(), containing_width, style.font_size());
+        self.padding.right = self.compute_padding_length(style.padding_right(), containing_width, style.font_size());
+        self.padding.bottom = self.compute_padding_length(style.padding_bottom(), containing_width, style.font_size());
+        self.padding.left = self.compute_padding_length(style.padding_left(), containing_width, style.font_size());
     }
 
     pub fn noncontent_width(&self) -> Au {

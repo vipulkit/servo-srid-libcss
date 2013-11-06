@@ -187,29 +187,29 @@ impl BlockFlowData {
         let mut x_offset = Au(0);
 
         for &box in self.box.iter() {
-            let style = box.style().deep_clone();
+            let style = box.style();
             do box.with_model |model| {
                 //Can compute border width here since it doesn't depend on anything
-                model.compute_borders(style.deep_clone());
+                model.compute_borders(&style);
 
                 // Can compute padding here since we know containing block width.
-                model.compute_padding(style.deep_clone(), remaining_width);
+                model.compute_padding(&style, remaining_width);
 
                 // Margins are 0 right now so model.noncontent_width() is just borders + padding.
                 let available_width = remaining_width - model.noncontent_width();
 
                 // Top and bottom margins for blocks are 0 if auto.
-                let margin_top = MaybeAuto::from_margin(style.deep_clone().margin_top(),
+                let margin_top = MaybeAuto::from_margin(style.margin_top(),
                                                         remaining_width,
-                                                        style.deep_clone().font_size()).specified_or_zero();
-                let margin_bottom = MaybeAuto::from_margin(style.deep_clone().margin_bottom(),
+                                                        style.font_size()).specified_or_zero();
+                let margin_bottom = MaybeAuto::from_margin(style.margin_bottom(),
                                                            remaining_width,
-                                                           style.deep_clone().font_size()).specified_or_zero();
+                                                           style.font_size()).specified_or_zero();
 
                 let (width, margin_left, margin_right) =
-                    (MaybeAuto::from_width(style.deep_clone().width(), remaining_width, style.deep_clone().font_size()),
-                     MaybeAuto::from_margin(style.deep_clone().margin_left(), remaining_width, style.deep_clone().font_size()),
-                     MaybeAuto::from_margin(style.deep_clone().margin_right(), remaining_width, style.deep_clone().font_size()));
+                    (MaybeAuto::from_width(style.width(), remaining_width, style.font_size()),
+                     MaybeAuto::from_margin(style.margin_left(), remaining_width, style.font_size()),
+                     MaybeAuto::from_margin(style.margin_right(), remaining_width, style.font_size()));
 
                 let (width, margin_left, margin_right) = self.compute_horiz(width,
                                                                             margin_left,
@@ -402,8 +402,8 @@ impl BlockFlowData {
         };
 
         for &box in self.box.iter() {
-            let style = box.style();
-            let maybe_height = MaybeAuto::from_height(style.deep_clone().height(), Au(0), style.deep_clone().font_size());
+            let style = &mut box.style();
+            let maybe_height = MaybeAuto::from_height(style.height(), Au(0), style.font_size());
             let maybe_height = maybe_height.specified_or_zero();
             height = geometry::max(height, maybe_height);
         }

@@ -1,6 +1,6 @@
 
 use std::{int};
-
+pub type css_fixed = i32;
 pub static CSS_RADIX_POINT : int = 10 ;
 pub static INT_MIN : int = int::min_value ;
 pub static INT_MAX : int = int::max_value ;

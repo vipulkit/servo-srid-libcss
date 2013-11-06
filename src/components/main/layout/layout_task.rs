@@ -175,7 +175,7 @@ impl LayoutTask {
 
     fn handle_add_stylesheet(&self, sheet: Stylesheet) {
         let sheet = Cell::new(sheet);
-        self.css_select_ctx.append_sheet(sheet.take(), OriginAuthor);
+        self.css_select_ctx.append_sheet(sheet.take().inner, OriginAuthor);
     }
 
     /// The high-level routine that performs layout tasks.

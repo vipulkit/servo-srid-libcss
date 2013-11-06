@@ -328,7 +328,7 @@ impl css_language {
                 let temp_rule = stylesheet_vector[self.sheet].css_stylesheet_rule_create(css_rule_data_list, CSS_RULE_IMPORT);
 
                 /* Resolve import URI */
-                match (*stylesheet_vector[self.sheet].resolve)(stylesheet_vector[self.sheet].url, uri.idata.get_ref().clone())
+                match (stylesheet_vector[self.sheet].resolve)(stylesheet_vector[self.sheet].url, uri.idata.get_ref().clone())
                 { 
                     (CSS_OK,Some(ret_url)) => url = lwc_ref.lwc_string_data(ret_url).to_owned(),
                     (error,_) => return error
@@ -345,7 +345,7 @@ impl css_language {
                 /* Inform client of need for import */
                 match stylesheet_vector[self.sheet].import {
                     Some(import_fn) => 
-                        match (*import_fn)(url, media){
+                        match ( import_fn)(url, media){
                             CSS_OK => {},
                             error => return error
                     },

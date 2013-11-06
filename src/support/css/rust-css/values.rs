@@ -22,7 +22,7 @@ use units::GenericFontFamily;
 use color::Color;
 
 /** A partial CSS value, before inheritance has been resolved */
-#[deriving(Eq,Clone)]
+#[deriving(Eq)]
 pub enum CSSValue<T> {
     Inherit,
     Specified(T),
@@ -31,7 +31,7 @@ pub enum CSSValue<T> {
 
 // CSS 2.1, Section 8 - Box model
 
-#[deriving(Eq, Clone)]
+#[deriving(Eq)]
 pub enum CSSMargin {
     CSSMarginLength(Length),
     CSSMarginPercentage(float),

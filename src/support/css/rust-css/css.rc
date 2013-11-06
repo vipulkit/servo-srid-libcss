@@ -22,12 +22,13 @@ Basic operation:
 #[crate_type = "lib"];
 
 extern mod extra;
-//extern mod netsurfcss;
-//extern mod wapcaplet;
-// extern mod parserutils;
-extern mod srid_css;
+//extern mod parserutils;
+extern mod srid_css; 
 
+
+pub mod util;
 pub mod stylesheet;
+pub mod helpers;
 pub mod select;
 pub mod computed;
 pub mod complete;
@@ -36,7 +37,7 @@ pub mod types;
 pub mod units;
 pub mod color;
 pub mod values;
-pub mod util;
+
 
 mod parser;
 
@@ -44,20 +45,19 @@ mod parser;
 mod test;
 
 // Shortcuts to the netsurfcss types
-/*pub mod n {
-    pub use p = netsurfcss::properties;
-    pub use s = netsurfcss::select;
-    pub use t = netsurfcss::types;
-    pub use c = netsurfcss::computed;
-    pub use v = netsurfcss::values;
-    pub use h = netsurfcss::hint;
-    pub use u = netsurfcss::util;
+// pub mod n {
+//     pub use p = netsurfcss::properties;
+//     pub use s = netsurfcss::select;
+//     pub use t = netsurfcss::types;
+//     pub use c = netsurfcss::computed;
+//     pub use v = netsurfcss::values;
+//     pub use h = netsurfcss::hint;
+//     pub use u = netsurfcss::util;
 
-    pub mod ll {
-        pub use p = netsurfcss::ll::properties;
-        pub use s = netsurfcss::ll::select;
-        pub use t = netsurfcss::ll::types;
-        pub use c = netsurfcss::ll::computed;
-    }
-}*/
-
+//     pub mod ll {
+//         pub use p = netsurfcss::ll::properties;
+//         pub use s = netsurfcss::ll::select;
+//         pub use t = netsurfcss::ll::types;
+//         pub use c = netsurfcss::ll::computed;
+//     }
+// }

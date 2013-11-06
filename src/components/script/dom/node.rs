@@ -4,6 +4,7 @@
 
 //! The core DOM types. Defines the basic DOM hierarchy as well as all the HTML elements.
 
+
 use dom::bindings::node;
 use dom::bindings::utils::{WrapperCache, DOMString, ErrorResult, Fallible, NotFound, HierarchyRequest};
 use dom::bindings::utils::{BindingObject, CacheableWrapper, null_str_as_empty};
@@ -21,7 +22,8 @@ use std::libc::c_void;
 use std::unstable::raw::Box;
 use extra::arc::Arc;
 use js::jsapi::{JSObject, JSContext};
-use newcss::select::VoidPtrLike;
+//use newcss::select::VoidPtrLike;
+use newcss::helpers::VoidPtrLike;
 use newcss::complete::CompleteSelectResults;
 use servo_util::tree::{TreeNode, TreeNodeRef};
 use servo_util::range::Range;

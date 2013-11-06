@@ -11,7 +11,7 @@ use layout::incremental;
 use script::dom::node::{AbstractNode, LayoutView};
 use newcss::complete::CompleteSelectResults;
 use newcss::select::SelectCtx;
-use newcss::computed::SelectResults;
+use newcss::select::SelectResults;
 use servo_util::tree::TreeNodeRef;
 
 pub trait MatchMethods {
@@ -32,7 +32,7 @@ impl MatchMethods for AbstractNode<LayoutView> {
             do self.with_imm_element |elem| {
                 let inline_style = match elem.style_attribute {
                     None => None,
-                    Some(ref sheet) => Some(sheet),
+                    Some(ref sheet) => Some(sheet.inner),
                 };
                 let select_handler = NodeSelectHandler { node: *self };
                 let incomplete_results = select_ctx.select_style(self, inline_style, &select_handler);

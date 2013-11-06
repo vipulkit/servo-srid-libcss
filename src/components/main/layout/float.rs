@@ -84,7 +84,7 @@ impl FloatFlowData {
         self.box.map(|&box| {
             let style = box.style();
             do box.with_model |model| {
-                model.compute_borders(style.deep_clone())
+                model.compute_borders(&style)
             }
 
             min_width = min_width.add(&box.get_min_width(ctx));
@@ -110,21 +110,21 @@ impl FloatFlowData {
             let style = box.style();
             do box.with_model |model| {
                 // Can compute padding here since we know containing block width.
-                model.compute_padding(style.deep_clone(), remaining_width);
+                model.compute_padding(&style, remaining_width);
 
                 // Margins for floats are 0 if auto.
-                let margin_top = MaybeAuto::from_margin(style.deep_clone().margin_top(),
+                let margin_top = MaybeAuto::from_margin(style.margin_top(),
                                                         remaining_width,
-                                                        style.deep_clone().font_size()).specified_or_zero();
-                let margin_bottom = MaybeAuto::from_margin(style.deep_clone().margin_bottom(),
+                                                        style.font_size()).specified_or_zero();
+                let margin_bottom = MaybeAuto::from_margin(style.margin_bottom(),
                                                            remaining_width,
-                                                           style.deep_clone().font_size()).specified_or_zero();
-                let margin_left = MaybeAuto::from_margin(style.deep_clone().margin_left(),
+                                                           style.font_size()).specified_or_zero();
+                let margin_left = MaybeAuto::from_margin(style.margin_left(),
                                                          remaining_width,
-                                                         style.deep_clone().font_size()).specified_or_zero();
-                let margin_right = MaybeAuto::from_margin(style.deep_clone().margin_right(),
+                                                         style.font_size()).specified_or_zero();
+                let margin_right = MaybeAuto::from_margin(style.margin_right(),
                                                           remaining_width,
-                                                          style.deep_clone().font_size()).specified_or_zero();
+                                                          style.font_size()).specified_or_zero();
 
 
 
@@ -133,9 +133,9 @@ impl FloatFlowData {
                                                                 remaining_width));
 
 
-                let width = MaybeAuto::from_width(style.deep_clone().width(), 
+                let width = MaybeAuto::from_width(style.width(), 
                                                   remaining_width,
-                                                  style.deep_clone().font_size()).specified_or_default(shrink_to_fit);
+                                                  style.font_size()).specified_or_default(shrink_to_fit);
                 debug!("assign_widths_float -- width: %?", width);
 
                 model.margin.top = margin_top;

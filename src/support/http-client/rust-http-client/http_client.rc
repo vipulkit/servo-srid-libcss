@@ -161,7 +161,9 @@ impl<C: Connection, CF: ConnectionFactory<C>> HttpRequest<C, CF> {
             debug!("http_client: connecting to %?", ip_addr);
             let socket = self.connection_factory.connect(copy ip_addr, 80);
             if socket.is_ok() {
+                println("I am inside socket.is_ok");
                 result::unwrap(socket)
+                println("I am inside socket.is_ok - after unwrap");
             } else {
                 debug!("http_client: unable to connect to %?: %?", ip_addr, socket);
                 cb(Error(ErrorConnect));
@@ -186,7 +188,9 @@ impl<C: Connection, CF: ConnectionFactory<C>> HttpRequest<C, CF> {
         let read_port = {
             let read_port = socket.read_start_();
             if read_port.is_ok() {
+                println("I am inside read_port.is_ok");
                 result::unwrap(read_port)
+                println("I am inside read_port.is_ok- after unwrap");
             } else {
                 cb(Error(ErrorMisc));
                 return;
@@ -213,7 +217,9 @@ impl<C: Connection, CF: ConnectionFactory<C>> HttpRequest<C, CF> {
             let next_data = read_port.recv();
 
             if next_data.is_ok() {
+                println("I am inside next_data.is_ok");
                 let next_data = result::unwrap(next_data);
+                println("I am inside next_data.is_ok- after unwrap");
                 debug!("data: %?", str::from_bytes(next_data));
                 let bytes_parsed = self.parser.execute(next_data, &callbacks);
                 if bytes_parsed != next_data.len() {
@@ -244,7 +250,9 @@ impl<C: Connection, CF: ConnectionFactory<C>> HttpRequest<C, CF> {
     pub fn get_ip(&self) -> Result<IpAddr, RequestError> {
         let ip_addrs = (self.resolve_ip_addr)(copy self.url.host);
         if ip_addrs.is_ok() {
+            println("I am inside ip_addrs.is_ok");
             let ip_addrs = result::unwrap(ip_addrs);
+            println("I am inside ip_addrs.is_ok - after unwrap");
             // FIXME: This log crashes
             //#debug("http_client: got IP addresses for %?: %?", self.url, ip_addrs);
             if ip_addrs.len() != 0 {

@@ -3,9 +3,6 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 //use n;
-
-extern mod srid_css;
-
 use srid_css::include::types::*;
 
 pub enum StylesheetOrigin {
@@ -23,4 +20,3 @@ impl StylesheetOrigin {
         }
     }
 }
-     

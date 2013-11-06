@@ -80,10 +80,10 @@ pub struct css_system_font {
 
 pub type css_fixed = i32;
 
-pub type css_url_resolution_fn = @extern fn (base:&str, rel:uint) -> (css_error,Option<uint>);
-pub type css_font_resolution_fn = @extern fn (name: uint) -> (css_error , Option<css_system_font>);
-pub type css_import_notification_fn =  @extern fn(url:&str, media:&mut u64) -> css_error;
-pub type css_color_resolution_fn = @extern fn (name: uint) -> (Option<u32> , css_error);
+pub type css_url_resolution_fn = extern fn (base:&str, rel:uint) -> (css_error,Option<uint>);
+pub type css_font_resolution_fn = extern fn (name: uint) -> (css_error , Option<css_system_font>);
+pub type css_import_notification_fn = extern fn(url:&str, media:&mut u64) -> css_error;
+pub type css_color_resolution_fn = extern fn (name: uint) -> (Option<u32> , css_error);
 
 
 

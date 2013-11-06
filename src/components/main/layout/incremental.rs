@@ -113,7 +113,7 @@ impl RestyleDamage {
 // breakage on modifications.
 macro_rules! add_if_not_equal(
     ([ $($effect:ident),* ], [ $($getter:ident),* ]) => ({
-        if $( (old.deep_clone().$getter() != new.deep_clone()   .$getter()) )||* {
+        if $( (old.$getter() != new   .$getter()) )||* {
             damage.union_in_place( restyle_damage!( $($effect),* ) );
         }
     })
@@ -145,7 +145,7 @@ pub fn compute_damage(node: &AbstractNode<LayoutView>,
 
     // Handle 'display' specially because it has this 'is_root' parameter.
     let is_root = node.is_root();
-    if old.deep_clone().display(is_root) != new.deep_clone().display(is_root) {
+    if old.display(is_root) != new.display(is_root) {
         damage.union_in_place(restyle_damage!(Repaint, BubbleWidths, Reflow));
     }
 

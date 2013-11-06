@@ -1312,7 +1312,7 @@ fn css__parse_named_color(stylesheet_vector:&mut ~[css_stylesheet], sheet:uint, 
     match stylesheet_vector[sheet].color {
         None => {},
         Some(x) => {
-            return (*x)(data);
+            return (x)(data);
         }
     }
     return(None , CSS_INVALID);

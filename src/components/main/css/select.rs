@@ -11,8 +11,8 @@ use newcss::util::DataStream;
 
 pub fn new_css_select_ctx() -> SelectCtx {
     let mut ctx = SelectCtx::new();
-    ctx.append_sheet(html4_default_style(), OriginUA);
-    ctx.append_sheet(servo_default_style(), OriginUA);
+    ctx.append_sheet(html4_default_style().inner, OriginUA);
+    ctx.append_sheet(servo_default_style().inner, OriginUA);
     return ctx;
 }
 

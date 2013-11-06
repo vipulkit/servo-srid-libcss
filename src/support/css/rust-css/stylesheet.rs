@@ -6,13 +6,12 @@
 CSS stylesheets, owned types, immutable after creation
 */
 extern mod srid_css;
-
 use extra::url::Url;
 use util::DataStream;
+use srid_css::css::*;  
+
 //use netsurfcss::stylesheet::CssStylesheet;
 use parser::{parse_stylesheet, parse_style_attribute};
-//use srid_css::css::*;
-use srid_css::stylesheet::*;
 
 pub struct Stylesheet {
     inner: uint
@@ -20,16 +19,16 @@ pub struct Stylesheet {
 
 impl Stylesheet {
     pub fn new(url: Url, input: DataStream) -> Stylesheet {
-        let scss = parse_stylesheet(url, input) ;
+        let stylesheet = parse_stylesheet(url, input);
         Stylesheet {
-            inner:scss
+            inner:stylesheet.stylesheet
         }
     }
 
     pub fn from_attribute(url: Url, data: &str) -> Stylesheet {
-            let scss = parse_style_attribute(url, data) ;
+        
         Stylesheet {
-            inner: scss
+            inner: parse_style_attribute(url, data).stylesheet
         }
     }
 }

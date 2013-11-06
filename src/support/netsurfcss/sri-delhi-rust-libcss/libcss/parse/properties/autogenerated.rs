@@ -192,7 +192,7 @@ pub fn css__parse_cue_after(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:ui
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
+		match (_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
 				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_CUE_AFTER, 0, CUE_AFTER_URI );
@@ -268,7 +268,7 @@ pub fn css__parse_cue_before(_stylesheet_vector:&mut ~[css_stylesheet], _sheet:u
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
+		match (_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
 				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_CUE_BEFORE, 0, CUE_BEFORE_URI );
@@ -3198,7 +3198,7 @@ pub fn css__parse_background_image(_stylesheet_vector:&mut ~[css_stylesheet], _s
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
+		match (_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
 				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_BACKGROUND_IMAGE, 0, BACKGROUND_IMAGE_URI );
@@ -3274,7 +3274,7 @@ pub fn css__parse_list_style_image(_stylesheet_vector:&mut ~[css_stylesheet], _s
 	} 
 	else  if match token.token_type { CSS_TOKEN_URI => true, _ => false} {
 
-		match (*_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
+		match (_stylesheet_vector[_sheet].resolve)(_stylesheet_vector[_sheet].url, token.idata.get_ref().clone()) {
 			(CSS_OK, Some(uri)) => {
 				let uri_snumber = _stylesheet_vector[_sheet].css__stylesheet_string_add(uri);
 				css_stylesheet::css__stylesheet_style_appendOPV(result, CSS_PROP_LIST_STYLE_IMAGE, 0, LIST_STYLE_IMAGE_URI );

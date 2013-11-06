@@ -5,7 +5,7 @@ use input::parserutils_filter::*;
 use utils::errors::*;
 
 pub type  parserutils_charset_detect_func =  
-    @extern fn(data: &[u8], mibenum:u16, source:int, @alias) -> (Option<u16>, Option<int>, parserutils_error);
+    extern fn(data: &[u8], mibenum:u16, source:int, @alias) -> (Option<u16>, Option<int>, parserutils_error);
 
 pub struct inputstream {
     utf8: @mut(~[u8]),        // Buffer containing UTF-8 data 

@@ -1974,7 +1974,7 @@ impl css_properties {
                 }
                 else if match token.token_type {CSS_TOKEN_URI  => true, _ => false} {
                     
-                    match (*stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.get_ref().clone()){
+                    match (stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.get_ref().clone()){
                         (CSS_OK, Some(uri)) => {
                             let uri_snumber = stylesheet_vector[sheet].css__stylesheet_string_add(uri);
                             CSS_APPEND(first, CONTENT_URI);
@@ -2465,7 +2465,7 @@ impl css_properties {
                    ) {
 
                 let uri: uint;
-                match (*stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.get_ref().clone()) {
+                match (stylesheet_vector[sheet].resolve)(stylesheet_vector[sheet].url, token.idata.get_ref().clone()) {
                     (CSS_OK, Some(x)) => {
                         uri =x;
                     },
@@ -2874,7 +2874,7 @@ impl css_properties {
         match stylesheet_vector[sheet].font {
             None => {},
             Some(font_resolution) => {
-                let (sheet_font_error , some_sys_font) = (*font_resolution)(token.idata.get_ref().clone());
+                let (sheet_font_error , some_sys_font) = (font_resolution)(token.idata.get_ref().clone());
                 match token.token_type {
                     CSS_TOKEN_IDENT  => {
                         let value_from_font = match some_sys_font {
@@ -4128,7 +4128,7 @@ impl css_properties {
             let mut modifiers:int = 0;
             value = PLAY_DURING_URI as u16;
             let uri:uint;
-            match (*stylesheet_vector[sheet].resolve)( stylesheet_vector[sheet].url, token.idata.get_ref().clone()) {
+            match (stylesheet_vector[sheet].resolve)( stylesheet_vector[sheet].url, token.idata.get_ref().clone()) {
                 (CSS_OK, Some(x)) => {
                     uri =x;
                 },
