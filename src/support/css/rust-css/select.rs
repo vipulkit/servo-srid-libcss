@@ -49,7 +49,7 @@ impl SelectCtx {
     during future selector matching
     */
     pub fn append_sheet(&mut self, sheet: uint, origin: StylesheetOrigin) {
-        
+        println(fmt!("select.rs :: append_sheet"));
         self.inner.append_sheet(sheet, origin.to_net(), CSS_MEDIA_SCREEN as u64)
     }
 
@@ -61,7 +61,8 @@ impl SelectCtx {
     pub fn select_style<N: VoidPtrLike, H: SelectHandler<N>>(&mut self,
                                                              node: &N,
                                                              inline_style: Option<uint>,
-                                                             handler: &H) -> SelectResults {
+                                                           handler: &H) -> SelectResults {
+        println(fmt!("select.rs : select_style"));
         let inner_handler = SelectHandlerWrapper {
             inner: handler
         };
@@ -90,6 +91,7 @@ pub struct SelectResults {
 impl<'self> SelectResults {
     /** Retrieve the computed style of a single pseudo-element */
     pub fn computed_style(&'self self) -> ComputedStyle<'self> {
+        println(fmt!("select.rs :: computed_style"));
         ComputedStyle {
             inner: self.inner.computed_style(CssPseudoElementNone)
         }
@@ -120,19 +122,21 @@ struct SelectHandlerWrapper<N, H> {
 
 impl<'self, N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
     fn inner_ref(&self) -> &'self H {
+        println(fmt!("select.rs:: inner_ref"));
         unsafe { &*self.inner }
     }
 }
 
 impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> {
     fn node_name(&self, node: &N) -> CssQName {
+        println(fmt!("select.rs :: node_name"));
         do self.inner_ref().with_node_name(node) |_name| {
-            // TODO use wapcaplet 
             CssQName{ns:None, name:_name.to_owned()}
         }
     }
 
     fn node_classes(&self, node: &N) -> Option<~[uint]> {
+        println(fmt!("select.rs :: node_classes"));
         do self.inner_ref().with_node_classes(node) |node_classes_opt| {
            do node_classes_opt.map |s| {
                debug!("SelectHandlerWrapper::node_classes - classes: %?", *s);
@@ -147,8 +151,9 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
            }
         }
     }
-    // TODO if expecting ~str then convert uint to corresponding lwc_string
+
     fn node_id(&self, node: &N) -> Option<uint> {
+        println(fmt!("select.rs :: node_id"));
         lwc();
         do self.inner_ref().with_node_id(node) |node_id_opt| {
             node_id_opt.map(|s| unsafe{ lwc_ref.get_mut_ref()}.lwc_intern_string(*s))
@@ -156,40 +161,49 @@ impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> 
     }
 
     fn named_parent_node(&self, node: &N, qname: &mut CssQName) -> Option<N> {
+        println(fmt!("select.rs :: named_parent_node"));
         self.inner_ref().named_parent_node(node, qname.name)
     }
 
     fn parent_node(&self, node: &N) -> Option<N> {
+        println(fmt!("select.rs :: parent_node"));
         self.inner_ref().parent_node(node)
     }
 
     fn node_has_class(&self, node: &N, name: &str) -> bool {
+        println(fmt!("select.rs :: node_has_class"));
         self.inner_ref().node_has_class(node, name)
     }
 
     fn node_has_id(&self, node: &N, name: &str) -> bool {
+        println(fmt!("select.rs :: node_has_id"));
         self.inner_ref().node_has_id(node, name)
     }
 
     fn named_ancestor_node(&self, node: &N, qname: &mut CssQName) -> Option<N> {
+        println(fmt!("select.rs :: named_ancestor_node"));
         self.inner_ref().named_ancestor_node(node, qname.name)
     }
 
     fn node_is_root(&self, node: &N) -> bool {
+        println(fmt!("select.rs :: node_is_root"));
         self.inner_ref().node_is_root(node)
     }
 
     fn node_is_link(&self, node: &N) -> bool {
+        println(fmt!("select.rs :: node_is_link"));
         self.inner_ref().node_is_link(node)
     }
 
     fn node_is_visited(&self, _node: &N) -> bool {
         // FIXME
+        println(fmt!("select.rs :: node_is_visited"));
         warn_unimpl("node_is_visited");
         false
     }
 
     fn ua_default_for_property(&self, property: CssProperty) -> CssHint {
+        println(fmt!("select.rs :: ua_default_for_property"));
         warn!("not specifiying ua default for property %?", property);
         CssHintDefault
     }

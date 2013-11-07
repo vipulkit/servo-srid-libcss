@@ -1302,28 +1302,32 @@ pub fn css_computed_style_compose(parent: &~css_computed_style,
                                 compute_font_size_ptr: css_fnptr_compute_font_size , 
                                 result: &mut ~css_computed_style
                                 ) -> css_error {
+    println("css_computed_style_compose");
 
     let mut error: css_error;
     let mut i : uint = 0;
     while i < (CSS_N_PROPERTIES as uint) {
-        
+        println(fmt!("css_computed_style_compose in loop:: i == %?" , i));
         /* Skip any in extension blocks if the block does not exist */
         match prop_dispatch[i].group {
             GROUP_UNCOMMON => {
                 if ( parent.uncommon.is_none() &&
                      child.uncommon.is_none()  ) {
+                    i+=1;
                     loop ;
                 }
             },
             GROUP_PAGE => {
                 if ( parent.page.is_none() &&
                      child.page.is_none()  ) {
+                    i+=1;
                     loop ;
                 }
             },
             GROUP_AURAL => {
                 if ( parent.aural.is_none() &&
                      child.aural.is_none()  ) {
+                    i+=1;
                     loop ;
                 }
             },
@@ -1371,14 +1375,17 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                                     style: &mut ~css_computed_style,
                                     compute_font_size_ptr:css_fnptr_compute_font_size) 
                                     -> css_error {
-
+    println("css__compute_absolute_values");
     let mut psize = ~css_hint{
         hint_type:HINT_LENGTH,
         status:0,
         clip:None,
         content:None,
         counters:None,
-        length:None,
+        length:Some(~css_hint_length { 
+                value:0 , 
+                unit:CSS_UNIT_PX 
+            }),
         position:None,
         color:0,
         fixed:0,
@@ -1392,7 +1399,10 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         clip:None,
         content:None,
         counters:None,
-        length:None,
+        length:Some(~css_hint_length { 
+                value:0 , 
+                unit:CSS_UNIT_PX 
+            }),
         position:None,
         color:0,
         fixed:0,
@@ -1406,7 +1416,10 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         clip:None,
         content:None,
         counters:None,
-        length:None,
+        length:Some(~css_hint_length { 
+                value:0 , 
+                unit:CSS_UNIT_PX 
+            }),
         position:None,
         color:0,
         fixed:0,
@@ -1474,7 +1487,12 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
             ex_size.length.get_mut_ref().value = 0 ;
         },
         Some(length)=>{
-            ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_mut_ref().value,length.value);
+            if length.value == 0 {
+                ex_size.length.get_mut_ref().value = 0 ;
+            }
+            else {
+                ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_mut_ref().value,length.value);    
+            }
         }
     }
 

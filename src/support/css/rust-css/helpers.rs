@@ -237,6 +237,7 @@ pub mod hint {
     impl CssHint {
 
         pub fn new(property: CssProperty, mut hint: Option<&mut ~css_hint>) -> CssHint {
+            println(fmt!("new hint == %?" , hint));
             let status = hint.get_ref().status as u32;
             match property {
                 CssPropFontSize => {
@@ -499,7 +500,7 @@ pub mod select {
         priv select_ctx:~css_select_ctx,
         // Whenever a sheet is added to the select ctx we will take ownership of it
         // to ensure that it stays alive
-        priv sheets: ~[css_stylesheet],
+        priv sheets: ~[uint],
     }
 
 
@@ -515,7 +516,8 @@ pub mod select {
     impl CssSelectCtx {
         #[fixed_stack_segment]
         pub fn append_sheet(&mut self, sheet: uint, origin: css_origin, media: u64) {
-            self.select_ctx.css_select_ctx_append_sheet(sheet, origin, media);            
+            self.select_ctx.css_select_ctx_append_sheet(sheet, origin, media);   
+            self.sheets.push(sheet);         
         }
 
         #[fixed_stack_segment]
@@ -938,6 +940,7 @@ pub mod select {
 
     impl<'self> CssSelectResults {
         pub fn computed_style(&'self self, element: CssPseudoElement) -> super::computed::CssComputedStyle<'self> {
+            println(fmt!("helpers.rs :: computed_style"));
             //let element = element.to_ll();
             //let llstyle = unsafe { *self.results }.styles[element];
             
@@ -1602,6 +1605,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn width(&self) -> CssWidthValue {
+            println(fmt!("helpers.rs :: width"));
             let (type_, length, unit) = css_computed_width(&self.computed_style);
 
             CssWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
@@ -1609,6 +1613,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn height(&self) -> CssHeightValue {
+            println(fmt!("helpers.rs :: height"));
             let (type_, length, unit) = css_computed_height(&self.computed_style);
 
             CssHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
@@ -1616,6 +1621,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn float(&self) -> CssFloatValue {
+            println(fmt!("helpers.rs :: float"));
             let type_ = css_computed_float(&self.computed_style);
 
             CssFloatValue::new(type_)
@@ -1623,6 +1629,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn clear(&self) -> CssClearValue {
+            println(fmt!("helpers.rs :: clear"));
             let type_ = css_computed_clear(&self.computed_style);
 
             CssClearValue::new(type_)
@@ -1630,6 +1637,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn font_family(&self) -> CssFontFamilyValue {
+            println(fmt!("helpers.rs :: font_family"));
             // let mut names: ~[uint] = ~[];
             let (type_, names) = css_computed_font_family(&self.computed_style);
             // let type_ = type_ as css_font_family_e;
@@ -1639,6 +1647,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn font_size(&self) -> CssFontSizeValue {
+            println(fmt!("helpers.rs :: font_size"));
             let (type_, length, unit) = css_computed_font_size(&self.computed_style) ;
 
             CssFontSizeValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
@@ -1646,6 +1655,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn font_style(&self) -> CssFontStyleValue {
+            println(fmt!("helpers.rs :: font_style"));
             let type_ = css_computed_font_style(&self.computed_style);
 
             CssFontStyleValue::new(type_)
@@ -1653,6 +1663,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn font_weight(&self) -> CssFontWeightValue {
+            println(fmt!("helpers.rs :: font_weight"));
             let type_ = css_computed_font_weight(&self.computed_style);
 
             CssFontWeightValue::new(type_)
@@ -1660,6 +1671,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn text_align(&self) -> CssTextAlignValue {
+            println(fmt!("helpers.rs :: text_align"));
             let type_ = css_computed_text_align(&self.computed_style) ;
 
             CssTextAlignValue::new(type_)
@@ -1667,6 +1679,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn text_decoration(&self) -> CssTextDecorationValue {
+            println(fmt!("helpers.rs :: text_decoration"));
             let type_ = css_computed_text_decoration(&self.computed_style);
             debug!("Getting text-decoration raw: %?", type_);
 
@@ -1676,6 +1689,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn line_height(&self) -> CssLineHeightValue {
+            println(fmt!("helpers.rs :: line_height"));
             let (type_ , length , unit) = css_computed_line_height(&self.computed_style);
 
             CssLineHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
@@ -1683,6 +1697,7 @@ pub mod computed {
 
         #[fixed_stack_segment]
         pub fn vertical_align(&self) -> CssVerticalAlignValue {
+            println(fmt!("helpers.rs :: vertical_align"));
             let (type_ , length , unit) = css_computed_vertical_align(&self.computed_style);
 
             CssVerticalAlignValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))

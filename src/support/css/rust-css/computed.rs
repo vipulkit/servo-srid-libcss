@@ -344,11 +344,11 @@ fn convert_net_position_value(value: CssPositionValue) -> CSSValue<CSSPosition> 
 
 fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFontFamily]> {
     use units::{Serif, SansSerif, Cursive, Fantasy, Monospace};
-    println("COMING HERE");
+    println("convert_net_font_family_value");
 
     match value {
         CssFontFamilyInherit => {
-            println("COMING IN INHERIT");
+            println("convert_net_font_family_value :: COMING IN INHERIT");
             Inherit},
         CssFontFamilySerif => Specified(~[CSSFontFamilyGenericFamily(Serif)]),
         CssFontFamilySansSerif => Specified(~[CSSFontFamilyGenericFamily(SansSerif)]),
@@ -356,7 +356,7 @@ fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFon
         CssFontFamilyFantasy => Specified(~[CSSFontFamilyGenericFamily(Fantasy)]),
         CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
         CssFontFamilyValue(names) => 
-        {println("COMING IN length");
+        {println("convert_net_font_family_value :: in value");
             Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
         }
     }
