@@ -3,23 +3,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 extern mod srid_css;
 
-use std::libc::*;
 use std::cast;
 use std::cast::transmute;
 use color::Color;
 use select::SelectResults;
-use computed::ComputedStyle;
 use computed::*;
 use values::*;
-use types::*;
 use srid_css::select::common::*;
 use srid_css::select::dispatch::*;
 use srid_css::utils::errors::*;
 use srid_css::include::types::*;
 use srid_css::include::fpmath::*;
 use srid_css::include::properties::*;
-use helpers::hint::*;
-use helpers::properties::*;
 use helpers::computed::CssComputedStyle;
 
 
