@@ -5,14 +5,10 @@ extern mod srid_css;
 
 use color::{Color, rgba};
 use units::{Length, Px, Em};
-//use netsurfcss::util::css_fixed_to_float;
 use std::either::{Either, Left, Right};
-//use srid_css::include::fpmath::*;
-// use srid_css::include::properties::*;
 use helpers::computed::CssComputedStyle;
 use helpers::values::*;
 use helpers::types::*;
-//use srid_css::stylesheet::*;
 use values::*;
 
 pub type css_fixed = i32;
@@ -23,7 +19,6 @@ pub fn css_fixed_to_float(f: css_fixed) -> float {
     f as float * 1.0f / ((1i32 << BEFORE) as float)
 }
 
-//#[deriving(DeepClone)]
 pub struct ComputedStyle<'self>{
     inner: CssComputedStyle<'self>
 }
