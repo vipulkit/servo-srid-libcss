@@ -1,5 +1,6 @@
 pub type css_color = u32;
 
+#[deriving(DeepClone)]
 pub enum css_unit {
     CSS_UNIT_PX                 = 0x0,
     CSS_UNIT_EX                 = 0x1,

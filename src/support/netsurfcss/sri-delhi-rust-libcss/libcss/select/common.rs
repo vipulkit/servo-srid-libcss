@@ -611,6 +611,7 @@ pub struct css_computed_style {
 }
 
 
+#[deriving(DeepClone)]
 pub struct css_computed_clip_rect {
     top:i32,
     right:i32,
@@ -629,16 +630,19 @@ pub struct css_computed_clip_rect {
 }
 
 
+#[deriving(DeepClone)]
 pub struct css_hint_length {
     value:i32,
     unit:css_unit
 }
 
+#[deriving(DeepClone)]
 pub struct css_hint_length_hv {
     h:css_hint_length,
     v:css_hint_length
 }
 
+#[deriving(DeepClone)]
 pub struct css_hint {
     hint_type:css_hint_data_type,
     status:u8,

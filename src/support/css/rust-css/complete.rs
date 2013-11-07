@@ -9,6 +9,7 @@ use std::cast::transmute;
 use color::Color;
 use select::SelectResults;
 use computed::ComputedStyle;
+use computed::*;
 //use n::h::CssHintLength;
 //use n::u::float_to_css_fixed;
 use values::*;
@@ -24,7 +25,7 @@ use helpers::properties::*;
 use helpers::computed::CssComputedStyle;
 
 
-pub type ComputeFontSizeCb = @fn(parent: &Option<css_hint>, child: &css_hint) -> css_hint;
+pub type ComputeFontSizeCb = @fn(mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint) -> ~css_hint;
 
 pub struct CompleteSelectResults {
     inner: SelectResults
@@ -55,15 +56,15 @@ pub fn compose(parent: &mut CssComputedStyle, child: &mut CssComputedStyle,
 
 fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
     //let hlcbptr: *ComputeFontSizeCb = unsafe { transmute(pw) };
-    /*let cb: ComputeFontSizeCb =
-                |parent: Option<css_hint>, child: &css_hint| -> css_hint {
+    let cb: ComputeFontSizeCb =
+                |mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint| -> ~css_hint {
                 if child.length.is_some() {
                     // Handle relative units
                     match child.length.get_ref().unit {
                         CSS_UNIT_EM | CSS_UNIT_PCT=> {
                             if parent.is_some() {
-                                if parent.get_ref().length.is_some() {
-                                    let mut new_value = css_fixed_to_float(parent.length.get_ref().value.to_css_fixed());
+                                if parent.get_mut_ref().length.is_some() {
+                                    let mut new_value = css_fixed_to_float(parent.get_mut_ref().length.get_ref().value);
                                     if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {
                                         new_value *= css_fixed_to_float(child.length.get_ref().value);    
                                     }
@@ -71,36 +72,38 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
                                         new_value *= css_fixed_to_float(child.length.get_ref().value)/100.0;
                                     }
                                     
-                                    parent.get_mut_ref().length.get_mut_ref().value = new_value;
-                                    parent.get_ref().clone()    
+                                    parent.get_mut_ref().length.get_mut_ref().value = new_value as i32;
+                                    
                                 }
+                                parent.get_mut_ref().deep_clone()
                             }
                                 // CSS3 Values 5.1.1: Multiply parent unit by child unit.
                             else {
-                                    css_hint {
-                                        hint_type: HINT_LENGTH,
-                                        status: 0,
-                                        clip: None,
-                                        content: None,
-                                        counters: None,
-                                        length:Some(css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
-                                        position: None,
-                                        color: 0,
-                                        fixed: 0,
-                                        integer: 0,
-                                        string: None,
-                                        strings: None
-                                    }
+                                ~css_hint {
+                                    hint_type: HINT_LENGTH,
+                                    status: CSS_FONT_SIZE_DIMENSION as u8,
+                                    clip: None,
+                                    content: None,
+                                    counters: None,
+                                    length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
+                                    position: None,
+                                    color: 0,
+                                    fixed: 0,
+                                    integer: 0,
+                                    string: None,
+                                    strings: None
+                                }
                             }
-                        },    
+                        },
+                        // Pass through absolute units    
                         unit => {
-                            css_hint {
+                            ~css_hint {
                                 hint_type: HINT_LENGTH,
-                                status: 0,
+                                status: CSS_FONT_SIZE_DIMENSION as u8,
                                 clip: None,
                                 content: None,
                                 counters: None,
-                                length:Some(css_hint_length { value:child.length.get_ref().value, unit:unit}),
+                                length:Some(~css_hint_length { value:child.length.get_ref().value, unit:unit}),
                                 position: None,
                                 color: 0,
                                 fixed: 0,
@@ -111,15 +114,15 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
                         }
                     }
                 }
-                    // Pass through absolute units
+                    
                 else { 
-                    css_hint {
+                    ~css_hint {
                         hint_type: HINT_LENGTH,
-                        status: 0,
+                        status: CSS_FONT_SIZE_DIMENSION as u8,
                         clip: None,
                         content: None,
                         counters: None,
-                        length:Some(css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
+                        length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
                         position: None,
                         color: 0,
                         fixed: 0,
@@ -131,16 +134,19 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
                 }
             };
     
-    let hlparent = if parent.is_null() {
-        None
-    } else {
-        Some(CssHint::new(CssPropFontSize, parent))
-    };
+    // let hlparent = if parent.is_none() {
+    //     None
+    // } else {
+    //     Some(CssHint::new(CssPropFontSize, parent))
+    // };
     
-    let hlchild = CssHint::new(CssPropFontSize, unsafe { transmute(size) });
-    let new_hint = cb(&hlparent, &hlchild);
-    new_hint.write_to_ll(CssPropFontSize, size);
-    */
+    // let hlchild = CssHint::new(CssPropFontSize, unsafe { transmute(size) });
+    if size.is_some() {
+        let new_hint = cb(parent, size.unwrap());    
+    }
+    
+    // new_hint.write_to_ll(CssPropFontSize, size);
+    
     CSS_OK
 }
 
@@ -155,16 +161,16 @@ impl<'self> CompleteSelectResults {
                            child: SelectResults) -> CompleteSelectResults {
         // New lifetime
         {
-            // let parent_computed = parent.computed_style();
-            // let child_computed = child.computed_style();
-            // //let net_parent_computed = &parent_computed.inner.inner;
-            // let net_child_computed = &/*mut*/ child_computed.inner;
+            let parent_computed = parent.computed_style();
+            let child_computed = child.computed_style();
+            //let net_parent_computed = &parent_computed.inner.inner;
+            let net_child_computed = &/*mut*/ child_computed.inner;
             
-            // // XXX: Need an aliasable &mut here
-            // let net_result_computed: &mut css_computed_style = unsafe { cast::transmute(net_child_computed) };
-            // let net_child_computed: &mut css_computed_style = unsafe { cast::transmute(&child_computed.inner) };
-            // let net_parent_computed = &parent_computed.inner.inner;
-            // compose(net_parent_computed, net_child_computed, net_result_computed);
+            // XXX: Need an aliasable &mut here
+            let net_result_computed: &mut css_computed_style = unsafe { cast::transmute(net_child_computed) };
+            let net_child_computed: &mut css_computed_style = unsafe { cast::transmute(&child_computed.inner) };
+            let net_parent_computed = &parent_computed.inner.inner;
+            compose(net_parent_computed, net_child_computed, net_result_computed);
         }
 
         CompleteSelectResults {

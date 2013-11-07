@@ -1395,14 +1395,14 @@ pub mod computed {
     use helpers::values::{CssLineHeightValue, CssVerticalAlignValue};
     use helpers::types::*;
     use srid_css::include::types::*;
-    use srid_css::include::properties::*;
+    // use srid_css::include::properties::*;
     // use ll::computed::*;
-    use std::ptr::{to_mut_unsafe_ptr, null};
+    // use std::ptr::{to_mut_unsafe_ptr, null};
     // use std::cast::transmute;
     // use std::libc::c_void;
     // use ll::errors::{css_error, CSS_OK};
     // use wapcaplet::ll::lwc_string;
-    use srid_css::include::properties::*;
+    // use srid_css::include::properties::*;
     use srid_css::select::computed::*;
     use srid_css::select::common::css_computed_style;
     
