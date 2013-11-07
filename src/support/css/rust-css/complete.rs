@@ -23,24 +23,15 @@ pub type ComputeFontSizeCb = @fn(mut parent: Option<&mut ~css_hint>, child: &mut
 pub struct CompleteSelectResults {
     inner: SelectResults
 }
-
-// pub mod properties {
-
-//     use std::libc::types::common::c99::uint32_t;
-//     use std::cast::transmute;
-
     
-// }
 // Merge parent and child styles into another style. The result
 // pointer may point to the child style, in which case the child
 // style is overwritten
-#[fixed_stack_segment]
 pub fn compose(parent: &CssComputedStyle, child: &CssComputedStyle,
                     result: &mut CssComputedStyle) {
     println(fmt!("complete.rs :: compose"));
     let llparent = &parent.computed_style;
     let llchild = &child.computed_style;
-    // let pw = unsafe { transmute(&compute_font_size) };
     let llresult = &mut result.computed_style;
     let err = css_computed_style_compose(llparent, llchild, compute_font_size_cb, llresult);
     println(fmt!("compose :: err == %?" , err));
@@ -53,98 +44,107 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
     println(fmt!("complete.rs :: compute_font_size_cb"));
     //let hlcbptr: *ComputeFontSizeCb = unsafe { transmute(pw) };
     let cb: ComputeFontSizeCb =
-                |mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint| -> ~css_hint {
-                    println(fmt!("complete.rs :: ComputeFontSizeCb in compute_font_size_cb"));
-                if child.length.is_some() {
-                    // Handle relative units
-                    match child.length.get_ref().unit {
-                        CSS_UNIT_EM | CSS_UNIT_PCT=> {
-                            if parent.is_some() {
-                                if parent.get_mut_ref().length.is_some() {
-                                    let mut new_value = css_fixed_to_float(parent.get_mut_ref().length.get_ref().value);
-                                    if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {
-                                        new_value *= css_fixed_to_float(child.length.get_ref().value);    
-                                    }
-                                    else {
-                                        new_value *= css_fixed_to_float(child.length.get_ref().value)/100.0;
-                                    }
-                                    
-                                    parent.get_mut_ref().length.get_mut_ref().value = new_value as i32;
-                                    
-                                }
-                                parent.get_mut_ref().deep_clone()
+        |mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint| -> ~css_hint {
+            println(fmt!("complete.rs :: ComputeFontSizeCb in compute_font_size_cb"));
+        if child.length.is_some() {
+            // Handle relative units
+            match child.length.get_ref().unit {
+                CSS_UNIT_EM | CSS_UNIT_PCT=> {
+                    if parent.is_some() {
+                        let mut new_value: float = 0.0;
+                        if parent.get_mut_ref().length.is_some() {
+                            new_value = css_fixed_to_float(parent.get_mut_ref().length.get_ref().value);
+                            if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {
+                                new_value *= css_fixed_to_float(child.length.get_ref().value);    
                             }
-                                // CSS3 Values 5.1.1: Multiply parent unit by child unit.
                             else {
-                                ~css_hint {
-                                    hint_type: HINT_LENGTH,
-                                    status: CSS_FONT_SIZE_DIMENSION as u8,
-                                    clip: None,
-                                    content: None,
-                                    counters: None,
-                                    length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
-                                    position: None,
-                                    color: 0,
-                                    fixed: 0,
-                                    integer: 0,
-                                    string: None,
-                                    strings: None
-                                }
+                                new_value *= css_fixed_to_float(child.length.get_ref().value)/100.0;
                             }
-                        },
-                        // Pass through absolute units    
-                        unit => {
-                            ~css_hint {
-                                hint_type: HINT_LENGTH,
-                                status: CSS_FONT_SIZE_DIMENSION as u8,
-                                clip: None,
-                                content: None,
-                                counters: None,
-                                length:Some(~css_hint_length { value:child.length.get_ref().value, unit:unit}),
-                                position: None,
-                                color: 0,
-                                fixed: 0,
-                                integer: 0,
-                                string: None,
-                                strings: None
-                            }
+                            
+                        }
+                        ~css_hint {
+                            hint_type: HINT_LENGTH,
+                            status: CSS_FONT_SIZE_DIMENSION as u8,
+                            clip: None,
+                            content: None,
+                            counters: None,
+                            length:Some(~css_hint_length { value:new_value as i32, unit:parent.get_mut_ref().length.get_mut_ref().unit}),
+                            position: None,
+                            color: 0,
+                            fixed: 0,
+                            integer: 0,
+                            string: None,
+                            strings: None
                         }
                     }
-                }
-                    
-                else { 
+                        // CSS3 Values 5.1.1: Multiply parent unit by child unit.
+                    else {
+                        ~css_hint {
+                            hint_type: HINT_LENGTH,
+                            status: CSS_FONT_SIZE_DIMENSION as u8,
+                            clip: None,
+                            content: None,
+                            counters: None,
+                            length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
+                            position: None,
+                            color: 0,
+                            fixed: 0,
+                            integer: 0,
+                            string: None,
+                            strings: None
+                        }
+                    }
+                },
+                // Pass through absolute units    
+                unit => {
                     ~css_hint {
                         hint_type: HINT_LENGTH,
                         status: CSS_FONT_SIZE_DIMENSION as u8,
                         clip: None,
                         content: None,
                         counters: None,
-                        length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
+                        length:Some(~css_hint_length { value:child.length.get_ref().value, unit:unit}),
                         position: None,
                         color: 0,
                         fixed: 0,
                         integer: 0,
                         string: None,
                         strings: None
-
-                    }    
+                    }
                 }
-            };
+            }
+        }
+            
+        else { 
+            ~css_hint {
+                hint_type: HINT_LENGTH,
+                status: CSS_FONT_SIZE_DIMENSION as u8,
+                clip: None,
+                content: None,
+                counters: None,
+                length:Some(~css_hint_length { value:FLTTOFIX(16.0), unit:CSS_UNIT_PX}),
+                position: None,
+                color: 0,
+                fixed: 0,
+                integer: 0,
+                string: None,
+                strings: None
+            }    
+        }
+    };
     
-    // let hlparent = if parent.is_none() {
-    //     None
-    // } else {
-    //     Some(CssHint::new(CssPropFontSize, parent))
-    // };
-    
-    // let hlchild = CssHint::new(CssPropFontSize, unsafe { transmute(size) });
-    if size.is_some() {
-        cb(parent, size.unwrap());    
+    match size {
+        None=>{
+            fail!(~"Rust-Css :: size is none in complete.rs");
+        },
+        Some(x) => {
+            let new_hint = cb(parent,x );
+            x.length.get_mut_ref().unit =  new_hint.length.get_ref().unit ;
+            x.length.get_mut_ref().value = new_hint.length.get_ref().value ;
+            x.status = new_hint.status ;
+            CSS_OK
+        }
     }
-    
-    // new_hint.write_to_ll(CssPropFontSize, size);
-    
-    CSS_OK
 }
 
 impl<'self> CompleteSelectResults {
@@ -185,7 +185,6 @@ impl<'self> CompleteSelectResults {
     }
 }
 
-//#[deriving(DeepClone)]
 pub struct CompleteStyle<'self> {
     inner: ComputedStyle<'self>
 }

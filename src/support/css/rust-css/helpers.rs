@@ -481,7 +481,6 @@ pub mod select {
     use srid_css::select::common::css_hint;
     use srid_css::select::select::css_select_ctx;
     use srid_css::select::common::{css_select_handler,css_select_results,CSS_SELECT_HANDLER_VERSION_1};
-    use srid_css::stylesheet::css_stylesheet;
     use helpers::{/*ToLl,*/ write_ll_qname, ll_qname_to_hl_qname, /*require_ok,*/ VoidPtrLike};
     use helpers::properties::CssProperty;
     use helpers::hint::CssHint;

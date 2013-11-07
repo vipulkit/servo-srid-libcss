@@ -10,14 +10,8 @@ Constructs a list of css style rules from a token stream
 // are not as expected
 
 extern mod srid_css;
-
 use util::DataStream;
-// use netsurfcss::stylesheet::{CssStylesheet, CssStylesheetParams, CssStylesheetParamsVersion1, css_stylesheet_create};
-// use netsurfcss::types::CssLevel21;
-// use netsurfcss::CssResult;
-// use wapcaplet::LwcString;
 use extra::url::Url;
-// use netsurfcss::stylesheet::CssUrlResolutionFn;
 use srid_css::css::*;
 use srid_css::libwapcaplet::wapcaplet::*;  
 use srid_css::parse::propstrings::*;  

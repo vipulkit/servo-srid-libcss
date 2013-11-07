@@ -14,21 +14,16 @@ extern mod srid_css;
 use computed::ComputedStyle;
 use helpers::VoidPtrLike;
 use types::StylesheetOrigin;
-
 use srid_css::include::types::CSS_MEDIA_SCREEN;
 use helpers::select::*;
 use helpers::properties::*;
 use helpers::hint::*;
 use helpers::types::CssQName;
 use srid_css::libwapcaplet::wapcaplet::*;
-// use srid_css::stylesheet::css_qname;
-
-//use srid_css::select::select::css_select_ctx;
 
 pub struct SelectCtx {
     inner: CssSelectCtx
 }
-
 
 /**
 The SelectCtx, used for performing selector matching.
@@ -66,10 +61,6 @@ impl SelectCtx {
         let inner_handler = SelectHandlerWrapper {
             inner: handler
         };
-        /*let inner_inline_style = match inline_style {
-            None => None,
-            Some(ref sheet) => Some(&sheet.inner),
-        };*/
 
         SelectResults {
         inner:self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
