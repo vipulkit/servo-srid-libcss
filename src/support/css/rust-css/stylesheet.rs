@@ -9,7 +9,6 @@ extern mod srid_css;
 use extra::url::Url;
 use util::DataStream;
     
-//use netsurfcss::stylesheet::CssStylesheet;
 use parser::{parse_stylesheet, parse_style_attribute};
 
 pub struct Stylesheet {
