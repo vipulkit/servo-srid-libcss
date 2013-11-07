@@ -587,8 +587,8 @@ pub fn css__initial_azimuth(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_azimuth(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_azimuth(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -641,8 +641,8 @@ pub fn css__initial_background_attachment(state:&mut ~css_select_state) -> css_e
 	CSS_OK
 }
 
-pub fn css__compose_background_attachment(parent:&mut ~css_computed_style,
-										child:&mut ~css_computed_style,
+pub fn css__compose_background_attachment(parent:&~css_computed_style,
+										child:& ~css_computed_style,
 										result:&mut ~css_computed_style
 										) -> css_error {
 
@@ -689,8 +689,8 @@ pub fn css__initial_background_color(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_background_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_background_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -749,8 +749,8 @@ pub fn css__initial_background_image(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_background_image(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_background_image(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -876,8 +876,8 @@ pub fn css__initial_background_position(state:&mut ~css_select_state) -> css_err
 	CSS_OK
 }
 
-pub fn css__compose_background_position(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_background_position(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									final:&mut ~css_computed_style
 									) -> css_error {
 
@@ -946,8 +946,8 @@ pub fn css__initial_background_repeat(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_background_repeat(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_background_repeat(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -997,8 +997,8 @@ pub fn css__initial_border_bottom_color(state:&mut ~css_select_state) -> css_err
 	CSS_OK
 }
 
-pub fn css__compose_border_bottom_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_bottom_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1050,8 +1050,8 @@ pub fn css__initial_caption_side(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_caption_side(parent:&mut ~css_computed_style, 
-								child:&mut ~css_computed_style,
+pub fn css__compose_caption_side(parent:&~css_computed_style, 
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style) -> css_error{
 
 	let mut cap_type = css_computed_caption_side(child);
@@ -1100,8 +1100,8 @@ pub fn css__initial_clear(state:&mut ~css_select_state ) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_clear(parent:&mut ~css_computed_style, 
-						child:&mut ~css_computed_style,
+pub fn css__compose_clear(parent:&~css_computed_style, 
+						child:&~css_computed_style,
 						result:&mut ~css_computed_style) -> css_error {
 
 	let mut clear_type = css_computed_clear(child);
@@ -1226,8 +1226,8 @@ pub fn css__initial_clip(state:&mut ~css_select_state) -> css_error{
 	CSS_OK
 }
 
-pub fn css__compose_clip(parent:&mut ~css_computed_style, 
-						child:&mut ~css_computed_style,
+pub fn css__compose_clip(parent:&~css_computed_style, 
+						child:&~css_computed_style,
 						result:&mut ~css_computed_style) 
 						-> css_error {
 
@@ -1288,8 +1288,8 @@ pub fn css__initial_border_bottom_style(state:&mut ~css_select_state) -> css_err
 	CSS_OK
 }
 
-pub fn css__compose_border_bottom_style(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_bottom_style(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1344,8 +1344,8 @@ pub fn css__initial_border_bottom_width(state:&mut ~css_select_state) -> css_err
 	CSS_OK
 }
 
-pub fn css__compose_border_bottom_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_bottom_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1414,8 +1414,8 @@ pub fn css__initial_border_collapse(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_border_collapse(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_collapse(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1466,8 +1466,8 @@ pub fn css__initial_border_left_color(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_border_left_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_left_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1510,8 +1510,8 @@ pub fn css__initial_border_left_style(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_border_left_style(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_left_style(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1564,8 +1564,8 @@ pub fn css__initial_border_left_width(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_border_left_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_left_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1621,8 +1621,8 @@ pub fn css__initial_border_right_color(state:&mut ~css_select_state) -> css_erro
 	CSS_OK
 }
 
-pub fn css__compose_border_right_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_right_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1664,8 +1664,8 @@ pub fn css__initial_border_right_style(state:&mut ~css_select_state) -> css_erro
 	CSS_OK
 }
 
-pub fn css__compose_border_right_style(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_right_style(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1717,8 +1717,8 @@ pub fn css__initial_border_right_width(state:&mut ~css_select_state) -> css_erro
 	CSS_OK
 }
 
-pub fn css__compose_border_right_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_right_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1814,8 +1814,8 @@ pub fn css__initial_border_spacing(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_border_spacing(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_spacing(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1870,8 +1870,8 @@ pub fn css__initial_border_top_color(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_border_top_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_top_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1913,8 +1913,8 @@ pub fn css__initial_border_top_style(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_border_top_style(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_top_style(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -1966,8 +1966,8 @@ pub fn css__initial_border_top_width(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_border_top_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_border_top_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2025,8 +2025,8 @@ pub fn css__initial_bottom(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_bottom(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_bottom(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2093,8 +2093,8 @@ pub fn css__initial_break_after(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_break_after(_:&mut ~css_computed_style,
-									_:&mut ~css_computed_style,
+pub fn css__compose_break_after(_:&~css_computed_style,
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2173,8 +2173,8 @@ pub fn css__initial_color(state:&mut ~css_select_state) -> css_error {
 	css__set_color_from_hint(&mut hint,state.results.styles[state.computed].get_mut_ref())	
 }
 
-pub fn css__compose_color(parent:&mut ~css_computed_style, 
-						child:&mut ~css_computed_style,
+pub fn css__compose_color(parent:&~css_computed_style, 
+						child:&~css_computed_style,
 						result:&mut ~css_computed_style) 
 						-> css_error {
 	
@@ -2230,7 +2230,7 @@ pub fn css__initial_column_count(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_count(_:&mut ~css_computed_style, _:&mut ~css_computed_style,
+pub fn css__compose_column_count(_:&~css_computed_style, _:&~css_computed_style,
 								_:&mut ~css_computed_style) 
 								-> css_error {
 	//DO NOTHING
@@ -2270,7 +2270,7 @@ pub fn css__initial_column_fill(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_fill(_:&mut ~css_computed_style, _:&mut ~css_computed_style,
+pub fn css__compose_column_fill(_:&~css_computed_style, _:&~css_computed_style,
 								_:&mut ~css_computed_style) 
 								-> css_error {
 	//DO NOTHING
@@ -2319,7 +2319,7 @@ pub fn css__initial_column_gap(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_gap(_:&mut ~css_computed_style, _:&mut ~css_computed_style,
+pub fn css__compose_column_gap(_:&~css_computed_style, _:&~css_computed_style,
 								_:&mut ~css_computed_style) 
 								-> css_error  {
 	//DO NOTHING
@@ -2365,7 +2365,7 @@ pub fn css__initial_column_rule_color(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_rule_color(_:&mut ~css_computed_style, _:&mut ~css_computed_style,
+pub fn css__compose_column_rule_color(_:&~css_computed_style, _:&~css_computed_style,
 									_:&mut ~css_computed_style) 
 									-> css_error {
 	//DO NOTHING
@@ -2410,8 +2410,8 @@ pub fn css__initial_column_rule_style(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_rule_style(_:&mut ~css_computed_style, 
-									_:&mut ~css_computed_style,
+pub fn css__compose_column_rule_style(_:&~css_computed_style, 
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style) 
 									-> css_error {
 	//DO NOTHING
@@ -2463,8 +2463,8 @@ pub fn css__initial_column_rule_width(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_rule_width(_:&mut ~css_computed_style, 
-									_:&mut ~css_computed_style,
+pub fn css__compose_column_rule_width(_:&~css_computed_style, 
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style) 
 									-> css_error {
 	//DO NOTHING
@@ -2514,8 +2514,8 @@ pub fn css__initial_break_before(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_break_before(_:&mut ~css_computed_style,
-									_:&mut ~css_computed_style,
+pub fn css__compose_break_before(_:&~css_computed_style,
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2558,8 +2558,8 @@ pub fn css__initial_break_inside(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_break_inside(_:&mut ~css_computed_style,
-									_:&mut ~css_computed_style,
+pub fn css__compose_break_inside(_:&~css_computed_style,
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2608,8 +2608,8 @@ pub fn css__initial_direction(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_direction(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_direction(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2708,8 +2708,8 @@ pub fn css__initial_display(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_display(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_display(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2773,8 +2773,8 @@ pub fn css__initial_elevation(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_elevation(_:&mut ~css_computed_style,
-									_:&mut ~css_computed_style,
+pub fn css__compose_elevation(_:&~css_computed_style,
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2825,8 +2825,8 @@ pub fn css__initial_empty_cells(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_empty_cells(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_empty_cells(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -2887,8 +2887,8 @@ pub fn css__initial_float(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_float(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_float(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3090,8 +3090,8 @@ pub fn css__initial_font_family(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_font_family(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_font_family(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3200,8 +3200,8 @@ pub fn css__initial_font_size(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_font_size(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_font_size(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3271,8 +3271,8 @@ pub fn css__initial_font_style(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_font_style(parent:&mut ~css_computed_style,
-							child:&mut ~css_computed_style,
+pub fn css__compose_font_style(parent:&~css_computed_style,
+							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
 
@@ -3331,8 +3331,8 @@ pub fn css__initial_font_variant(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_font_variant(parent:&mut ~css_computed_style,
-							child:&mut ~css_computed_style,
+pub fn css__compose_font_variant(parent:&~css_computed_style,
+							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
 
@@ -3424,8 +3424,8 @@ pub fn css__initial_font_weight(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_font_weight(parent:&mut ~css_computed_style,
-							child:&mut ~css_computed_style,
+pub fn css__compose_font_weight(parent:&~css_computed_style,
+							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
 
@@ -3475,8 +3475,8 @@ pub fn css__initial_height(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_height(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_height(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3536,8 +3536,8 @@ pub fn css__initial_left(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_left(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_left(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3597,8 +3597,8 @@ pub fn css__initial_letter_spacing(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_letter_spacing(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_letter_spacing(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3695,8 +3695,8 @@ pub fn css__initial_line_height(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_line_height(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_line_height(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3760,8 +3760,8 @@ pub fn css__initial_list_style_image(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_list_style_image(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_list_style_image(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3823,8 +3823,8 @@ pub fn css__initial_list_style_position(state:&mut ~css_select_state) -> css_err
 	CSS_OK
 }
 
-pub fn css__compose_list_style_position(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_list_style_position(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3926,8 +3926,8 @@ pub fn css__initial_list_style_type(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_list_style_type(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_list_style_type(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -3982,8 +3982,8 @@ pub fn css__initial_margin_bottom(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_margin_bottom(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_margin_bottom(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4043,8 +4043,8 @@ pub fn css__initial_margin_left(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_margin_left(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_margin_left(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4104,8 +4104,8 @@ pub fn css__initial_margin_right(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_margin_right(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_margin_right(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4164,8 +4164,8 @@ pub fn css__initial_margin_top(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_margin_top(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_margin_top(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4225,8 +4225,8 @@ pub fn css__initial_max_height(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_max_height(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_max_height(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4285,8 +4285,8 @@ pub fn css__initial_max_width(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_max_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_max_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4346,8 +4346,8 @@ pub fn css__initial_min_height(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_min_height(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_min_height(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4406,8 +4406,8 @@ pub fn css__initial_min_width(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_min_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_min_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4475,8 +4475,8 @@ pub fn css__initial_opacity(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_opacity(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_opacity(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4520,8 +4520,8 @@ pub fn css__initial_orphans(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_orphans(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_orphans(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -4586,8 +4586,8 @@ pub fn css__initial_outline_color(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_outline_color(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_outline_color(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4637,8 +4637,8 @@ pub fn css__initial_outline_style(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_outline_style(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_outline_style(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4693,8 +4693,8 @@ pub fn css__initial_outline_width(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_outline_width(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_outline_width(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4773,8 +4773,8 @@ pub fn css__initial_overflow(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_overflow(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_overflow(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4829,8 +4829,8 @@ pub fn css__initial_padding_bottom(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_padding_bottom(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_padding_bottom(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4890,8 +4890,8 @@ pub fn css__initial_padding_left(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_padding_left(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_padding_left(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -4951,8 +4951,8 @@ pub fn css__initial_padding_right(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_padding_right(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_padding_right(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5012,8 +5012,8 @@ pub fn css__initial_padding_top(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_padding_top(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_padding_top(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5062,8 +5062,8 @@ pub fn css__initial_page_break_after(state:&mut ~css_select_state) -> css_error 
 	CSS_OK
 }
 
-pub fn css__compose_page_break_after(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_page_break_after(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5106,8 +5106,8 @@ pub fn css__initial_page_break_before(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_page_break_before(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_page_break_before(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5151,8 +5151,8 @@ pub fn css__initial_page_break_inside(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_page_break_inside(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_page_break_inside(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5215,8 +5215,8 @@ pub fn css__initial_pause_after(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_pause_after(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_pause_after(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5260,8 +5260,8 @@ pub fn css__initial_pause_before(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_pause_before(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_pause_before(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5319,8 +5319,8 @@ pub fn css__initial_pitch(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_pitch(_:&mut ~css_computed_style,
-						_:&mut ~css_computed_style,
+pub fn css__compose_pitch(_:&~css_computed_style,
+						_:&~css_computed_style,
 						_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5350,8 +5350,8 @@ pub fn css__initial_pitch_range(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_pitch_range(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_pitch_range(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5412,8 +5412,8 @@ pub fn css__initial_play_during(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_play_during(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_play_during(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5469,8 +5469,8 @@ pub fn css__initial_position(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_position(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_position(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5596,8 +5596,8 @@ pub fn css__initial_quotes(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_quotes(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_quotes(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5644,8 +5644,8 @@ pub fn css__initial_richness(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_richness(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_richness(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5688,8 +5688,8 @@ pub fn css__initial_right(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_right(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_right(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -5752,8 +5752,8 @@ pub fn css__initial_speak(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_speak(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_speak(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5798,8 +5798,8 @@ pub fn css__initial_speak_header(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_speak_header(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_speak_header(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5844,8 +5844,8 @@ pub fn css__initial_speak_numeral(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_speak_numeral(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_speak_numeral(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5890,8 +5890,8 @@ pub fn css__initial_speak_punctuation(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_speak_punctuation(_:&mut ~css_computed_style,
-									_:&mut ~css_computed_style,
+pub fn css__compose_speak_punctuation(_:&~css_computed_style,
+									_:&~css_computed_style,
 									_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5947,8 +5947,8 @@ pub fn css__initial_speech_rate(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_speech_rate(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_speech_rate(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -5978,8 +5978,8 @@ pub fn css__initial_stress(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_stress(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_stress(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -6029,8 +6029,8 @@ pub fn css__initial_table_layout(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_table_layout(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_table_layout(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -6107,8 +6107,8 @@ pub fn css__initial_text_align(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_text_align(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_text_align(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -6190,8 +6190,8 @@ pub fn css__initial_text_decoration(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_text_decoration(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_text_decoration(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -6248,8 +6248,8 @@ pub fn css__initial_text_indent(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_text_indent(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_text_indent(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -6321,8 +6321,8 @@ pub fn css__initial_text_transform(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_text_transform(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_text_transform(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -6376,8 +6376,8 @@ pub fn css__initial_top(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_top(parent:&mut ~css_computed_style,
-						child:&mut ~css_computed_style,
+pub fn css__compose_top(parent:&~css_computed_style,
+						child:&~css_computed_style,
 						result:&mut ~css_computed_style
 						) -> css_error {
 
@@ -6446,8 +6446,8 @@ pub fn css__initial_unicode_bidi(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_unicode_bidi(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_unicode_bidi(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -6549,8 +6549,8 @@ pub fn css__initial_vertical_align(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_vertical_align(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_vertical_align(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -6619,8 +6619,8 @@ pub fn css__initial_visibility(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_visibility(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_visibility(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -6722,8 +6722,8 @@ pub fn css__initial_voice_family(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_voice_family(_:&mut ~css_computed_style,
-								_:&mut ~css_computed_style,
+pub fn css__compose_voice_family(_:&~css_computed_style,
+								_:&~css_computed_style,
 								_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -6786,8 +6786,8 @@ pub fn css__initial_volume(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_volume(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_volume(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -6845,8 +6845,8 @@ pub fn css__initial_white_space(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_white_space(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_white_space(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -6900,8 +6900,8 @@ pub fn css__initial_width(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_width(parent:&mut ~css_computed_style,
-							child:&mut ~css_computed_style,
+pub fn css__compose_width(parent:&~css_computed_style,
+							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
 
@@ -6947,8 +6947,8 @@ pub fn css__initial_windows(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_windows(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_windows(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -6991,8 +6991,8 @@ pub fn css__initial_word_spacing(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_word_spacing(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_word_spacing(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -7045,8 +7045,8 @@ pub fn css__initial_cue_after(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_cue_after(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_cue_after(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -7077,8 +7077,8 @@ pub fn css__initial_cue_before(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_cue_before(_:&mut ~css_computed_style,
-							_:&mut ~css_computed_style,
+pub fn css__compose_cue_before(_:&~css_computed_style,
+							_:&~css_computed_style,
 							_:&mut ~css_computed_style) -> css_error {
 
 	CSS_OK
@@ -7138,8 +7138,8 @@ pub fn css__initial_z_index(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_z_index(parent:&mut ~css_computed_style,
-							child:&mut ~css_computed_style,
+pub fn css__compose_z_index(parent:&~css_computed_style,
+							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
 
@@ -7198,8 +7198,8 @@ pub fn css__initial_counter_increment(state:&mut ~css_select_state) -> css_error
 	CSS_OK
 }
 
-pub fn css__compose_counter_increment(parent:&mut ~css_computed_style,
-									child:&mut ~css_computed_style,
+pub fn css__compose_counter_increment(parent:&~css_computed_style,
+									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
@@ -7266,8 +7266,8 @@ pub fn css__initial_counter_reset(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_counter_reset(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_counter_reset(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -7416,8 +7416,8 @@ pub fn css__initial_cursor(state:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_cursor(parent:&mut ~css_computed_style,
-								child:&mut ~css_computed_style,
+pub fn css__compose_cursor(parent:&~css_computed_style,
+								child:&~css_computed_style,
 								result:&mut ~css_computed_style
 								) -> css_error {
 
@@ -7591,8 +7591,8 @@ pub fn css__initial_content(state:&mut ~css_select_state) -> css_error {
 }
 
 
-pub fn css__compose_content( parent:&mut ~css_computed_style, 
-							child:&mut ~css_computed_style,
+pub fn css__compose_content( parent:&~css_computed_style, 
+							child:&~css_computed_style,
     						result:&mut ~css_computed_style) 
 							-> css_error {
 	
@@ -7652,8 +7652,8 @@ pub fn css__initial_column_span(_:&mut ~css_select_state) -> css_error {
   CSS_OK
 }
 
-pub fn css__compose_column_span(_:&mut ~css_computed_style, 
-								_:&mut ~css_computed_style,
+pub fn css__compose_column_span(_:&~css_computed_style, 
+								_:&~css_computed_style,
   								_:&mut ~css_computed_style
   								) -> css_error {
   //DO NOTHING
@@ -7705,8 +7705,8 @@ pub fn css__initial_column_width(_:&mut ~css_select_state) -> css_error {
 	CSS_OK
 }
 
-pub fn css__compose_column_width(_:&mut ~css_computed_style, 
-								_:&mut ~css_computed_style,
+pub fn css__compose_column_width(_:&~css_computed_style, 
+								_:&~css_computed_style,
   								_:&mut ~css_computed_style) 
 								-> css_error {
 	//DO NOTHING

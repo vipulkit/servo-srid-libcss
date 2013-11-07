@@ -41,10 +41,10 @@ pub struct CompleteSelectResults {
 // pointer may point to the child style, in which case the child
 // style is overwritten
 #[fixed_stack_segment]
-pub fn compose(parent: &mut CssComputedStyle, child: &mut CssComputedStyle,
+pub fn compose(parent: &CssComputedStyle, child: &mut CssComputedStyle,
                     result: &mut CssComputedStyle) {
-    let llparent = &mut parent.computed_style;
-    let llchild = &mut child.computed_style;
+    let llparent = &parent.computed_style;
+    let llchild = &child.computed_style;
     // let pw = unsafe { transmute(&compute_font_size) };
     let llresult = &mut result.computed_style;
     let err = css_computed_style_compose(llparent, llchild, compute_font_size_cb, llresult);
@@ -155,16 +155,16 @@ impl<'self> CompleteSelectResults {
                            child: SelectResults) -> CompleteSelectResults {
         // New lifetime
         {
-            // let parent_computed = parent.computed_style();
-            // let child_computed = child.computed_style();
-            // //let net_parent_computed = &parent_computed.inner.inner;
-            // let net_child_computed = &/*mut*/ child_computed.inner;
+            let parent_computed = parent.computed_style();
+            let child_computed = child.computed_style();
+            //let net_parent_computed = &parent_computed.inner.inner;
+            let net_child_computed = &/*mut*/ child_computed.inner;
             
-            // // XXX: Need an aliasable &mut here
-            // let net_result_computed: &mut css_computed_style = unsafe { cast::transmute(net_child_computed) };
-            // let net_child_computed: &mut css_computed_style = unsafe { cast::transmute(&child_computed.inner) };
-            // let net_parent_computed = &parent_computed.inner.inner;
-            // compose(net_parent_computed, net_child_computed, net_result_computed);
+            // XXX: Need an aliasable &mut here
+            let net_result_computed: &mut CssComputedStyle = unsafe { cast::transmute(net_child_computed) };
+            let net_child_computed: &mut CssComputedStyle = unsafe { cast::transmute(&child_computed.inner) };
+            let net_parent_computed = &parent_computed.inner.inner;
+            compose(net_parent_computed, net_child_computed, net_result_computed);
         }
 
         CompleteSelectResults {

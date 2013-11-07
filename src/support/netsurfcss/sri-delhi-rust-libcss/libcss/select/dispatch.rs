@@ -29,8 +29,8 @@ pub struct prop_table {
     set_from_hint :  &'static fn (hint:&mut ~css_hint,
                                 style: &mut ~css_computed_style) -> css_error ,
     initial :  &'static fn (state:&mut ~css_select_state) -> css_error ,
-    compose :  &'static fn (parent:&mut ~css_computed_style,
-                                child:&mut ~css_computed_style,
+    compose :  &'static fn (parent:&~css_computed_style,
+                                child:&~css_computed_style,
                                 result:&mut ~css_computed_style) -> css_error ,
 
     inherited:uint,
@@ -1297,8 +1297,8 @@ pub fn css_computed_style_initialise(style:~css_computed_style ,
 *  'css_error' - CSS_OK on success, appropriate error otherwise.
 */
 #[inline]
-pub fn css_computed_style_compose(parent: &mut ~css_computed_style, 
-                                child: &mut ~css_computed_style, 
+pub fn css_computed_style_compose(parent: &~css_computed_style, 
+                                child: &~css_computed_style, 
                                 compute_font_size_ptr: css_fnptr_compute_font_size , 
                                 result: &mut ~css_computed_style
                                 ) -> css_error {
@@ -1367,7 +1367,7 @@ pub fn css_computed_style_compose(parent: &mut ~css_computed_style,
 *  'css_error' - CSS_OK on success, appropriate error otherwise.
 */
 #[inline]
-pub fn css__compute_absolute_values(parent: Option<&mut ~css_computed_style>,
+pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                                     style: &mut ~css_computed_style,
                                     compute_font_size_ptr:css_fnptr_compute_font_size) 
                                     -> css_error {
