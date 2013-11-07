@@ -170,6 +170,7 @@ impl<'self> ComputedStyle<'self> {
     // CSS 2.1, Section 15 - Fonts
 
     pub fn font_family(&self) -> CSSValue<~[CSSFontFamily]> {
+        println("COMING IN FONT_FAMI");
         convert_net_font_family_value(self.inner.font_family())
     }
 
@@ -346,15 +347,21 @@ fn convert_net_position_value(value: CssPositionValue) -> CSSValue<CSSPosition> 
 
 fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFontFamily]> {
     use units::{Serif, SansSerif, Cursive, Fantasy, Monospace};
+    println("COMING HERE");
 
     match value {
-        CssFontFamilyInherit => Inherit,
+        CssFontFamilyInherit => {
+            println("COMING IN INHERIT");
+            Inherit},
         CssFontFamilySerif => Specified(~[CSSFontFamilyGenericFamily(Serif)]),
         CssFontFamilySansSerif => Specified(~[CSSFontFamilyGenericFamily(SansSerif)]),
         CssFontFamilyCursive => Specified(~[CSSFontFamilyGenericFamily(Cursive)]),
         CssFontFamilyFantasy => Specified(~[CSSFontFamilyGenericFamily(Fantasy)]),
         CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
-        CssFontFamilyValue(names) => Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
+        CssFontFamilyValue(names) => 
+        {println("COMING IN length");
+            Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
+        }
     }
 }
 
