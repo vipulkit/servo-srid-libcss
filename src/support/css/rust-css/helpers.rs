@@ -216,7 +216,6 @@ pub mod hint {
                      CssPropColor,
                      CssFontFamily};
     use helpers::types::*;                 
-    use srid_css::include::properties::*;
     use srid_css::utils::errors::*;
     // use srid_css::include::types::css_color;
     //use std::ptr::null;
@@ -608,8 +607,6 @@ pub mod select {
         use srid_css::select::common::css_hint;
         use helpers::types;
         use helpers::hint;
-        use helpers::computed::*;
-        //use helpers::VoidPtrLike;
         use helpers::properties::*;
         use helpers::hint::CssHint;
         use super::UntypedHandler;
@@ -862,13 +859,13 @@ pub mod select {
                 node_has_class: | node: *c_void, name: uint, match_: &mut bool| -> css_error {
                     let hlnode: N = VoidPtrLike::from_void_ptr(node);
                     let hlname = name; //from_lwc_string
-                    *match_ = handler.node_has_class(&hlnode, unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(hlname));
+                    *match_ = handler.node_has_class(&hlnode, lwc_ref.get_mut_ref().lwc_string_data(hlname));
                     CSS_OK
                 },
                 node_has_id: | node: *c_void, name: uint, match_: &mut bool| -> css_error {
                     let hlnode: N = VoidPtrLike::from_void_ptr(node);
                     let hlname = name; //from_lwc_string
-                    *match_ = handler.node_has_id(&hlnode, unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(hlname));
+                    *match_ = handler.node_has_id(&hlnode, lwc_ref.get_mut_ref().lwc_string_data(hlname));
                     CSS_OK
                 },
                 named_ancestor_node: |node: *c_void,
@@ -957,7 +954,6 @@ pub mod select {
 }
 
 pub mod values {
-    use srid_css::include::types::{css_color, css_unit};
     use srid_css::include::properties::*;
     use srid_css::include::types::{css_color, css_unit};
     use srid_css::include::fpmath::css_fixed;
@@ -965,7 +961,6 @@ pub mod values {
     use helpers::types::*;
     use helpers::{ll_unit_to_hl_unit};
     use std::cast::*;
-    use srid_css::libwapcaplet::wapcaplet::*;
 
     // Like css_color_e
     pub enum CssColorValue {
@@ -1375,7 +1370,7 @@ pub mod values {
                 CSS_VERTICAL_ALIGN_MIDDLE => CssVerticalAlignMiddle,
                 CSS_VERTICAL_ALIGN_BOTTOM => CssVerticalAlignBottom,
                 CSS_VERTICAL_ALIGN_TEXT_BOTTOM => CssVerticalAlignTextBottom,
-                CSS_VERTICAL_ALIGN_DIMENSION => CssVerticalAlignDimension(ll_unit_to_hl_unit(unit, length)),
+                CSS_VERTICAL_ALIGN_SET => CssVerticalAlignDimension(ll_unit_to_hl_unit(unit, length)),
             }
         }
     }
@@ -1393,16 +1388,7 @@ pub mod computed {
     use helpers::values::{CssFloatValue, CssClearValue, CssPositionValue, CssWidthValue, CssHeightValue, CssFontFamilyValue};
     use helpers::values::{CssFontSizeValue, CssFontStyleValue, CssFontWeightValue, CssTextAlignValue, CssTextDecorationValue};
     use helpers::values::{CssLineHeightValue, CssVerticalAlignValue};
-    use helpers::types::*;
     use srid_css::include::types::*;
-    // use srid_css::include::properties::*;
-    // use ll::computed::*;
-    // use std::ptr::{to_mut_unsafe_ptr, null};
-    // use std::cast::transmute;
-    // use std::libc::c_void;
-    // use ll::errors::{css_error, CSS_OK};
-    // use wapcaplet::ll::lwc_string;
-    // use srid_css::include::properties::*;
     use srid_css::select::computed::*;
     use srid_css::select::common::css_computed_style;
     

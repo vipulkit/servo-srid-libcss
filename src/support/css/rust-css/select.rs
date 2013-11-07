@@ -11,8 +11,6 @@ uses to query various DOM and UA properties.
 */
 extern mod srid_css;
 
-use std::libc::*;
-use stylesheet::Stylesheet;
 use computed::ComputedStyle;
 use helpers::VoidPtrLike;
 use types::StylesheetOrigin;
@@ -22,7 +20,6 @@ use helpers::select::*;
 use helpers::properties::*;
 use helpers::hint::*;
 use helpers::types::CssQName;
-use srid_css::select::common::*;
 use srid_css::libwapcaplet::wapcaplet::*;
 // use srid_css::stylesheet::css_qname;
 
@@ -129,9 +126,9 @@ impl<'self, N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
 
 impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> {
     fn node_name(&self, node: &N) -> CssQName {
-        do self.inner_ref().with_node_name(node) |name| {
+        do self.inner_ref().with_node_name(node) |_name| {
             // TODO use wapcaplet 
-            CssQName{ns:None, name:~""}
+            CssQName{ns:None, name:_name.to_owned()}
         }
     }
 

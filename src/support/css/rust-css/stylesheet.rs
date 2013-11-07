@@ -8,8 +8,7 @@ CSS stylesheets, owned types, immutable after creation
 extern mod srid_css;
 use extra::url::Url;
 use util::DataStream;
-use srid_css::css::*;  
-
+    
 //use netsurfcss::stylesheet::CssStylesheet;
 use parser::{parse_stylesheet, parse_style_attribute};
 

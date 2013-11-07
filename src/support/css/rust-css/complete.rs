@@ -3,25 +3,18 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 extern mod srid_css;
 
-use std::libc::*;
 use std::cast;
 use std::cast::transmute;
 use color::Color;
 use select::SelectResults;
-use computed::ComputedStyle;
 use computed::*;
-//use n::h::CssHintLength;
-//use n::u::float_to_css_fixed;
 use values::*;
-use types::*;
 use srid_css::select::common::*;
 use srid_css::select::dispatch::*;
 use srid_css::utils::errors::*;
 use srid_css::include::types::*;
 use srid_css::include::fpmath::*;
 use srid_css::include::properties::*;
-use helpers::hint::*;
-use helpers::properties::*;
 use helpers::computed::CssComputedStyle;
 
 
@@ -142,7 +135,7 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
     
     // let hlchild = CssHint::new(CssPropFontSize, unsafe { transmute(size) });
     if size.is_some() {
-        let new_hint = cb(parent, size.unwrap());    
+        cb(parent, size.unwrap());    
     }
     
     // new_hint.write_to_ll(CssPropFontSize, size);
