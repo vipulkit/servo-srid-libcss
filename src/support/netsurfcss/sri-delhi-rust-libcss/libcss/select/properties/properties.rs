@@ -3165,6 +3165,7 @@ pub fn css__cascade_font_size(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css
 		}
 	}
 
+	println(fmt!("css__cascade_font_size :: size == %? " , size));
 	if (css__outranks_existing( (getOpcode(opv) as u16), isImportant(opv), state,
 			isInherit(opv))) {
 		set_font_size(state.results.styles[state.computed].get_mut_ref(), (value as u8), size, css__to_css_unit(unit) );
@@ -3206,6 +3207,8 @@ pub fn css__compose_font_size(parent:&~css_computed_style,
 									) -> css_error {
 
 	let (ftype,olength,ounit) = css_computed_font_size(child);
+
+	println(fmt!("css__compose_font_size :: olength == %? " , olength));
 
 	if (ftype == (CSS_FONT_SIZE_INHERIT as u8) ) {
 		let (ftype2,olength2,ounit2) = css_computed_font_size(parent);

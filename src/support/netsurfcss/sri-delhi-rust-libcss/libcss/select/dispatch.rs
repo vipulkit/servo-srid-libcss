@@ -1443,16 +1443,24 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
             compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
         },
         None=>{
-            let (a,b,c) = css_computed_font_size(style);
+            /*let (a,b,c) = css_computed_font_size(style);
             size.status = a;
             let length = ~css_hint_length { 
                 value:b.unwrap_or_default(0) , 
                 unit:c.unwrap_or_default(CSS_UNIT_PX) 
             };
             size.length = Some(length)  ;
-            error = (compute_font_size_ptr)(None,Some(&mut size));
+            error = (compute_font_size_ptr)(None,Some(&mut size));*/
         }
     }
+    let (a,b,c) = css_computed_font_size(style);
+    size.status = a;
+    let length = ~css_hint_length { 
+        value:b.unwrap_or_default(0) , 
+        unit:c.unwrap_or_default(CSS_UNIT_PX) 
+    };
+    size.length = Some(length)  ;
+    error = (compute_font_size_ptr)(None,Some(&mut size));
     match error {
         CSS_OK=>{},
         _=> return error
@@ -1460,6 +1468,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
 
     match size.hint_type {
         HINT_LENGTH=>{
+            println(fmt!("css__compute_absolute_values :: size.length.get_ref().value :: %?" , size.length));
             if size.length.is_none() {
                 set_font_size(style,size.status,0,CSS_UNIT_PX);
             }

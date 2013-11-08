@@ -263,6 +263,8 @@ pub fn set_font_size(style:&mut ~css_computed_style,
                     length:i32, 
                     unit:css_unit)  {
 
+    println(fmt!("set_font_size :: length == %? " , length ));
+
     {let bits = &mut style.bits[CSS_FONT_SIZE_INDEX];
         let mask_complement = (CSS_FONT_SIZE_MASK as u8) ^ 0xff ;
         *bits = ( *bits & mask_complement ) |
