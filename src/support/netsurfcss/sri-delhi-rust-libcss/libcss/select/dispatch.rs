@@ -1438,20 +1438,21 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                 unit:c.unwrap_or_default(CSS_UNIT_PX) 
             };
                 psize.length = Some(length);
-            error = (
+            // error = (
 
-            compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
+            // compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
         },
-        None=>{
-            /*let (a,b,c) = css_computed_font_size(style);
-            size.status = a;
-            let length = ~css_hint_length { 
-                value:b.unwrap_or_default(0) , 
-                unit:c.unwrap_or_default(CSS_UNIT_PX) 
-            };
-            size.length = Some(length)  ;
-            error = (compute_font_size_ptr)(None,Some(&mut size));*/
-        }
+        _=>{}
+        // None=>{
+        //     // let (a,b,c) = css_computed_font_size(style);
+        //     // size.status = a;
+        //     // let length = ~css_hint_length { 
+        //     //     value:b.unwrap_or_default(0) , 
+        //     //     unit:c.unwrap_or_default(CSS_UNIT_PX) 
+        //     // };
+        //     // size.length = Some(length)  ;
+        //     error = (compute_font_size_ptr)(None,Some(&mut size));
+        // }
     }
     let (a,b,c) = css_computed_font_size(style);
     size.status = a;
@@ -1460,7 +1461,15 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         unit:c.unwrap_or_default(CSS_UNIT_PX) 
     };
     size.length = Some(length)  ;
-    error = (compute_font_size_ptr)(None,Some(&mut size));
+    match parent {
+        Some(_) => {
+            error = (compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
+        }
+        None => {
+            error = (compute_font_size_ptr)(None,Some(&mut size));        
+        }
+    }
+    
     match error {
         CSS_OK=>{},
         _=> return error
