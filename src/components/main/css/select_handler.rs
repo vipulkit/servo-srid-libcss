@@ -7,7 +7,7 @@
 ///
 
 use std::str::eq_slice;
-use newcss::select::SelectHandler;
+use newcss::helpers::select::SelectHandler;
 use script::dom::node::{AbstractNode, LayoutView};
 
 pub struct NodeSelectHandler {

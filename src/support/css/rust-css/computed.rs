@@ -15,6 +15,7 @@ use helpers::computed::CssComputedStyle;
 use helpers::properties::*;
 use helpers::values::*;
 use helpers::types::*;
+use srid_css::libwapcaplet::wapcaplet::*;
 //use srid_css::stylesheet::*;
 use values::*;
 
@@ -360,7 +361,7 @@ fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFon
         CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
         CssFontFamilyValue(names) => 
         {println("COMING IN length");
-            Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
+            Specified(names.map(|&n| CSSFontFamilyFamilyName(unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(n)) ))
         }
     }
 }

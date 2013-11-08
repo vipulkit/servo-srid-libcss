@@ -2,6 +2,7 @@ use srid_css::include::types::*;
 use srid_css::utils::errors::*;
 use srid_css::stylesheet::*;
 use std::libc::*;
+use std::cast::transmute;
 use srid_css::libwapcaplet::wapcaplet::*;
 
 
@@ -34,6 +35,111 @@ pub fn write_ll_qname(hlqname: &mut types::CssQName, llqname: &mut css_qname) {
     }
     llqname.name = unsafe{lwc_ref.get_mut_ref()}.lwc_intern_string(hlqname.name);
 }
+
+pub mod types {
+    //use wapcaplet::uint;
+    use std::cast::transmute;
+    use srid_css::include::types::*;
+    use srid_css::stylesheet::css_fixed;
+    use srid_css::select::common::css_hint_length;
+    use helpers::ToLl;
+    pub type c_enum = u8;
+    pub type rust_enum = uint;
+    
+    pub enum CssLanguageLevel {
+        CssLevel1,
+        CssLevel2,
+        CssLevel21,
+        CssLevel3,
+        CssLevelDefault, // NB: This is not the same as the ll value
+        // NB: Sentinal variant to prevent the naive transmute conversion from working
+        CssLevelNotACLikeEnum(uint)
+    }
+
+    // NB: This must have the same binary structure as css_color
+    pub struct CssColor { b: u8, g: u8, r: u8, a: u8 }
+
+    pub struct CssQName {
+        ns: Option<~str>,
+        name: ~str
+    }
+
+    pub enum CssUnit {
+        CssUnitPx(css_fixed),
+        CssUnitEx(css_fixed),
+        CssUnitEm(css_fixed),
+        CssUnitIn(css_fixed),
+        CssUnitCm(css_fixed),
+        CssUnitMm(css_fixed),
+        CssUnitPt(css_fixed),
+        CssUnitPc(css_fixed),
+        CssUnitPct(css_fixed),
+        CssUnitDeg(css_fixed),
+        CssUnitGrad(css_fixed),
+        CssUnitRad(css_fixed),
+        CssUnitMs(css_fixed),
+        CssUnitS(css_fixed),
+        CssUnitHz(css_fixed),
+        CssUnitKHz(css_fixed)
+    }
+
+    pub fn ll_color_to_hl_color(color: css_color) -> CssColor {
+        unsafe { transmute(color) }
+    }
+
+    impl CssUnit {
+        pub fn to_ll_css_hint_length(&self) -> ~css_hint_length {
+            let (unit, value) = self.to_ll();
+            ~css_hint_length {
+                value: value,
+                unit: unit
+            }
+        }
+
+        pub fn to_css_fixed(&self) -> css_fixed {
+            match *self {
+                CssUnitPx(css_fixed) |
+                CssUnitEx(css_fixed) |
+                CssUnitEm(css_fixed) |
+                CssUnitIn(css_fixed) |
+                CssUnitCm(css_fixed) |
+                CssUnitMm(css_fixed) |
+                CssUnitPt(css_fixed) |
+                CssUnitPc(css_fixed) |
+                CssUnitPct(css_fixed) |
+                CssUnitDeg(css_fixed) |
+                CssUnitGrad(css_fixed) |
+                CssUnitRad(css_fixed) |
+                CssUnitMs(css_fixed) |
+                CssUnitS(css_fixed) |
+                CssUnitHz(css_fixed) |
+                CssUnitKHz(css_fixed) => css_fixed
+            }
+        }
+
+        pub fn modify(&self, new_value: css_fixed) -> CssUnit {
+            match *self {
+                CssUnitPx(_) => CssUnitPx(new_value),
+                CssUnitEx(_) => CssUnitEx(new_value),
+                CssUnitEm(_) => CssUnitEm(new_value),
+                CssUnitIn(_) => CssUnitIn(new_value),
+                CssUnitCm(_) => CssUnitCm(new_value),
+                CssUnitMm(_) => CssUnitMm(new_value),
+                CssUnitPt(_) => CssUnitPt(new_value),
+                CssUnitPc(_) => CssUnitPc(new_value),
+                CssUnitPct(_) => CssUnitPct(new_value),
+                CssUnitDeg(_) => CssUnitDeg(new_value),
+                CssUnitGrad(_) => CssUnitGrad(new_value),
+                CssUnitRad(_) => CssUnitRad(new_value),
+                CssUnitMs(_) => CssUnitMs(new_value),
+                CssUnitS(_) => CssUnitS(new_value),
+                CssUnitHz(_) => CssUnitHz(new_value),
+                CssUnitKHz(_) => CssUnitKHz(new_value),
+            }
+        }
+    }
+} 
+
 
 pub mod properties {
     use std::cast::transmute;
@@ -238,10 +344,17 @@ pub mod hint {
     impl CssHint {
 
         pub fn new(property: CssProperty, mut hint: Option<&mut ~css_hint>) -> CssHint {
+            println(fmt!("new hint == %?" , hint));
             let status = hint.get_ref().status as u32;
             match property {
                 CssPropFontSize => {
                     if status == CSS_FONT_SIZE_DIMENSION as u32 {
+                        println("helpers.rs :: 349 :: get_mut_ref");
+                        if (hint.get_mut_ref().length.is_none())
+                        {
+                            println("length is none");
+
+                        }
                         let length: &mut ~css_hint_length = hint.get_mut_ref().length.get_mut_ref();
                         CssHintLength(ll_unit_to_hl_unit( length.unit,  length.value))
                     } else {
@@ -285,110 +398,6 @@ pub mod hint {
     }
 
 }
-
-pub mod types {
-    //use wapcaplet::uint;
-    use std::cast::transmute;
-    use srid_css::include::types::*;
-    use srid_css::stylesheet::css_fixed;
-    use srid_css::select::common::css_hint_length;
-    use helpers::ToLl;
-    pub type c_enum = u8;
-    pub type rust_enum = uint;
-    
-    pub enum CssLanguageLevel {
-        CssLevel1,
-        CssLevel2,
-        CssLevel21,
-        CssLevel3,
-        CssLevelDefault, // NB: This is not the same as the ll value
-        // NB: Sentinal variant to prevent the naive transmute conversion from working
-        CssLevelNotACLikeEnum(uint)
-    }
-
-    // NB: This must have the same binary structure as css_color
-    pub struct CssColor { b: u8, g: u8, r: u8, a: u8 }
-
-    pub struct CssQName {
-        ns: Option<~str>,
-        name: ~str
-    }
-
-    pub enum CssUnit {
-        CssUnitPx(css_fixed),
-        CssUnitEx(css_fixed),
-        CssUnitEm(css_fixed),
-        CssUnitIn(css_fixed),
-        CssUnitCm(css_fixed),
-        CssUnitMm(css_fixed),
-        CssUnitPt(css_fixed),
-        CssUnitPc(css_fixed),
-        CssUnitPct(css_fixed),
-        CssUnitDeg(css_fixed),
-        CssUnitGrad(css_fixed),
-        CssUnitRad(css_fixed),
-        CssUnitMs(css_fixed),
-        CssUnitS(css_fixed),
-        CssUnitHz(css_fixed),
-        CssUnitKHz(css_fixed)
-    }
-
-    pub fn ll_color_to_hl_color(color: css_color) -> CssColor {
-        unsafe { transmute(color) }
-    }
-
-    impl CssUnit {
-        pub fn to_ll_css_hint_length(&self) -> ~css_hint_length {
-            let (unit, value) = self.to_ll();
-            ~css_hint_length {
-                value: value,
-                unit: unit
-            }
-        }
-
-        pub fn to_css_fixed(&self) -> css_fixed {
-            match *self {
-                CssUnitPx(css_fixed) |
-                CssUnitEx(css_fixed) |
-                CssUnitEm(css_fixed) |
-                CssUnitIn(css_fixed) |
-                CssUnitCm(css_fixed) |
-                CssUnitMm(css_fixed) |
-                CssUnitPt(css_fixed) |
-                CssUnitPc(css_fixed) |
-                CssUnitPct(css_fixed) |
-                CssUnitDeg(css_fixed) |
-                CssUnitGrad(css_fixed) |
-                CssUnitRad(css_fixed) |
-                CssUnitMs(css_fixed) |
-                CssUnitS(css_fixed) |
-                CssUnitHz(css_fixed) |
-                CssUnitKHz(css_fixed) => css_fixed
-            }
-        }
-
-        pub fn modify(&self, new_value: css_fixed) -> CssUnit {
-            match *self {
-                CssUnitPx(_) => CssUnitPx(new_value),
-                CssUnitEx(_) => CssUnitEx(new_value),
-                CssUnitEm(_) => CssUnitEm(new_value),
-                CssUnitIn(_) => CssUnitIn(new_value),
-                CssUnitCm(_) => CssUnitCm(new_value),
-                CssUnitMm(_) => CssUnitMm(new_value),
-                CssUnitPt(_) => CssUnitPt(new_value),
-                CssUnitPc(_) => CssUnitPc(new_value),
-                CssUnitPct(_) => CssUnitPct(new_value),
-                CssUnitDeg(_) => CssUnitDeg(new_value),
-                CssUnitGrad(_) => CssUnitGrad(new_value),
-                CssUnitRad(_) => CssUnitRad(new_value),
-                CssUnitMs(_) => CssUnitMs(new_value),
-                CssUnitS(_) => CssUnitS(new_value),
-                CssUnitHz(_) => CssUnitHz(new_value),
-                CssUnitKHz(_) => CssUnitKHz(new_value),
-            }
-        }
-    }
-} 
 
 
 pub trait ToLl<T> {
@@ -464,8 +473,7 @@ pub mod select {
 
     // use std::libc;
     use std::libc::c_void;
-    use std::libc::types::common::c99::{uint32_t};
-    // use std::vec;
+     // use std::vec;
     // use std::sys;
     // use std::ptr;
     use srid_css::include::types::css_origin;
@@ -485,6 +493,8 @@ pub mod select {
     use helpers::{/*ToLl,*/ write_ll_qname, ll_qname_to_hl_qname, /*require_ok,*/ VoidPtrLike};
     use helpers::properties::CssProperty;
     use helpers::hint::CssHint;
+    use helpers::properties::CssFontFamily; 
+    use helpers::types::CssUnit; 
     use srid_css::libwapcaplet::wapcaplet::*;
 
     pub enum CssPseudoElement {
@@ -500,7 +510,7 @@ pub mod select {
         priv select_ctx:~css_select_ctx,
         // Whenever a sheet is added to the select ctx we will take ownership of it
         // to ensure that it stays alive
-        priv sheets: ~[css_stylesheet],
+        priv sheets: ~[uint],
     }
 
 
@@ -516,7 +526,9 @@ pub mod select {
     impl CssSelectCtx {
         #[fixed_stack_segment]
         pub fn append_sheet(&mut self, sheet: uint, origin: css_origin, media: u64) {
-            self.select_ctx.css_select_ctx_append_sheet(sheet, origin, media);            
+            self.select_ctx.css_select_ctx_append_sheet(sheet, origin, media); 
+
+            self.sheets.push(sheet);           
         }
 
         #[fixed_stack_segment]
@@ -527,7 +539,7 @@ pub mod select {
         #[fixed_stack_segment]
         pub fn select_style<N: VoidPtrLike, H: CssSelectHandler<N>>(&mut self, node: &N, media: u64,
                                                             inline_style: Option<uint>,
-                                                            handler: &H) -> CssSelectResults {
+                                                            handler: &H) -> ~CssSelectResults {
             do with_untyped_handler(handler) |untyped_handler| {
                 let raw_handler = build_raw_handler();
                 
@@ -550,7 +562,7 @@ pub mod select {
                     fail!("Result in None")
                 }
 
-                CssSelectResults {
+                ~CssSelectResults {
                     results: results.unwrap()
                 }
 
@@ -600,7 +612,7 @@ pub mod select {
     }
 
     mod raw_handler {
-        //use std::libc::types::common::c99::{uint32_t, int32_t};
+        //use std::libc::types::common::c99::{u32, int32_t};
         use srid_css::stylesheet::css_qname;
         use std::libc::c_void;
         use std::cast::transmute;
@@ -614,7 +626,6 @@ pub mod select {
         use helpers::hint::CssHint;
         use super::UntypedHandler;
         use srid_css::libwapcaplet::wapcaplet::lwc;
-
 
         fn unimpl(n: &str) -> ! {
             fail!(fmt!("unimplemented css callback handler: %s", n))
@@ -809,7 +820,7 @@ pub mod select {
         node_is_root: &'self fn(node: *c_void, match_: &mut bool) -> css_error,
         node_is_link: &'self fn(node: *c_void, match_: &mut bool) -> css_error,
         node_is_visited: &'self fn(node: *c_void, match_: &mut bool) -> css_error,
-        ua_default_for_property: &'self fn(property: uint32_t, hint: &mut ~css_hint) -> css_error,
+        ua_default_for_property: &'self fn(property: u32, hint: &mut ~css_hint) -> css_error,
     }
 
     fn with_untyped_handler<N: VoidPtrLike, H: CssSelectHandler<N>, R>(handler: &H, f: &fn(&UntypedHandler) -> R) -> R {
@@ -910,6 +921,23 @@ pub mod select {
         }
     }
 
+    /**
+    Callbacks used to query the implementation-specific DOM
+    */
+    pub trait SelectHandler<N> {
+        fn with_node_name<R>(&self, node: &N, f: &fn(&str) -> R) -> R;
+        fn with_node_classes<R>(&self, node: &N, f: &fn(Option<&str>) -> R) -> R;
+        fn with_node_id<R>(&self, node: &N, f: &fn(Option<&str>) -> R) -> R;
+        fn named_parent_node(&self, node: &N, name:&str) -> Option<N>;
+        fn parent_node(&self, node: &N) -> Option<N>;
+        fn node_has_class(&self, node: &N, &str) -> bool;
+        fn node_has_id(&self, node: &N, &str) -> bool;
+        fn named_ancestor_node(&self, node: &N, name: &str) -> Option<N>;
+        fn node_is_root(&self, node: &N) -> bool;
+        fn node_is_link(&self, node: &N) -> bool;
+    }
+
+
     pub trait CssSelectHandler<N> {
         fn node_name(&self, node: &N) -> CssQName;
         fn node_classes(&self, node: &N) -> Option<~[uint]>;
@@ -923,6 +951,101 @@ pub mod select {
         fn node_is_link(&self, node: &N) -> bool;
         fn node_is_visited(&self, node: &N) -> bool;
         fn ua_default_for_property(&self, property: CssProperty) -> CssHint;
+    }
+
+    
+   /** Used to convert the netsurfcss CssSelectHandler callbacks to out SelectHandler callbacks */
+    struct SelectHandlerWrapper<N, H> {
+        // FIXME: Can't encode region variables
+        inner: *H
+    }
+
+    impl<'self, N, H: SelectHandler<N>> SelectHandlerWrapper<N, H> {
+        fn inner_ref(&self) -> &'self H {
+            unsafe { &*self.inner }
+        }
+    }
+
+    impl<N, H: SelectHandler<N>> CssSelectHandler<N> for SelectHandlerWrapper<N, H> {
+        fn node_name(&self, node: &N) -> CssQName {
+            do self.inner_ref().with_node_name(node) |name| {
+                CssQName{ns:None, name:name.to_owned()}
+            }
+        }
+
+        fn node_classes(&self, node: &N) -> Option<~[uint]> {
+            do self.inner_ref().with_node_classes(node) |node_classes_opt| {
+               do node_classes_opt.map |s| {
+                   debug!("SelectHandlerWrapper::node_classes - classes: %?", *s);
+                   let mut v = ~[];
+                   lwc();
+                   for t in s.split_iter(' ') {
+                       debug!("SelectHandlerWrapper::node_classes - class: %?", t);
+                       if t != "" { v.push(unsafe{ lwc_ref.get_mut_ref().lwc_intern_string(t)}) }
+                   }
+                   debug!("SelectHandlerWrapper::classes: %?", v);
+                   v
+               }
+            }
+        }
+        // TODO if expecting ~str then convert uint to corresponding lwc_string
+        fn node_id(&self, node: &N) -> Option<uint> {
+            lwc();
+            do self.inner_ref().with_node_id(node) |node_id_opt| {
+                node_id_opt.map(|s| unsafe{ lwc_ref.get_mut_ref()}.lwc_intern_string(*s))
+            }
+        }
+
+        fn named_parent_node(&self, node: &N, qname: &mut CssQName) -> Option<N> {
+            self.inner_ref().named_parent_node(node, qname.name)
+        }
+
+        fn parent_node(&self, node: &N) -> Option<N> {
+            self.inner_ref().parent_node(node)
+        }
+
+        fn node_has_class(&self, node: &N, name: &str) -> bool {
+            self.inner_ref().node_has_class(node, name)
+        }
+
+        fn node_has_id(&self, node: &N, name: &str) -> bool {
+            self.inner_ref().node_has_id(node, name)
+        }
+
+        fn named_ancestor_node(&self, node: &N, qname: &mut CssQName) -> Option<N> {
+            self.inner_ref().named_ancestor_node(node, qname.name)
+        }
+
+        fn node_is_root(&self, node: &N) -> bool {
+            self.inner_ref().node_is_root(node)
+        }
+
+        fn node_is_link(&self, node: &N) -> bool {
+            self.inner_ref().node_is_link(node)
+        }
+
+        fn node_is_visited(&self, _node: &N) -> bool {
+            // FIXME
+            warn_unimpl("node_is_visited");
+            false
+        }
+
+                
+        fn ua_default_for_property(&self, property: CssProperty) -> CssHint {
+            pub enum CssHint {
+                CssHintFontFamily(~[uint], CssFontFamily),
+                CssHintLength(CssUnit),
+                CssHintDefault,
+                CssHintUnknown
+            }
+
+            warn!("not specifiying ua default for property %?", property);
+            unsafe{transmute(CssHintDefault)}    
+        }
+    }
+
+    fn warn_unimpl(what: &str) {
+        warn!("unimplemented select handler: %?", what);
     }
 
     #[deriving(DeepClone)]
@@ -949,11 +1072,330 @@ pub mod select {
 
             super::computed::CssComputedStyle {
                 result_backref: self,
-                computed_style: self.results.styles[element as uint].get_ref().deep_clone()
+                computed_style: unsafe{transmute(self.results.styles[element as uint].get_ref())}
             }
         }
     }
 
+}
+
+
+pub mod computed {
+    // use hint::CssHint;
+    use helpers::select::CssSelectResults;
+    use helpers::values::{CssColorValue, CssMarginValue, CssPaddingValue, CssBorderStyleValue, CssBorderWidthValue, CssDisplayValue};
+    use helpers::values::{CssFloatValue, CssClearValue, CssPositionValue, CssWidthValue, CssHeightValue, CssFontFamilyValue};
+    use helpers::values::{CssFontSizeValue, CssFontStyleValue, CssFontWeightValue, CssTextAlignValue, CssTextDecorationValue};
+    use helpers::values::{CssLineHeightValue, CssVerticalAlignValue};
+    use helpers::types::*;
+    use srid_css::include::types::*;
+    use srid_css::include::properties::*;
+    // use ll::computed::*;
+    use std::ptr::{to_mut_unsafe_ptr, null};
+    // use std::cast::transmute;
+    // use std::libc::c_void;
+    // use ll::errors::{css_error, CSS_OK};
+    // use wapcaplet::ll::lwc_string;
+    use srid_css::include::properties::*;
+    use srid_css::select::computed::*;
+    use srid_css::select::common::css_computed_style;
+    use std::cast::transmute;
+
+    //#[deriving(DeepClone)]
+    pub struct CssComputedStyle<'self> {
+        // A borrowed back reference to ensure this outlives the results
+        result_backref: &'self CssSelectResults,
+        computed_style: *css_computed_style,
+    }
+
+     impl<'self> CssComputedStyle<'self> {
+        #[fixed_stack_segment]
+        pub fn color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ ,color)= css_computed_color(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_color_e;
+
+            CssColorValue::new(type_, color.unwrap())
+        }
+
+        #[fixed_stack_segment]
+        pub fn background_color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ ,color)= css_computed_background_color(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_color_e;
+
+            CssColorValue::new(type_, color.unwrap())
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_top_style(&self) -> CssBorderStyleValue {
+            let type_ = css_computed_border_top_style(unsafe{transmute(self.computed_style)}) ;
+            // let type_ = type_ as css_border_style_e;
+
+            CssBorderStyleValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_right_style(&self) -> CssBorderStyleValue {
+            let type_ = css_computed_border_right_style(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_style_e;
+
+            CssBorderStyleValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+       pub fn border_bottom_style(&self) -> CssBorderStyleValue {
+            let type_ = css_computed_border_bottom_style(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_style_e;
+
+            CssBorderStyleValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_left_style(&self) -> CssBorderStyleValue {
+            let type_ = css_computed_border_left_style(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_style_e;
+
+            CssBorderStyleValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_top_width(&self) -> CssBorderWidthValue {
+
+            // let mut length = 0;
+            
+            // let mut unit = 0;
+            let (type_  , length , unit)= css_computed_border_top_width(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_width_e;
+
+            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_right_width(&self) -> CssBorderWidthValue {
+
+            // let mut length = 0;
+            // let mut unit = 0;
+            let (type_ , length , unit) = css_computed_border_right_width(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_width_e;
+
+            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_bottom_width(&self) -> CssBorderWidthValue {
+            // let mut length = 0;
+            // let mut unit = 0;
+            let (type_ , length , unit) = css_computed_border_bottom_width(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_width_e;
+
+            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_left_width(&self) -> CssBorderWidthValue {
+            // let mut length = 0;
+            // let mut unit = 0;
+            let (type_ , length , unit) = css_computed_border_left_width(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_border_width_e;
+
+            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_top_color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ , color) = css_computed_border_top_color(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_color_e;
+            CssColorValue::new(type_, color)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_right_color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ , color) = css_computed_border_right_color(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_color_e;
+            CssColorValue::new(type_, color)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_bottom_color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ , color) = css_computed_border_bottom_color(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_color_e;
+            CssColorValue::new(type_, color)
+        }
+
+        #[fixed_stack_segment]
+        pub fn border_left_color(&self) -> CssColorValue {
+            // let mut color = 0;
+            let (type_ , color) = css_computed_border_left_color(unsafe{transmute(self.computed_style)});
+            CssColorValue::new(type_, color)
+        }
+
+        #[fixed_stack_segment]
+        pub fn margin_top(&self) -> CssMarginValue {
+            // let mut length = 0;
+            // let mut unit = 0;
+            let (type_ , length , unit) = css_computed_margin_top(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_margin_e;
+
+            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn margin_right(&self) -> CssMarginValue {
+            let (type_, length, unit) = css_computed_margin_right(unsafe{transmute(self.computed_style)});
+            //let type_ = type_ as css_margin_e;
+
+            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn margin_bottom(&self) -> CssMarginValue {
+            let (type_, length, unit) = css_computed_margin_bottom(unsafe{transmute(self.computed_style)});
+            //let type_ = type_ as css_margin_e;
+
+            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn margin_left(&self) -> CssMarginValue {
+            let (type_, length, unit) = css_computed_margin_left(unsafe{transmute(self.computed_style)});
+            
+            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn padding_top(&self) -> CssPaddingValue {
+            let (type_, length, unit) = css_computed_padding_top(unsafe{transmute(self.computed_style)});
+            
+            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn padding_right(&self) -> CssPaddingValue {
+            let (type_, length, unit) = css_computed_padding_right(unsafe{transmute(self.computed_style)});
+
+            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn padding_bottom(&self) -> CssPaddingValue {
+            let (type_, length, unit) = css_computed_padding_bottom(unsafe{transmute(self.computed_style)});
+
+            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn padding_left(&self) -> CssPaddingValue {
+            let (type_, length, unit) = css_computed_padding_left(unsafe{transmute(self.computed_style)});
+
+            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn display(&self, root: bool) -> CssDisplayValue {
+            let type_ = css_computed_display(unsafe{transmute(self.computed_style)}, root);
+
+            CssDisplayValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn position(&self) -> CssPositionValue {
+            let type_ = css_computed_position(unsafe{transmute(self.computed_style)});
+
+            CssPositionValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn width(&self) -> CssWidthValue {
+            let (type_, length, unit) = css_computed_width(unsafe{transmute(self.computed_style)});
+
+            CssWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn height(&self) -> CssHeightValue {
+            let (type_, length, unit) = css_computed_height(unsafe{transmute(self.computed_style)});
+
+            CssHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn float(&self) -> CssFloatValue {
+            let type_ = css_computed_float(unsafe{transmute(self.computed_style)});
+
+            CssFloatValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn clear(&self) -> CssClearValue {
+            let type_ = css_computed_clear(unsafe{transmute(self.computed_style)});
+
+            CssClearValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn font_family(&self) -> CssFontFamilyValue {
+            // let mut names: ~[uint] = ~[];
+            let (type_, names) = css_computed_font_family(unsafe{transmute(self.computed_style)});
+            // let type_ = type_ as css_font_family_e;
+
+            CssFontFamilyValue::new(type_, names)
+        }
+
+        #[fixed_stack_segment]
+        pub fn font_size(&self) -> CssFontSizeValue {
+            let (type_, length, unit) = css_computed_font_size(unsafe{transmute(self.computed_style)}) ;
+
+            CssFontSizeValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn font_style(&self) -> CssFontStyleValue {
+            let type_ = css_computed_font_style(unsafe{transmute(self.computed_style)});
+
+            CssFontStyleValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn font_weight(&self) -> CssFontWeightValue {
+            let type_ = css_computed_font_weight(unsafe{transmute(self.computed_style)});
+
+            CssFontWeightValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn text_align(&self) -> CssTextAlignValue {
+            let type_ = css_computed_text_align(unsafe{transmute(self.computed_style)}) ;
+
+            CssTextAlignValue::new(type_)
+        }
+
+        #[fixed_stack_segment]
+        pub fn text_decoration(&self) -> CssTextDecorationValue {
+            let type_ = css_computed_text_decoration(unsafe{transmute(self.computed_style)});
+            debug!("Getting text-decoration raw: %?", type_);
+
+            CssTextDecorationValue::new(type_)
+        }
+
+
+        #[fixed_stack_segment]
+        pub fn line_height(&self) -> CssLineHeightValue {
+            let (type_ , length , unit) = css_computed_line_height(unsafe{transmute(self.computed_style)});
+
+            CssLineHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+
+        #[fixed_stack_segment]
+        pub fn vertical_align(&self) -> CssVerticalAlignValue {
+            let (type_ , length , unit) = css_computed_vertical_align(unsafe{transmute(self.computed_style)});
+
+            CssVerticalAlignValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+        }
+    }
 }
 
 pub mod values {
@@ -1384,324 +1826,6 @@ pub mod values {
         fail!(fmt!("unimplemented css value: %?", what));
     }
 
-}
-
-pub mod computed {
-    // use hint::CssHint;
-    use helpers::select::CssSelectResults;
-    use helpers::values::{CssColorValue, CssMarginValue, CssPaddingValue, CssBorderStyleValue, CssBorderWidthValue, CssDisplayValue};
-    use helpers::values::{CssFloatValue, CssClearValue, CssPositionValue, CssWidthValue, CssHeightValue, CssFontFamilyValue};
-    use helpers::values::{CssFontSizeValue, CssFontStyleValue, CssFontWeightValue, CssTextAlignValue, CssTextDecorationValue};
-    use helpers::values::{CssLineHeightValue, CssVerticalAlignValue};
-    use helpers::types::*;
-    use srid_css::include::types::*;
-    use srid_css::include::properties::*;
-    // use ll::computed::*;
-    use std::ptr::{to_mut_unsafe_ptr, null};
-    // use std::cast::transmute;
-    // use std::libc::c_void;
-    // use ll::errors::{css_error, CSS_OK};
-    // use wapcaplet::ll::lwc_string;
-    use srid_css::include::properties::*;
-    use srid_css::select::computed::*;
-    use srid_css::select::common::css_computed_style;
-    
-
-    //#[deriving(DeepClone)]
-    pub struct CssComputedStyle<'self> {
-        // A borrowed back reference to ensure this outlives the results
-        result_backref: &'self CssSelectResults,
-        computed_style: ~css_computed_style,
-    }
-
-     impl<'self> CssComputedStyle<'self> {
-        #[fixed_stack_segment]
-        pub fn color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ ,color)= css_computed_color(&self.computed_style);
-            // let type_ = type_ as css_color_e;
-
-            CssColorValue::new(type_, color.unwrap())
-        }
-
-        #[fixed_stack_segment]
-        pub fn background_color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ ,color)= css_computed_background_color(&self.computed_style);
-            // let type_ = type_ as css_color_e;
-
-            CssColorValue::new(type_, color.unwrap())
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_top_style(&self) -> CssBorderStyleValue {
-            let type_ = css_computed_border_top_style(&self.computed_style) ;
-            // let type_ = type_ as css_border_style_e;
-
-            CssBorderStyleValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_right_style(&self) -> CssBorderStyleValue {
-            let type_ = css_computed_border_right_style(&self.computed_style);
-            // let type_ = type_ as css_border_style_e;
-
-            CssBorderStyleValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-       pub fn border_bottom_style(&self) -> CssBorderStyleValue {
-            let type_ = css_computed_border_bottom_style(&self.computed_style);
-            // let type_ = type_ as css_border_style_e;
-
-            CssBorderStyleValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_left_style(&self) -> CssBorderStyleValue {
-            let type_ = css_computed_border_left_style(&self.computed_style);
-            // let type_ = type_ as css_border_style_e;
-
-            CssBorderStyleValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_top_width(&self) -> CssBorderWidthValue {
-
-            // let mut length = 0;
-            
-            // let mut unit = 0;
-            let (type_  , length , unit)= css_computed_border_top_width(&self.computed_style);
-            // let type_ = type_ as css_border_width_e;
-
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_right_width(&self) -> CssBorderWidthValue {
-
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_right_width(&self.computed_style);
-            // let type_ = type_ as css_border_width_e;
-
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_bottom_width(&self) -> CssBorderWidthValue {
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_bottom_width(&self.computed_style);
-            // let type_ = type_ as css_border_width_e;
-
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_left_width(&self) -> CssBorderWidthValue {
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_left_width(&self.computed_style);
-            // let type_ = type_ as css_border_width_e;
-
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_top_color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ , color) = css_computed_border_top_color(&self.computed_style);
-            // let type_ = type_ as css_color_e;
-            CssColorValue::new(type_, color)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_right_color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ , color) = css_computed_border_right_color(&self.computed_style);
-            // let type_ = type_ as css_color_e;
-            CssColorValue::new(type_, color)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_bottom_color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ , color) = css_computed_border_bottom_color(&self.computed_style);
-            // let type_ = type_ as css_color_e;
-            CssColorValue::new(type_, color)
-        }
-
-        #[fixed_stack_segment]
-        pub fn border_left_color(&self) -> CssColorValue {
-            // let mut color = 0;
-            let (type_ , color) = css_computed_border_left_color(&self.computed_style);
-            CssColorValue::new(type_, color)
-        }
-
-        #[fixed_stack_segment]
-        pub fn margin_top(&self) -> CssMarginValue {
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_margin_top(&self.computed_style);
-            // let type_ = type_ as css_margin_e;
-
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn margin_right(&self) -> CssMarginValue {
-            let (type_, length, unit) = css_computed_margin_right(&self.computed_style);
-            //let type_ = type_ as css_margin_e;
-
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn margin_bottom(&self) -> CssMarginValue {
-            let (type_, length, unit) = css_computed_margin_bottom(&self.computed_style);
-            //let type_ = type_ as css_margin_e;
-
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn margin_left(&self) -> CssMarginValue {
-            let (type_, length, unit) = css_computed_margin_left(&self.computed_style);
-            
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn padding_top(&self) -> CssPaddingValue {
-            let (type_, length, unit) = css_computed_padding_top(&self.computed_style);
-            
-            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn padding_right(&self) -> CssPaddingValue {
-            let (type_, length, unit) = css_computed_padding_right(&self.computed_style);
-
-            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn padding_bottom(&self) -> CssPaddingValue {
-            let (type_, length, unit) = css_computed_padding_bottom(&self.computed_style);
-
-            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn padding_left(&self) -> CssPaddingValue {
-            let (type_, length, unit) = css_computed_padding_left(&self.computed_style);
-
-            CssPaddingValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn display(&self, root: bool) -> CssDisplayValue {
-            let type_ = css_computed_display(&self.computed_style, root);
-
-            CssDisplayValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn position(&self) -> CssPositionValue {
-            let type_ = css_computed_position(&self.computed_style);
-
-            CssPositionValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn width(&self) -> CssWidthValue {
-            let (type_, length, unit) = css_computed_width(&self.computed_style);
-
-            CssWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn height(&self) -> CssHeightValue {
-            let (type_, length, unit) = css_computed_height(&self.computed_style);
-
-            CssHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn float(&self) -> CssFloatValue {
-            let type_ = css_computed_float(&self.computed_style);
-
-            CssFloatValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn clear(&self) -> CssClearValue {
-            let type_ = css_computed_clear(&self.computed_style);
-
-            CssClearValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn font_family(&self) -> CssFontFamilyValue {
-            // let mut names: ~[uint] = ~[];
-            let (type_, names) = css_computed_font_family(&self.computed_style);
-            // let type_ = type_ as css_font_family_e;
-
-            CssFontFamilyValue::new(type_, names)
-        }
-
-        #[fixed_stack_segment]
-        pub fn font_size(&self) -> CssFontSizeValue {
-            let (type_, length, unit) = css_computed_font_size(&self.computed_style) ;
-
-            CssFontSizeValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn font_style(&self) -> CssFontStyleValue {
-            let type_ = css_computed_font_style(&self.computed_style);
-
-            CssFontStyleValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn font_weight(&self) -> CssFontWeightValue {
-            let type_ = css_computed_font_weight(&self.computed_style);
-
-            CssFontWeightValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn text_align(&self) -> CssTextAlignValue {
-            let type_ = css_computed_text_align(&self.computed_style) ;
-
-            CssTextAlignValue::new(type_)
-        }
-
-        #[fixed_stack_segment]
-        pub fn text_decoration(&self) -> CssTextDecorationValue {
-            let type_ = css_computed_text_decoration(&self.computed_style);
-            debug!("Getting text-decoration raw: %?", type_);
-
-            CssTextDecorationValue::new(type_)
-        }
-
-
-        #[fixed_stack_segment]
-        pub fn line_height(&self) -> CssLineHeightValue {
-            let (type_ , length , unit) = css_computed_line_height(&self.computed_style);
-
-            CssLineHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-
-        #[fixed_stack_segment]
-        pub fn vertical_align(&self) -> CssVerticalAlignValue {
-            let (type_ , length , unit) = css_computed_vertical_align(&self.computed_style);
-
-            CssVerticalAlignValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
-        }
-    }
 }
 
 
