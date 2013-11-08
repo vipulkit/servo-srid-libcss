@@ -30,10 +30,10 @@ pub struct CompleteSelectResults {
 pub fn compose(parent: &CssComputedStyle, child: &CssComputedStyle,
                     result: &mut CssComputedStyle) {
     println(fmt!("complete.rs :: compose"));
-    let llparent = &parent.computed_style;
-    let llchild = &child.computed_style;
-    let llresult = &mut result.computed_style;
-    let err = css_computed_style_compose(llparent, llchild, compute_font_size_cb, llresult);
+    let llparent = parent.computed_style;
+    let llchild = child.computed_style;
+    let llresult = result.computed_style;
+    let err = css_computed_style_compose(unsafe{transmute(llparent)}, unsafe{transmute(llchild)}, compute_font_size_cb, unsafe{transmute(llresult)});
     println(fmt!("compose :: err == %?" , err));
     if err as uint != CSS_OK as uint {
         fail!(~"stylesheet composition failed")
@@ -51,7 +51,7 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
             match child.length.get_ref().unit {
                 CSS_UNIT_EM | CSS_UNIT_PCT=> {
                     if parent.is_some() {
-                        let mut new_value: float = 0.0;
+                        let mut new_value: float = 16.0;
                         if parent.get_mut_ref().length.is_some() {
                             new_value = css_fixed_to_float(parent.get_mut_ref().length.get_ref().value);
                             if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {

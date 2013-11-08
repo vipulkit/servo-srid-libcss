@@ -83,6 +83,8 @@ impl<'self> SelectResults {
     /** Retrieve the computed style of a single pseudo-element */
     pub fn computed_style(&'self self) -> ComputedStyle<'self> {
         println(fmt!("select.rs :: computed_style"));
+        println(fmt!("select.rs :: computed_style :: computed_style == %?" , self.inner));
+
         ComputedStyle {
             inner: self.inner.computed_style(CssPseudoElementNone)
         }

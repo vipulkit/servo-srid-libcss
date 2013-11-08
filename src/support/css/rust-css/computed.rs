@@ -10,6 +10,7 @@ use helpers::computed::CssComputedStyle;
 use helpers::values::*;
 use helpers::types::*;
 use values::*;
+use srid_css::libwapcaplet::wapcaplet::*;
 
 pub type css_fixed = i32;
 
@@ -352,7 +353,7 @@ fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFon
         CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
         CssFontFamilyValue(names) => 
         {println("convert_net_font_family_value :: in value");
-            Specified(names.map(|n| CSSFontFamilyFamilyName(n.to_str()) ))
+            Specified(names.map(|&n| CSSFontFamilyFamilyName(unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(n)) ))
         }
     }
 }

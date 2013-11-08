@@ -1210,9 +1210,11 @@ pub fn css_computed_font_family(style:&~css_computed_style)
                                         -> (u8,~[uint]) {
 
     let mut bits : u8 = style.bits[CSS_FONT_FAMILY_INDEX];
+    println(fmt!("css_computed_font_family  :: bits == %? " , bits));
     bits = bits & (CSS_FONT_FAMILY_MASK as u8);
+    println(fmt!("css_computed_font_family  :: bits after mask == %? " , bits));
     bits = bits >> CSS_FONT_FAMILY_SHIFT;   
-
+    println(fmt!("css_computed_font_family  :: bits after mask and shift == %? " , bits));
     (bits,style.font_family.clone())
 }
 
