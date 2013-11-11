@@ -163,7 +163,7 @@ impl<'self> ComputedStyle<'self> {
     // CSS 2.1, Section 15 - Fonts
 
     pub fn font_family(&self) -> CSSValue<~[CSSFontFamily]> {
-        println("COMING IN FONT_FAMI");
+        //println("COMING IN FONT_FAMI");
         convert_net_font_family_value(self.inner.font_family())
     }
 
@@ -340,11 +340,11 @@ fn convert_net_position_value(value: CssPositionValue) -> CSSValue<CSSPosition> 
 
 fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFontFamily]> {
     use units::{Serif, SansSerif, Cursive, Fantasy, Monospace};
-    println("convert_net_font_family_value");
+    //println("convert_net_font_family_value");
 
     match value {
         CssFontFamilyInherit => {
-            println("convert_net_font_family_value :: COMING IN INHERIT");
+            //println("convert_net_font_family_value :: COMING IN INHERIT");
             Inherit},
         CssFontFamilySerif => Specified(~[CSSFontFamilyGenericFamily(Serif)]),
         CssFontFamilySansSerif => Specified(~[CSSFontFamilyGenericFamily(SansSerif)]),
@@ -352,7 +352,7 @@ fn convert_net_font_family_value(value: CssFontFamilyValue) -> CSSValue<~[CSSFon
         CssFontFamilyFantasy => Specified(~[CSSFontFamilyGenericFamily(Fantasy)]),
         CssFontFamilyMonospace => Specified(~[CSSFontFamilyGenericFamily(Monospace)]),
         CssFontFamilyValue(names) => 
-        {println("convert_net_font_family_value :: in value");
+        {//println("convert_net_font_family_value :: in value");
             Specified(names.map(|&n| CSSFontFamilyFamilyName(unsafe{lwc_ref.get_mut_ref()}.lwc_string_data(n)) ))
         }
     }

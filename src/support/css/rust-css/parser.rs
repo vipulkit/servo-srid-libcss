@@ -48,7 +48,7 @@ pub fn parse_stylesheet(url: Url, input: DataStream) -> ~css {
     let propstring = css_propstrings::css_propstrings(unsafe{lwc_ref.get_mut_ref()}); 
 
     loop {
-        println("parse_stylesheet :: In loop");
+        //println("parse_stylesheet :: In loop");
         match input() {
             Some(data) => {
                 sheet.css_stylesheet_append_data(&propstring, data);

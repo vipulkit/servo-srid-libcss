@@ -37,6 +37,7 @@ pub mod types;
 pub mod units;
 pub mod color;
 pub mod values;
+pub mod dump_computed;
 
 
 mod parser;
