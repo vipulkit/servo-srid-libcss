@@ -2323,7 +2323,7 @@ impl css_select_ctx {
     }
 
     pub fn cascade_style(stylesheet_vector:&mut ~[css_stylesheet], style:&mut ~css_style, state:&mut ~css_select_state) -> css_error {
-        let s = style;
+        let s = &mut style.deep_clone();
 
         //debug!(fmt!("Entering cascade_style")) ;
 		//debug!(fmt!("s_used=%?, s_len=%?", s.used, s.bytecode.len())) ;

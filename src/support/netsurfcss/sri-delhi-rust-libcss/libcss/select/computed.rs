@@ -90,12 +90,17 @@ pub fn css_computed_border_spacing(
             *vlength = style.uncommon.get_ref().border_spacing[1];
             *vunit = unsafe { transmute((bits1 & 0xf)as int) } ;
         }
+
+	return bits ;
+
+   }
+   else {
         *hlength = 0;
         *vlength = 0;
         *hunit = CSS_UNIT_PX;
         *vunit = CSS_UNIT_PX;
     }
-    bits
+    (CSS_BORDER_SPACING_SET as u8)
 }
 
 pub fn css_computed_word_spacing(

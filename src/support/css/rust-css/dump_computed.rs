@@ -131,10 +131,11 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
       debug!(fmt!("\n Entering dump_computed_style ")) ;
     let ptr = buf;
     let mut val:u8;
-    let mut len1: Option<i32> = Some(0);
-    let mut len2: Option<i32> = Some(0);
-    let mut unit1: Option<css_unit> = Some(CSS_UNIT_PX);
-    let mut unit2: Option<css_unit> = Some(CSS_UNIT_PX);
+    let mut url : uint = 0 ;
+    let mut len1: i32 = 0;
+    let mut len2: i32 = 0;
+    let mut unit1: css_unit = CSS_UNIT_PX;
+    let mut unit2: css_unit = CSS_UNIT_PX;
     let reason = "Function dump_computed_style"; 
 
     /* background-attachment */
@@ -151,25 +152,27 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
 
 
     /* background-color */
-    let (val,color_option) = css_computed_background_color(style);
+    let mut color : u32 =0;
+    let val = css_computed_background_color(style,&mut color);
     let val_enum: css_background_color_e =  unsafe {cast::transmute(val as uint)}; 
     match (val_enum) {
         CSS_BACKGROUND_COLOR_INHERIT =>
             ptr.push_str("background-color: inherit\n"),
         CSS_BACKGROUND_COLOR_COLOR =>
-            ptr.push_str(fmt!("background-color: #%08x\n", color_option.unwrap() as uint)),
+            ptr.push_str(fmt!("background-color: #%08x\n", color as uint)),
         _ =>
             {}
     }
 
     /* background-image */
-    let (val,url) = css_computed_background_image(style);
+    let mut ourl : Option<uint> = Some(0) ;
+    let val = css_computed_background_image(style,&mut ourl);
         if (val == CSS_BACKGROUND_IMAGE_INHERIT as u8) {
             ptr.push_str("background-image: inherit\n");
     }
-    else if (val == CSS_BACKGROUND_IMAGE_IMAGE as u8 && url.is_some()) {
+    else if (val == CSS_BACKGROUND_IMAGE_IMAGE as u8 && ourl.is_some() ) {
         ptr.push_str(fmt!("background-image: url('%s')\n",
-                lwc_ref.lwc_string_data(url.expect(reason))));
+                lwc_ref.lwc_string_data(ourl.expect(reason))));
     }
     else if (val == CSS_BACKGROUND_IMAGE_NONE as u8) {
         ptr.push_str("background-image: none\n");
@@ -179,18 +182,22 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* background-position */
-    let result:rect_result = css_computed_background_position(style);
+    let mut hlength : i32 =0 ;
+    let mut vlength : i32 =0 ;
+    let mut hunit : css_unit = CSS_UNIT_PX ;
+    let mut vunit : css_unit = CSS_UNIT_PX ;
+    let result = css_computed_background_position(style,&mut hlength,&mut hunit , &mut vlength , &mut vunit);
 
-    if (result.result == CSS_BACKGROUND_POSITION_INHERIT as u8) {
+    if (result == CSS_BACKGROUND_POSITION_INHERIT as u8) {
         ptr.push_str("background-position: inherit\n");
     }
-    else if (result.result == CSS_BACKGROUND_POSITION_SET as u8) {
+    else if (result == CSS_BACKGROUND_POSITION_SET as u8) {
         ptr.push_str("background-position: ");
         
-        dump_css_unit(result.hlength, result.hunit, ptr);
+        dump_css_unit(hlength, hunit, ptr);
         ptr.push_str(" ");
         
-        dump_css_unit(result.vlength, result.vunit, ptr);
+        dump_css_unit(vlength, vunit, ptr);
         ptr.push_str("\n");
         
     }
@@ -227,22 +234,22 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* border-spacing */
-    let result = css_computed_border_spacing(style);
+    let result = css_computed_border_spacing(style,&mut hlength,&mut hunit,&mut vlength ,&mut vunit);
 
-    if (result.result == CSS_BORDER_SPACING_INHERIT as u8) {
+    if (result == CSS_BORDER_SPACING_INHERIT as u8) {
             ptr.push_str("border-spacing: inherit\n");
         }    
-    else if (result.result == CSS_BORDER_SPACING_SET as u8) {
+    else if (result == CSS_BORDER_SPACING_SET as u8) {
         ptr.push_str("border-spacing: ");
-        dump_css_unit(result.hlength, result.hunit, ptr);
+        dump_css_unit(hlength, hunit, ptr);
         ptr.push_str(" ");
-        dump_css_unit(result.vlength, result.vunit, ptr);
+        dump_css_unit(vlength, vunit, ptr);
         ptr.push_str("\n");
         
     }
 
     /* border-top-color */
-    let (val,color) = css_computed_border_top_color(style);
+    let val = css_computed_border_top_color(style,&mut color);
     let val_enum: css_border_color_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -255,7 +262,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* border-right-color */
-    let (val,color) = css_computed_border_right_color(style);
+    let val = css_computed_border_right_color(style,&mut color);
     let val_enum: css_border_color_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -269,7 +276,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
 
 
     /* border-bottom-color */
-    let (val,color) = css_computed_border_bottom_color(style);
+    let val = css_computed_border_bottom_color(style,&mut color);
     let val_enum: css_border_color_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -282,7 +289,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* border-left-color */
-    let (val,color) = css_computed_border_left_color(style);
+    let val = css_computed_border_left_color(style,&mut color);
     let val_enum: css_border_color_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -413,10 +420,10 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("border-left-style: outset\n"),
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    //let mut len1 = Some(len1.unwrap_or_default(0));
+    //let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* border-top-width */
-    let val = css_computed_border_top_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_border_top_width(style , &mut len1 , &mut unit1);
     let val_enum: css_border_width_e =  unsafe {cast::transmute(val as uint)};
 
     match (val_enum) {
@@ -430,15 +437,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("border-top-width: thick\n"),
         CSS_BORDER_WIDTH_WIDTH => {
             ptr.push_str("border-top-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    //let mut len1 = Some(len1.unwrap_or_default(0));
+    //let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* border-right-width */
-    let val = css_computed_border_right_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_border_right_width(style , &mut len1 , &mut unit1);
     let val_enum: css_border_width_e =  unsafe {cast::transmute(val as uint)};
 
     match (val_enum) {
@@ -452,15 +459,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("border-right-width: thick\n"),
         CSS_BORDER_WIDTH_WIDTH => {
             ptr.push_str("border-right-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    //let mut len1 = Some(len1.unwrap_or_default(0));
+    //let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* border-bottom-width */
-    let val = css_computed_border_bottom_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_border_bottom_width(style , &mut len1 , &mut unit1);
     let val_enum: css_border_width_e =  unsafe {cast::transmute(val as uint)};
 
     match (val_enum) {
@@ -474,15 +481,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("border-bottom-width: thick\n"),
         CSS_BORDER_WIDTH_WIDTH => {
             ptr.push_str("border-bottom-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* border-left-width */
-    let val = css_computed_border_left_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_border_left_width(style , &mut len1 , &mut unit1);
     let val_enum: css_border_width_e =  unsafe {cast::transmute(val as uint)};
 
     match (val_enum) {
@@ -496,15 +503,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("border-left-width: thick\n"),
         CSS_BORDER_WIDTH_WIDTH => {
             ptr.push_str("border-left-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* bottom */
-    let val = css_computed_bottom(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_bottom(style , &mut len1 , &mut unit1);
     let val_enum: css_bottom_e =  unsafe {cast::transmute(val as uint)};
 
     match (val_enum) {
@@ -514,7 +521,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("bottom: auto\n"),
         CSS_BOTTOM_SET => {
             ptr.push_str("bottom: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         }
     }
@@ -614,16 +621,17 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
 
 
     /* color */
-    let (val,color) = css_computed_color(style);
+    let val = css_computed_color(style,&mut color);
     if (val == CSS_COLOR_INHERIT as u8) {
         ptr.push_str("color: inherit\n");
     }
     else if (val == CSS_COLOR_COLOR as u8) {
-        ptr.push_str(fmt!("color: #%08x\n", color.unwrap() as uint));
+        ptr.push_str(fmt!("color: #%08x\n", color as uint));
     }
 
     /* content */
-    let (val,content) = css_computed_content(style);
+    let mut content :  ~[~css_computed_content_item] = ~[] ;
+    let val = css_computed_content(style,&mut content);
     let val_enum: css_content_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -695,7 +703,8 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* counter-increment */
-    let (val,counter) = css_computed_counter_increment(style);
+    let mut counter : ~[~css_computed_counter] = ~[] ;
+    let val = css_computed_counter_increment(style,&mut counter);
     let mut counter_index = 0;
 
     if (val == CSS_COUNTER_INCREMENT_INHERIT as u8) {
@@ -720,7 +729,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* counter-reset */
-    let (val,counter) = css_computed_counter_reset(style);
+    let val = css_computed_counter_reset(style,&mut counter);
     let mut counter_index = 0;
 
     if (val == CSS_COUNTER_RESET_INHERIT as u8) {
@@ -745,12 +754,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* cursor */
-    let (val,string_list_option) = css_computed_cursor(style);
+    let mut string_list : ~[uint] = ~[] ;
+    let val = css_computed_cursor(style,&mut string_list);
     ptr.push_str("cursor:");
     let mut string_list_index = 0;
 
-    if (!string_list_option.is_none()) {
-        let string_list = string_list_option.unwrap();
+    if (string_list.len()!=0) {
+        //let string_list = urls.clone() ;
 
         while (string_list_index < string_list.len()) {
             ptr.push_str(fmt!(" url('%s')",
@@ -884,7 +894,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* font-family */
-    let (val,string_list) = css_computed_font_family(style);
+    let val = css_computed_font_family(style,&mut string_list);
     let mut string_list_index = 0;
 
     if (val == CSS_FONT_FAMILY_INHERIT as u8) {
@@ -922,7 +932,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* font-size */
-    let (val,len1,unit1) = css_computed_font_size(style);
+    let val = css_computed_font_size(style,&mut hlength,&mut hunit);
     let val_enum: css_font_size_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -948,7 +958,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("font-size: smaller\n"),
         CSS_FONT_SIZE_DIMENSION => {
             ptr.push_str("font-size: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         }   
     }
@@ -1015,10 +1025,10 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
         CSS_FONT_WEIGHT_900 =>
             ptr.push_str("font-weight: 900\n")
     }
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* height */
-    let val = css_computed_height(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_height(style , &mut len1 , &mut unit1);
     let val_enum: css_height_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1028,15 +1038,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("height: auto\n"),
         CSS_HEIGHT_SET => {
             ptr.push_str("height: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* left */
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
-    let val = css_computed_left(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    let val = css_computed_left(style , &mut len1 , &mut unit1);
     let val_enum: css_left_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1046,13 +1056,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("left: auto\n"),
         CSS_LEFT_SET => {
             ptr.push_str("left: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },  
     }
     
     /* letter-spacing */
-    let (val,len1,unit1) = css_computed_letter_spacing(style);
+    let val = css_computed_letter_spacing(style,&mut hlength,&mut hunit);
     let val_enum: css_letter_spacing_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1062,14 +1072,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("letter-spacing: normal\n"),
         CSS_LETTER_SPACING_SET => {
             ptr.push_str("letter-spacing: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         }   
     }
 
 
     /* line-height */
-    let (val,len1,unit1) = css_computed_line_height(style);
+    let val = css_computed_line_height(style,&mut hlength,&mut hunit);
     let val_enum: css_line_height_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1079,24 +1089,24 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("line-height: normal\n"),
         CSS_LINE_HEIGHT_NUMBER => {
             ptr.push_str("line-height: ");
-            dump_css_fixed(len1.unwrap(), ptr);
+            dump_css_fixed(len1, ptr);
             ptr.push_str("\n")
         },
         CSS_LINE_HEIGHT_DIMENSION => {
             ptr.push_str("line-height => ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* list-style-image */
-    let (val,url) = css_computed_list_style_image(style);
+    let val = css_computed_list_style_image(style,&mut ourl);
         
     if (val == CSS_LIST_STYLE_IMAGE_INHERIT as u8) {
         ptr.push_str("list-style-image: inherit\n");
     }
-    else if (url.is_some() && lwc_ref.lwc_string_data(url.expect(reason)) != ~"") {
-        ptr.push_str(fmt!("list-style-image => url('%s')\n",lwc_ref.lwc_string_data(url.expect(reason))));
+    else if (ourl.is_some() && lwc_ref.lwc_string_data(ourl.expect(reason)) != ~"") {
+        ptr.push_str(fmt!("list-style-image => url('%s')\n",lwc_ref.lwc_string_data(ourl.expect(reason))));
     }
     else if (val == CSS_LIST_STYLE_IMAGE_URI_OR_NONE as u8) {
         ptr.push_str("list-style-image: none\n");
@@ -1156,10 +1166,10 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("list-style-type: none\n"),
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* margin-top */
-    let val = css_computed_margin_top(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_margin_top(style , &mut len1 ,&mut  unit1);
     let val_enum: css_margin_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1169,15 +1179,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("margin-top: auto\n"),
         CSS_MARGIN_SET => {
             ptr.push_str("margin-top: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },  
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* margin-right */
-    let val = css_computed_margin_right(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_margin_right(style , &mut len1 , &mut unit1);
     let val_enum: css_margin_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1187,15 +1197,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("margin-right: auto\n"),
         CSS_MARGIN_SET => {
             ptr.push_str("margin-right: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },  
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* margin-bottom */
-    let val = css_computed_margin_bottom(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_margin_bottom(style , &mut len1 , &mut unit1);
     let val_enum: css_margin_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1205,15 +1215,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("margin-bottom: auto\n"),
         CSS_MARGIN_SET => {
             ptr.push_str("margin-bottom: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         }   
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* margin-left */
-    let val = css_computed_margin_left(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_margin_left(style , &mut len1 , &mut unit1);
     let val_enum: css_margin_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1223,13 +1233,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("margin-left: auto\n"),
         CSS_MARGIN_SET => {
             ptr.push_str("margin-left: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* max-height */
-    let (val, len1, unit1) = css_computed_max_height(style);
+    let val = css_computed_max_height(style,&mut hlength,&mut hunit);
     let val_enum: css_max_height_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1239,13 +1249,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("max-height: none\n"),
         CSS_MAX_HEIGHT_SET => {
             ptr.push_str("max-height: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* max-width */
-    let (val, len1, unit1) = css_computed_max_width(style);
+    let val = css_computed_max_width(style,&mut hlength,&mut hunit);
     let val_enum: css_max_width_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1255,14 +1265,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("max-width: none\n"),
         CSS_MAX_WIDTH_SET => {
             ptr.push_str("max-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* min-height */
-    let (val, len1, unit1) = css_computed_min_height(style);
+    let val = css_computed_min_height(style,&mut hlength,&mut hunit);
     let val_enum: css_min_height_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1270,14 +1280,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("min-height: inherit\n"),
         CSS_MIN_HEIGHT_SET => {
             ptr.push_str("min-height: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* min-width */
-    let (val, len1, unit1) = css_computed_min_width(style);
+    let val = css_computed_min_width(style,&mut hlength,&mut hunit);
     let val_enum: css_min_width_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1285,14 +1295,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("min-width: inherit\n"),
         CSS_MIN_WIDTH_SET => {
             ptr.push_str("min-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength, hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* opacity */
-    let (val, len1) = css_computed_opacity(style);
+    let val = css_computed_opacity(style,&mut hlength);
     let val_enum: css_opacity_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1300,14 +1310,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("opacity: inherit\n"),
         CSS_OPACITY_SET => {
             ptr.push_str("opacity: ");
-            dump_css_fixed(len1.unwrap(), ptr);
+            dump_css_fixed(hlength, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* outline-color */
-    let (val,color) = css_computed_outline_color(style);
+    let val = css_computed_outline_color(style,&mut color);
     let val_enum: css_outline_color_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1316,7 +1326,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
         CSS_OUTLINE_COLOR_INVERT =>
             ptr.push_str("outline-color: invert\n"),
         CSS_OUTLINE_COLOR_COLOR =>
-            ptr.push_str(fmt!("outline-color: #%08x\n", color.unwrap() as uint)),
+            ptr.push_str(fmt!("outline-color: #%08x\n", color as uint)),
         _ =>
             {}
     }
@@ -1349,10 +1359,10 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("outline-style: outset\n"),
     }
 
-    let mut len1 = Some(len1.unwrap_or_default(0));
-    let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
+    // let mut len1 = Some(len1.unwrap_or_default(0));
+    // let mut unit1 = Some(unit1.unwrap_or_default(CSS_UNIT_PX));
     /* outline-width */
-    let val = css_computed_outline_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_outline_width(style , &mut len1 , &mut unit1);
     let val_enum: css_outline_width_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1366,7 +1376,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("outline-width: thick\n"),
         CSS_OUTLINE_WIDTH_WIDTH => {
             ptr.push_str("outline-width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
@@ -1389,7 +1399,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* padding-top */
-    let (val, len1, unit1) = css_computed_padding_top(style);
+    let val = css_computed_padding_top(style,&mut hlength , &mut hunit);
     let val_enum: css_padding_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1397,14 +1407,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("padding-top: inherit\n"),
         CSS_PADDING_SET => {
             ptr.push_str("padding-top: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* padding-right */
-    let (val, len1, unit1) = css_computed_padding_right(style);
+    let val = css_computed_padding_right(style,&mut hlength , &mut hunit);
     let val_enum: css_padding_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1412,13 +1422,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("padding-right: inherit\n"),
         CSS_PADDING_SET => {
             ptr.push_str("padding-right: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* padding-bottom */
-    let (val, len1, unit1) = css_computed_padding_bottom(style);
+    let val = css_computed_padding_bottom(style,&mut hlength , &mut hunit);
     let val_enum: css_padding_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1426,13 +1436,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("padding-bottom: inherit\n"),
         CSS_PADDING_SET => {
             ptr.push_str("padding-bottom: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
     /* padding-left */
-    let (val, len1, unit1) = css_computed_padding_left(style);
+    let val = css_computed_padding_left(style,&mut hlength , &mut hunit);
     let val_enum: css_padding_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1440,7 +1450,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("padding-left: inherit\n"),
         CSS_PADDING_SET => {
             ptr.push_str("padding-left: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         }
     }
@@ -1464,7 +1474,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* quotes */
-    let (val,string_list) = css_computed_quotes(style);
+    let val = css_computed_quotes(style,&mut string_list);
     let mut string_list_index = 0;
 
     if (val == CSS_QUOTES_STRING_OR_NONE as u8 && string_list.len() != 0) {
@@ -1492,7 +1502,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     let mut len1 = len1;
     let mut unit1 = unit1;
     /* right */
-    let val = css_computed_right(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_right(style , &mut len1 , &mut unit1);
     let val_enum: css_right_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1502,7 +1512,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("right: auto\n"),
         CSS_RIGHT_SET => {
             ptr.push_str("right: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
@@ -1583,7 +1593,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* text-indent */
-    let (val, len1, unit1) = css_computed_text_indent(style);
+    let val = css_computed_text_indent(style,&mut hlength,&mut hunit);
     let val_enum: css_text_indent_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1591,7 +1601,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("text-indent: inherit\n"),
         CSS_TEXT_INDENT_SET => {
             ptr.push_str("text-indent: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
@@ -1615,9 +1625,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* top */
-    let mut len1 = len1;
-    let mut unit1 = unit1;
-    let val = css_computed_top(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_top(style , &mut len1 , &mut unit1);
     let val_enum: css_top_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1627,7 +1635,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("top: auto\n"),
         CSS_TOP_SET => {
             ptr.push_str("top: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
@@ -1648,7 +1656,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* vertical-align */
-    let (val, len1, unit1) = css_computed_vertical_align(style);
+    let val = css_computed_vertical_align(style,&mut hlength , &mut hunit);
     let val_enum: css_vertical_align_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1672,7 +1680,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("vertical-align: text-bottom\n"),
         CSS_VERTICAL_ALIGN_SET => {
             ptr.push_str("vertical-align: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
@@ -1714,9 +1722,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
 
     
     /* width */
-    let mut len1 = len1;
-    let mut unit1 = unit1;
-    let val = css_computed_width(style , len1.get_mut_ref() , unit1.get_mut_ref());
+    let val = css_computed_width(style , &mut len1 , &mut unit1);
     let val_enum: css_width_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1726,14 +1732,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("width: auto\n"),
         CSS_WIDTH_SET => {
             ptr.push_str("width: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* word-spacing */
-    let (val, len1, unit1) = css_computed_word_spacing(style);
+    let val = css_computed_word_spacing(style,&mut hlength , &mut hunit);
     let val_enum: css_word_spacing_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
@@ -1743,14 +1749,15 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("word-spacing: normal\n"),
         CSS_WORD_SPACING_SET => {
             ptr.push_str("word-spacing: ");
-            dump_css_unit(len1.unwrap(), unit1.unwrap(), ptr);
+            dump_css_unit(hlength,hunit, ptr);
             ptr.push_str("\n")
         },
     }
 
 
     /* z-index */
-    let (val,zindex) = css_computed_z_index(style);
+    let mut zindex : i32 = 0 ;
+    let val = css_computed_z_index(style,&mut zindex);
     let val_enum: css_z_index_e =  unsafe {cast::transmute(val as uint)}; 
 
     match (val_enum) {
