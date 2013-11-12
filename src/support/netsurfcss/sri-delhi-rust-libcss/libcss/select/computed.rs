@@ -6,51 +6,42 @@ use include::fpmath::*;
 use include::types::*;
 use include::properties::*;
 
-pub fn css_computed_letter_spacing(
-        style : &~css_computed_style) 
-        -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_letter_spacing(style : &~css_computed_style , length: &mut i32 , unit: &mut css_unit) 
+        -> u8 {
 
-    let mut length :Option<i32> = None;
-    let mut unit : Option<css_unit>  = None;
-    
-    if style.uncommon.is_none() {
-        (CSS_LETTER_SPACING_NORMAL as u8,length,unit)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_LETTER_SPACING_INDEX];
         bits = bits & (CSS_LETTER_SPACING_MASK as u8);
         bits = bits >> CSS_LETTER_SPACING_SHIFT;
 
         if (bits&3) == (CSS_LETTER_SPACING_SET as u8) { 
-            length = Some(style.uncommon.get_ref().letter_spacing);
-            unit = Some(unsafe { transmute((bits >> 2)as int) }) ;
+            *length = style.uncommon.get_ref().letter_spacing;
+            *unit = unsafe { transmute((bits >> 2)as int) };
         }
 
-        ((bits&3),length,unit)
+        return (bits&3)
+        
     }
-
+    return (CSS_LETTER_SPACING_NORMAL as u8)
 }
 
 pub fn css_computed_outline_color(
-                    style: &~css_computed_style) 
-                    -> (u8,Option<u32>) {
+                    style: &~css_computed_style , color : &mut u32) 
+                    -> u8 {
 
-    let mut color : Option<u32> = None;
-
-    if style.uncommon.is_none() {
-        (CSS_OUTLINE_COLOR_INVERT as u8,color)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_OUTLINE_COLOR_INDEX];
         bits = bits & (CSS_OUTLINE_COLOR_MASK as u8) ;
         bits = bits >> CSS_OUTLINE_COLOR_SHIFT ;
 
         if (bits&3) == (CSS_OUTLINE_COLOR_COLOR as u8) { 
-            color = Some(style.uncommon.get_ref().outline_color) ;
+            *color = style.uncommon.get_ref().outline_color;
         }
 
-        ((bits&3),color)
+        return (bits&3)
+        
     }
+    return (CSS_OUTLINE_COLOR_INVERT as u8)
 }
 
 
@@ -80,23 +71,11 @@ pub fn css_computed_outline_width(
 }
 
 pub fn css_computed_border_spacing(
-                    style : &~css_computed_style) 
-                    -> rect_result {
-
-    let mut result = 
-        rect_result{
-            hlength:0,
-            vlength:0,
-            hunit:CSS_UNIT_PX,
-            vunit:CSS_UNIT_PX,
-            result:CSS_BORDER_SPACING_SET as u8
-    };
-
-    if style.uncommon.is_none() {
-        result
-    }
-    else {
-        let mut bits = style.uncommon.get_ref().bits[CSS_BORDER_SPACING_INDEX];
+                    style : &~css_computed_style, hlength: &mut i32 , hunit: &mut css_unit , vlength: &mut i32 , vunit: &mut css_unit)
+                    -> u8 {
+    let mut bits: u8 = 0;
+    if style.uncommon.is_some() {
+        bits = style.uncommon.get_ref().bits[CSS_BORDER_SPACING_INDEX];
         bits = bits & (CSS_BORDER_SPACING_MASK as u8);
         bits = bits >> CSS_BORDER_SPACING_SHIFT ;
 
@@ -105,100 +84,89 @@ pub fn css_computed_border_spacing(
             bits1 = bits1 & (CSS_BORDER_SPACING_MASK1 as u8);
             bits1 = bits1 >> CSS_BORDER_SPACING_SHIFT1 ;
 
-            result.hlength = style.uncommon.get_ref().border_spacing[0];
-            result.hunit = unsafe { transmute((bits1 >> 4)as int) } ;
+            *hlength = style.uncommon.get_ref().border_spacing[0];
+            *hunit = unsafe { transmute((bits1 >> 4)as int) } ;
 
-            result.vlength = style.uncommon.get_ref().border_spacing[1];
-            result.vunit = unsafe { transmute((bits1 & 0xf)as int) } ;
+            *vlength = style.uncommon.get_ref().border_spacing[1];
+            *vunit = unsafe { transmute((bits1 & 0xf)as int) } ;
         }
-
-        result.result = bits ;
-        result
+        *hlength = 0;
+        *vlength = 0;
+        *hunit = CSS_UNIT_PX;
+        *vunit = CSS_UNIT_PX;
     }
+    bits
 }
 
 pub fn css_computed_word_spacing(
-                    style : &~css_computed_style)
-                    -> (u8,Option<i32>,Option<css_unit>) {
+                    style : &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
+                    -> u8 {
 
-    let mut length :Option<i32> = None;
-    let mut unit : Option<css_unit>  = None;
-
-    if style.uncommon.is_none() {
-        (CSS_WORD_SPACING_NORMAL as u8,length,unit)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_WORD_SPACING_INDEX];
         bits = bits & (CSS_WORD_SPACING_MASK as u8);
         bits = bits >> CSS_WORD_SPACING_SHIFT;
 
         if (bits&3) == (CSS_WORD_SPACING_SET as u8) { 
-            length = Some(style.uncommon.get_ref().word_spacing);
-            unit = Some(unsafe { transmute((bits >> 2)as int) }) ;
+            *length = style.uncommon.get_ref().word_spacing;
+            *unit = unsafe { transmute((bits >> 2)as int) };
         }
 
-        ((bits&3),length,unit)
+        return (bits&3);
+        
     }
+    return (CSS_WORD_SPACING_NORMAL as u8);
 }
 
 pub fn css_computed_counter_increment(
-                        style : &~css_computed_style)
-                        -> (u8,~[~css_computed_counter]) {
+                        style : &~css_computed_style , counter : &mut ~[~css_computed_counter])
+                        -> u8 {
 
-    let mut counter : ~[~css_computed_counter] = ~[];
-    
-    if style.uncommon.is_none() {
-        (CSS_COUNTER_INCREMENT_NONE as u8,counter)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_COUNTER_INCREMENT_INDEX];
         bits = bits & (CSS_COUNTER_INCREMENT_MASK as u8);
         bits = bits >> CSS_COUNTER_INCREMENT_SHIFT;
 
-        counter = style.uncommon.get_ref().counter_increment.clone();
+        *counter = style.uncommon.get_ref().counter_increment.clone();
 
-        (bits,counter)
+        return bits ;
+        
     }
+    return CSS_COUNTER_INCREMENT_NONE as u8 ;
 }
 
 pub fn css_computed_counter_reset(
-                        style : &~css_computed_style)
-                        -> (u8,~[~css_computed_counter]) {
+                        style : &~css_computed_style , counter: &mut ~[~css_computed_counter])
+                        -> u8 {
 
-    let mut counter : ~[~css_computed_counter] = ~[];
-   
-    if style.uncommon.is_none() {
-        (CSS_COUNTER_RESET_NONE as u8,counter)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_COUNTER_RESET_INDEX];
         bits = bits & (CSS_COUNTER_RESET_MASK as u8);
         bits = bits >> CSS_COUNTER_RESET_SHIFT;
 
-        counter = style.uncommon.get_ref().counter_reset.clone();
+        *counter = style.uncommon.get_ref().counter_reset.clone();
 
-        (bits,counter)
+        return bits;
+        
     }
+    return CSS_COUNTER_RESET_NONE as u8 ;
 }
 
 pub fn css_computed_cursor(
-                style : &~css_computed_style)
-                -> (u8,Option<~[uint]>) {
+                style : &~css_computed_style , urls: &mut ~[uint])
+                -> u8 {
 
-    let mut urls :Option<~[uint]> = None;
-
-    if style.uncommon.is_none() {
-        (CSS_CURSOR_AUTO as u8,urls)
-    }
-    else {
+    if style.uncommon.is_some() {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_CURSOR_INDEX];
         bits = bits & (CSS_CURSOR_MASK as u8);
         bits = bits >> CSS_CURSOR_SHIFT;
 
-        urls = Some(style.uncommon.get_ref().cursor.clone());
+        *urls = style.uncommon.get_ref().cursor.clone();
 
-        (bits,urls)
+        return bits;
+        
     }
+    return CSS_CURSOR_AUTO as u8;
 }
 
 pub fn css_computed_clip(
@@ -263,58 +231,52 @@ pub fn css_computed_clip(
 }
 
 pub fn css_computed_content(
-                style : &~css_computed_style)
-                -> (u8,~[~css_computed_content_item]) {
+                style : &~css_computed_style , result : &mut ~[~css_computed_content_item])
+                -> u8 {
 
     if style.uncommon.is_none() {
-        (CSS_CONTENT_NORMAL as u8,~[])
+        (CSS_CONTENT_NORMAL as u8)
     }
     else {
         let mut bits:u8= style.uncommon.get_ref().bits[CSS_CONTENT_INDEX];
         bits = bits & (CSS_CONTENT_MASK as u8);
         bits = bits >> CSS_CONTENT_SHIFT;
-
-        (bits,style.uncommon.get_ref().content.clone())
+        *result = style.uncommon.get_ref().content.clone();
+        bits
     }
 }
 
 pub fn css_computed_vertical_align(
-                    style : &~css_computed_style) 
-                        ->(u8,Option<i32>,Option<css_unit>) {
+                    style : &~css_computed_style , length: &mut i32 , unit: &mut css_unit) 
+                        ->u8 {
 
-    let mut length : Option<i32> = None;
-    let mut unit : Option<css_unit> = None;
     let mut bits = style.bits[CSS_VERTICAL_ALIGN_INDEX];
-    println(fmt!("css_computed_vertical_align :: bits == %? " , bits));
+    // println(fmt!("css_computed_vertical_align :: bits == %? " , bits));
     bits = bits & (CSS_VERTICAL_ALIGN_MASK as u8);
     bits = bits >> CSS_VERTICAL_ALIGN_SHIFT;
-    println(fmt!("css_computed_vertical_align :: bits after mask and shift == %? " , bits));
+    // println(fmt!("css_computed_vertical_align :: bits after mask and shift == %? " , bits));
 
     if ((bits&0xf)==(CSS_VERTICAL_ALIGN_SET as u8)) {
-        length = Some(style.vertical_align);
-        unit = Some(unsafe { transmute((bits >> 4) as int)});
-        return ((bits&0xf),length,unit);
+        *length = style.vertical_align;
+        *unit = unsafe { transmute((bits >> 4) as int)};
     }
-    println(fmt!("css_computed_vertical_align  return values :: bits == %?  , length == %?  , unit == %? " , bits&0xf , length , unit));
-    ((bits&0xf),length,unit)
+    // println(fmt!("css_computed_vertical_align  return values :: bits == %?  , length == %?  , unit == %? " , bits&0xf , length , unit));
+    return (bits&0xf)
 }
 
 pub fn css_computed_font_size(
-                            style : &~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+                            style : &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
+                            -> u8 {
 
-    let mut length : Option<i32> = None;
-    let mut unit : Option<css_unit> = None;
     let mut bits = style.bits[CSS_FONT_SIZE_INDEX];
     bits = bits & (CSS_FONT_SIZE_MASK as u8);
     bits = bits >> CSS_FONT_SIZE_SHIFT;
 
     if ((bits&0xf)==(CSS_FONT_SIZE_DIMENSION as u8)) {
-        length = Some(style.font_size);
-        unit = Some(unsafe { transmute((bits >> 4) as int)});
-        return ((bits&0xf),length,unit);
+        *length = style.font_size;
+        *unit = unsafe { transmute((bits >> 4) as int)};
     }
-    ((bits&0xf),length,unit)
+    return (bits&0xf);
 }
 
 pub fn css_computed_border_top_width(style : &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
@@ -381,56 +343,54 @@ pub fn css_computed_border_left_width(
     return (bits & 0x7)
 }
 
-pub fn css_computed_background_image(
-                                    style:&~css_computed_style)
-                                    -> (u8,Option<uint>) {
 
-    //let mut url : &mut uint ;
+pub fn css_computed_background_image(
+                                    style:&~css_computed_style , url: &mut uint)
+                                    -> u8 {
+
     let mut bits = style.bits[CSS_BACKGROUND_IMAGE_INDEX];
     bits = bits & (CSS_BACKGROUND_IMAGE_MASK as u8);
     bits = bits >> CSS_BACKGROUND_IMAGE_SHIFT;
 
-    //url = style.background_image;
+    *url = style.background_image.unwrap();
 
-    (bits,style.background_image)
+    return bits;
 }
 
 pub fn css_computed_color(
-                        style : &~css_computed_style)
-                        ->(u8,Option<u32>) {
+                        style : &~css_computed_style , color: &mut u32)
+                        ->u8 {
 
     let mut bits = style.bits[CSS_COLOR_INDEX];
     bits = bits & (CSS_COLOR_MASK as u8);
     bits = bits >> CSS_COLOR_SHIFT ;
-
-    (bits,Some(style.color))
+    *color = style.color;
+    return bits;
 }
 
 pub fn css_computed_list_style_image(
-                                    style : &~css_computed_style)
-                                    ->(u8,Option<uint>) {
+                                    style : &~css_computed_style , url : &mut uint)
+                                    ->u8 {
 
-    //let mut url : &mut uint ;
     let mut bits = style.bits[CSS_LIST_STYLE_IMAGE_INDEX];
     bits = bits & (CSS_LIST_STYLE_IMAGE_MASK as u8);
     bits = bits >> CSS_LIST_STYLE_IMAGE_SHIFT;
 
-    //url = style.list_style_image;
+    *url = style.list_style_image.unwrap();
 
-    (bits,style.list_style_image)
+    bits
 }
 
 pub fn css_computed_quotes(
-                        style:&~css_computed_style)
-                        -> (u8,~[uint]) {
-
-    //let mut result : ~[&mut uint] ;
+                        style:&~css_computed_style , names: &mut ~[uint])
+                        -> u8 {
+    
     let mut bits = style.bits[CSS_QUOTES_INDEX];
     bits = bits & (CSS_QUOTES_MASK as u8);
     bits = bits >> CSS_QUOTES_SHIFT;
+    *names = style.quotes.clone();
 
-    //result = style.quotes;
-    (bits,style.quotes.clone())
+    bits
 }
 
 pub fn css_computed_top(style : &~css_computed_style, length: &mut i32 , unit: &mut css_unit)
@@ -593,44 +553,44 @@ pub fn css_computed_left(
     (bits&0x3)
 }
 
-pub fn css_computed_border_top_color(style: &~css_computed_style)
-                                    -> (u8,u32) {
+pub fn css_computed_border_top_color(style: &~css_computed_style , color: &mut u32)
+                                    -> u8 {
 
     let mut bits : u8 = style.bits[CSS_BORDER_TOP_COLOR_INDEX];
     bits = bits & (CSS_BORDER_TOP_COLOR_MASK as u8);
     bits = bits >> CSS_BORDER_TOP_COLOR_SHIFT; 
-
-    (bits,style.border_color[0]) 
+    *color = style.border_color[0];
+    return bits;
 }
 
-pub fn css_computed_border_right_color(style: &~css_computed_style)
-                                    -> (u8,u32) {
+pub fn css_computed_border_right_color(style: &~css_computed_style, color: &mut u32)
+                                    -> u8 {
 
     let mut bits : u8 = style.bits[CSS_BORDER_RIGHT_COLOR_INDEX];
     bits = bits & (CSS_BORDER_RIGHT_COLOR_MASK as u8);
     bits = bits >> CSS_BORDER_RIGHT_COLOR_SHIFT; 
-
-    (bits,style.border_color[1]) 
+    *color = style.border_color[1];
+    return bits;
 }
 
-pub fn css_computed_border_bottom_color(style: &~css_computed_style)
-                                    -> (u8,u32) {
+pub fn css_computed_border_bottom_color(style: &~css_computed_style, color: &mut u32)
+                                    -> u8 {
 
     let mut bits : u8 = style.bits[CSS_BORDER_BOTTOM_COLOR_INDEX];
     bits = bits & (CSS_BORDER_BOTTOM_COLOR_MASK as u8);
     bits = bits >> CSS_BORDER_BOTTOM_COLOR_SHIFT; 
-
-    (bits,style.border_color[2]) 
+    *color = style.border_color[2];
+    return bits; 
 }
 
-pub fn css_computed_border_left_color(style: &~css_computed_style)
-                                    -> (u8,u32) {
+pub fn css_computed_border_left_color(style: &~css_computed_style, color: &mut u32)
+                                    -> u8 {
 
     let mut bits : u8 = style.bits[CSS_BORDER_LEFT_COLOR_INDEX];
     bits = bits & (CSS_BORDER_LEFT_COLOR_MASK as u8);
     bits = bits >> CSS_BORDER_LEFT_COLOR_SHIFT; 
-
-    (bits,style.border_color[3]) 
+    *color = style.border_color[3];
+    return bits; 
 }
 
 pub fn css_computed_height(style: &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
@@ -648,45 +608,43 @@ pub fn css_computed_height(style: &~css_computed_style , length: &mut i32 , unit
     (bits&0x3)
 }
 
-pub fn css_computed_line_height(style: &~css_computed_style)
-                        -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_line_height(style: &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
+                        -> u8 {
 
     let mut bits : u8 = style.bits[CSS_LINE_HEIGHT_INDEX];
     bits = bits & (CSS_LINE_HEIGHT_MASK as u8);
     bits = bits >> CSS_LINE_HEIGHT_SHIFT;  
-    let mut length : Option<i32> = None;
-    let mut unit : Option<css_unit> = None;
 
     if ( (bits&0x3) == (CSS_LINE_HEIGHT_NUMBER as u8) || 
          (bits&0x3) == (CSS_LINE_HEIGHT_DIMENSION as u8)) {
-        length = Some(style.line_height);
+        *length = style.line_height;
     }
 
     if ( (bits&0x3) == (CSS_LINE_HEIGHT_DIMENSION as u8) ) {
-        unit = Some(unsafe { transmute((bits >> 2) as int)});
+        *unit = unsafe { transmute((bits >> 2) as int)};
     }
 
-    ((bits&0x3),length,unit)
+    return (bits&0x3);
 }
 
-pub fn css_computed_background_color(style: &~css_computed_style)
-                                    -> (u8,Option<u32>) {
+pub fn css_computed_background_color(style: &~css_computed_style , color: &mut u32)
+                                    -> u8 {
 
     let mut bits : u8 = style.bits[CSS_BACKGROUND_COLOR_INDEX];
     bits = bits & (CSS_BACKGROUND_COLOR_MASK as u8);
     bits = bits >> CSS_BACKGROUND_COLOR_SHIFT; 
-
-    (bits,Some(style.background_color))
+    *color = style.background_color;
+    return bits;
 }
 
-pub fn css_computed_z_index(style: &~css_computed_style)
-                            -> (u8,i32) {
+pub fn css_computed_z_index(style: &~css_computed_style , length: &mut i32)
+                            -> u8 {
 
     let mut bits : u8 = style.bits[CSS_Z_INDEX_INDEX];
     bits = bits & (CSS_Z_INDEX_MASK as u8);
     bits = bits >> CSS_Z_INDEX_SHIFT; 
-
-    (bits,style.z_index) 
+    *length = style.z_index;
+    bits
 }
 
 pub fn css_computed_margin_top(style: &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
@@ -789,38 +747,34 @@ pub fn css_computed_direction(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_max_height(style: &~css_computed_style)
-                        -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_max_height(style: &~css_computed_style , length: &mut i32 , unit: &mut css_unit)
+                        -> u8{
 
     let mut bits : u8 = style.bits[CSS_MAX_HEIGHT_INDEX];
     bits = bits & (CSS_MAX_HEIGHT_MASK as u8);
     bits = bits >> CSS_MAX_HEIGHT_SHIFT;  
-    let mut length : Option<i32> = None;
-    let mut unit : Option<css_unit> = None;
 
     if ( (bits&0x3) == (CSS_MAX_HEIGHT_SET as u8) ) {
-        length = Some(style.max_height);
-        unit = Some(unsafe { transmute((bits >> 2) as int)});
+        *length = style.max_height;
+        *unit = unsafe { transmute((bits >> 2) as int)};
     }
 
-    ((bits&0x3),length,unit)
+    return (bits&0x3);
 }
 
-pub fn css_computed_max_width(style: &~css_computed_style)
-                        -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_max_width(style: &~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                        -> u8{
 
     let mut bits : u8 = style.bits[CSS_MAX_WIDTH_INDEX];
     bits = bits & (CSS_MAX_WIDTH_MASK as u8);
     bits = bits >> CSS_MAX_WIDTH_SHIFT;  
-    let mut length : Option<i32> = None;
-    let mut unit : Option<css_unit> = None;
 
     if ( (bits&0x3) == (CSS_MAX_WIDTH_SET as u8) ) {
-        length = Some(style.max_width);
-        unit = Some(unsafe { transmute((bits >> 2) as int)});
+        *length = style.max_width;
+        *unit = unsafe { transmute((bits >> 2) as int)};
     }
 
-    ((bits&0x3),length,unit)
+    return (bits&0x3);
 }
 
 pub fn css_computed_width(style: &~css_computed_style, length: &mut i32 , unit: &mut css_unit)
@@ -873,38 +827,34 @@ pub fn css_computed_font_style(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_min_height(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_min_height(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8 {
 
     let mut bits : u8 = style.bits[CSS_MIN_HEIGHT_INDEX];
     bits = bits & (CSS_MIN_HEIGHT_MASK as u8);
     bits = bits >> CSS_MIN_HEIGHT_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_MIN_HEIGHT_SET as u8) ) {
-        length = Some(style.min_height);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.min_height;
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    (bits&0x1)
 }
 
-pub fn css_computed_min_width(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_min_width(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_MIN_WIDTH_INDEX];
     bits = bits & (CSS_MIN_WIDTH_MASK as u8);
     bits = bits >> CSS_MIN_WIDTH_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_MIN_WIDTH_SET as u8) ) {
-        length = Some(style.min_width);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.min_width;
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
 pub fn css_computed_background_repeat(style:&~css_computed_style)
@@ -927,72 +877,64 @@ pub fn css_computed_clear(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_padding_top(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_padding_top(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_PADDING_TOP_INDEX];
     bits = bits & (CSS_PADDING_TOP_MASK as u8);
     bits = bits >> CSS_PADDING_TOP_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_PADDING_SET as u8) ) {
-        length = Some(style.padding[0]);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.padding[0];
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
-pub fn css_computed_padding_right(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_padding_right(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_PADDING_RIGHT_INDEX];
     bits = bits & (CSS_PADDING_RIGHT_MASK as u8);
     bits = bits >> CSS_PADDING_RIGHT_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_PADDING_SET as u8) ) {
-        length = Some(style.padding[1]);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.padding[1];
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
-pub fn css_computed_padding_bottom(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_padding_bottom(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_PADDING_BOTTOM_INDEX];
     bits = bits & (CSS_PADDING_BOTTOM_MASK as u8);
     bits = bits >> CSS_PADDING_BOTTOM_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_PADDING_SET as u8) ) {
-        length = Some(style.padding[2]);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.padding[2];
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
-pub fn css_computed_padding_left(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_padding_left(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_PADDING_LEFT_INDEX];
     bits = bits & (CSS_PADDING_LEFT_MASK as u8);
     bits = bits >> CSS_PADDING_LEFT_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_PADDING_SET as u8) ) {
-        length = Some(style.padding[3]);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.padding[3];
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
 pub fn css_computed_overflow(style:&~css_computed_style)
@@ -1015,19 +957,18 @@ pub fn css_computed_position(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_opacity(style:&~css_computed_style)
-                            -> (u8,Option<i32>) {
+pub fn css_computed_opacity(style:&~css_computed_style , opacity: &mut i32)
+                            -> u8 {
 
     let mut bits : u8 = style.bits[CSS_OPACITY_INDEX];
     bits = bits & (CSS_OPACITY_MASK as u8);
     bits = bits >> CSS_OPACITY_SHIFT;  
-    let mut opacity : Option<i32> = None ;
 
     if ( (bits&0x1) == (CSS_OPACITY_SET as u8) ) {
-        opacity = Some(style.opacity);
+        *opacity = style.opacity;
     }
 
-    ((bits&0x1),opacity)
+    (bits&0x1)
 }
 
 pub fn css_computed_text_transform(style:&~css_computed_style)
@@ -1040,21 +981,19 @@ pub fn css_computed_text_transform(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_text_indent(style:&~css_computed_style)
-                            -> (u8,Option<i32>,Option<css_unit>) {
+pub fn css_computed_text_indent(style:&~css_computed_style, length: &mut i32 , unit: &mut css_unit)
+                            -> u8{
 
     let mut bits : u8 = style.bits[CSS_TEXT_INDENT_INDEX];
     bits = bits & (CSS_TEXT_INDENT_MASK as u8);
     bits = bits >> CSS_TEXT_INDENT_SHIFT;  
-    let mut length : Option<i32> = None ;
-    let mut unit : Option<css_unit> = None ;
 
     if ( (bits&0x1) == (CSS_TEXT_INDENT_SET as u8) ) {
-        length = Some(style.text_indent);
-        unit = Some(unsafe { transmute((bits >> 1) as int)});
+        *length = style.text_indent;
+        *unit = unsafe { transmute((bits >> 1) as int)};
     }
 
-    ((bits&0x1),length,unit)
+    return (bits&0x1);
 }
 
 pub fn css_computed_white_space(style:&~css_computed_style)
@@ -1068,17 +1007,8 @@ pub fn css_computed_white_space(style:&~css_computed_style)
 }
 
 pub fn css_computed_background_position(
-                    style : &~css_computed_style) 
-                    -> rect_result {
-
-    let mut result = 
-            rect_result{
-                hlength:0,
-                vlength:0,
-                hunit:CSS_UNIT_PX,
-                vunit:CSS_UNIT_PX,
-                result:0
-            };
+                    style : &~css_computed_style , hlength: &mut i32 , hunit: &mut css_unit , vlength: &mut i32 , vunit: &mut css_unit) 
+                    -> u8 {
 
     let mut bits = style.bits[CSS_BACKGROUND_POSITION_INDEX];
     bits = bits & (CSS_BACKGROUND_POSITION_MASK as u8);
@@ -1090,15 +1020,14 @@ pub fn css_computed_background_position(
         bits1 = bits1 & (CSS_BACKGROUND_POSITION_MASK1 as u8);
         bits1 = bits1 >> CSS_BACKGROUND_POSITION_SHIFT1 ;
 
-        result.hlength = style.background_position[0];
-        result.hunit = unsafe { transmute((bits1 >> 4)as int) } ;
+        *hlength = style.background_position[0];
+        *hunit = unsafe { transmute((bits1 >> 4)as int) } ;
 
-        result.vlength = style.background_position[1];
-        result.vunit = unsafe { transmute((bits1 & 0xf)as int) } ;
+        *vlength = style.background_position[1];
+        *vunit = unsafe { transmute((bits1 & 0xf)as int) } ;
         
-        result.result = bits ; 
     }
-    result
+    bits
 }
 
 pub fn css_computed_display(style: &~css_computed_style,
@@ -1183,16 +1112,18 @@ pub fn css_computed_text_decoration(style:&~css_computed_style)
     bits
 }
 
-pub fn css_computed_font_family(style:&~css_computed_style)
-                                        -> (u8,~[uint]) {
+
+pub fn css_computed_font_family(style:&~css_computed_style , names: &mut ~[uint])
+                                        -> u8 {
 
     let mut bits : u8 = style.bits[CSS_FONT_FAMILY_INDEX];
-    // println(fmt!("css_computed_font_family  :: bits == %? " , bits));
+    // println(fmt!("css_computed_font_family :: bits == %? " , bits));
     bits = bits & (CSS_FONT_FAMILY_MASK as u8);
-    // println(fmt!("css_computed_font_family  :: bits after mask == %? " , bits));
-    bits = bits >> CSS_FONT_FAMILY_SHIFT;   
-    // println(fmt!("css_computed_font_family  :: bits after mask and shift == %? " , bits));
-    (bits,style.font_family.clone())
+    // println(fmt!("css_computed_font_family :: bits after mask == %? " , bits));
+    bits = bits >> CSS_FONT_FAMILY_SHIFT;
+    // println(fmt!("css_computed_font_family :: bits after mask and shift == %? " , bits));
+    *names = style.font_family.clone();
+    bits
 }
 
 pub fn css_computed_border_top_style(style:&~css_computed_style)
