@@ -3,7 +3,7 @@ use srid_css::utils::errors::*;
 use srid_css::stylesheet::*;
 use std::libc::*;
 use srid_css::libwapcaplet::wapcaplet::*;
-// use dump_computed::*;
+use dump_computed::*;
 
 
 
@@ -488,7 +488,7 @@ pub mod select {
     use srid_css::select::common::*;
     use srid_css::libwapcaplet::wapcaplet::*;
     use srid_css::select::common::*;
-    // use dump_computed::*;
+    use dump_computed::*;
 
     pub enum CssPseudoElement {
     CssPseudoElementNone         = 0,
@@ -552,18 +552,18 @@ pub mod select {
                 if results.is_none() {
                     fail!("Result in None")
                 }
-                // let mut result_string : ~str = ~"" ;
-                // let mut result_unwrap = results.unwrap();
-                // unsafe {
-                // dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
-                // }
-                // println(fmt!("\n=================================================================="));
-                // println(fmt!("\n== Result is ::====%s====",result_string));
-                // println(fmt!("\n=================================================================="));
+        	let mut result_string : ~str = ~"" ;
+                let mut result_unwrap = results.unwrap();
+                unsafe {
+                dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
+                }
+                println(fmt!("\n=================================================================="));
+                println(fmt!("\n== Result is ::====%s====",result_string));
+                println(fmt!("\n=================================================================="));
 
 
                 CssSelectResults {
-                    results: results.unwrap()
+                    results: result_unwrap
                 }
 
             }
