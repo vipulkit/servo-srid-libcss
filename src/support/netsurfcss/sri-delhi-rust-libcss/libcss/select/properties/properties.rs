@@ -750,13 +750,13 @@ pub fn css__compose_background_image(parent:&~css_computed_style,
 									) -> css_error {
 
     //debug!("Entering: css_compose_background_image");
-    let mut url = unsafe{lwc_ref.get_mut_ref().lwc_intern_string("")};
+    let mut url = Some(unsafe{lwc_ref.get_mut_ref().lwc_intern_string("")});
 	let mut ftype = css_computed_background_image(child , &mut url);
 
 	if (ftype == (CSS_BACKGROUND_IMAGE_INHERIT as u8) ) {
 		ftype = css_computed_background_image(parent , &mut url);
 	}
-	set_background_image(result, ftype, Some(url));
+	set_background_image(result, ftype, url);
 	CSS_OK
 }
 
@@ -3667,13 +3667,13 @@ pub fn css__compose_list_style_image(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-	let mut url = unsafe{lwc_ref.get_mut_ref().lwc_intern_string("")};
+	let mut url = Some(unsafe{lwc_ref.get_mut_ref().lwc_intern_string("")});
 	let mut ftype = css_computed_list_style_image(child , &mut url);
 
 	if (ftype == (CSS_LIST_STYLE_IMAGE_INHERIT as u8) ) {
 		ftype = css_computed_list_style_image(parent , &mut url);
 	}
-	set_list_style_image(result, ftype, Some(url));
+	set_list_style_image(result, ftype, url);
 	CSS_OK
 }
 
