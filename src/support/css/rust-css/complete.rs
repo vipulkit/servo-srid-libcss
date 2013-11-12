@@ -29,7 +29,7 @@ pub struct CompleteSelectResults {
 // style is overwritten
 pub fn compose(parent: &CssComputedStyle, child: &mut CssComputedStyle,
                     result: &mut CssComputedStyle) {
-    println(fmt!("complete.rs :: compose"));
+    // println(fmt!("complete.rs :: compose"));
     // let llparent = parent.computed_style;
     // let llchild = child.computed_style;
     // let llresult = result.computed_style;
@@ -45,7 +45,7 @@ fn compute_font_size_cb(parent: Option<&~css_hint>, size: Option<&mut ~css_hint>
     //let hlcbptr: *ComputeFontSizeCb = unsafe { transmute(pw) };
     let cb: ComputeFontSizeCb =
         |parent: Option<&~css_hint>, child: &mut ~css_hint| -> ~css_hint {
-            println(fmt!("complete.rs :: ComputeFontSizeCb in compute_font_size_cb"));
+            // println(fmt!("complete.rs :: ComputeFontSizeCb in compute_font_size_cb"));
         if child.length.is_some() {
             // Handle relative units
             match child.length.get_ref().unit {
@@ -149,7 +149,7 @@ fn compute_font_size_cb(parent: Option<&~css_hint>, size: Option<&mut ~css_hint>
 
 impl<'self> CompleteSelectResults {
     pub fn new_root(root: SelectResults) -> CompleteSelectResults {
-        println(fmt!("complete.rs :: new_root"));
+        //println(fmt!("complete.rs :: new_root"));
         CompleteSelectResults {
             inner: root
         }
@@ -158,7 +158,7 @@ impl<'self> CompleteSelectResults {
     pub fn new_from_parent(parent: &CompleteSelectResults,
                            child: SelectResults) -> CompleteSelectResults {
         // New lifetime
-        println(fmt!("complete.rs :: new_from_parent"));
+        //println(fmt!("complete.rs :: new_from_parent"));
         {
             let parent_computed = parent.computed_style();
             let child_computed = child.computed_style();
@@ -178,7 +178,7 @@ impl<'self> CompleteSelectResults {
     }
 
     pub fn computed_style(&'self self) -> CompleteStyle<'self> {
-        println(fmt!("complete.rs :: computed_style"));
+        //println(fmt!("complete.rs :: computed_style"));
         CompleteStyle {
             inner: self.inner.computed_style()
         }
@@ -194,7 +194,7 @@ impl<'self> CompleteStyle<'self> {
     // CSS 2.1, Section 8 - Box model
 
     pub fn margin_top(&self) -> CSSMargin {
-        println(fmt!("complete.rs :: margin_top"));
+        //println(fmt!("complete.rs :: margin_top"));
         strip(self.inner.margin_top())
     }
 

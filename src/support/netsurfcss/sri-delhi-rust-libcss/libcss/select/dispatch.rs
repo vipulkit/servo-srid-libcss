@@ -1302,12 +1302,12 @@ pub fn css_computed_style_compose(parent: &~css_computed_style,
                                 compute_font_size_ptr: css_fnptr_compute_font_size , 
                                 result: &mut ~css_computed_style
                                 ) -> css_error {
-    println("css_computed_style_compose");
+    //println("css_computed_style_compose");
 
     let mut error: css_error;
     let mut i : uint = 0;
     while i < (CSS_N_PROPERTIES as uint) {
-        println(fmt!("css_computed_style_compose in loop:: i == %?" , i));
+        //println(fmt!("css_computed_style_compose in loop:: i == %?" , i));
         /* Skip any in extension blocks if the block does not exist */
         match prop_dispatch[i].group {
             GROUP_UNCOMMON => {
@@ -1375,7 +1375,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                                     style: &mut ~css_computed_style,
                                     compute_font_size_ptr:css_fnptr_compute_font_size) 
                                     -> css_error {
-    println("css__compute_absolute_values");
+    //println("css__compute_absolute_values");
     let mut psize = ~css_hint{
         hint_type:HINT_LENGTH,
         status:0,
@@ -1477,7 +1477,6 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
 
     match size.hint_type {
         HINT_LENGTH=>{
-            // println(fmt!("css__compute_absolute_values :: size.length.get_ref().value :: %?" , size.length));
             if size.length.is_none() {
                 set_font_size(style,size.status,0,CSS_UNIT_PX);
             }

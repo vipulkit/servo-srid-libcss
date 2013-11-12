@@ -69,6 +69,7 @@ pub fn css_computed_outline_width(
             *unit = unsafe { transmute((bits >> 3)as int) };
         }
         return (bits &7)
+
     }
     
     *length = css_int_to_fixed(2);
@@ -305,17 +306,14 @@ pub fn css_computed_font_size(
     let mut length : Option<i32> = None;
     let mut unit : Option<css_unit> = None;
     let mut bits = style.bits[CSS_FONT_SIZE_INDEX];
-    // println(fmt!("css_computed_font_size :: bits == %? " , bits));
     bits = bits & (CSS_FONT_SIZE_MASK as u8);
     bits = bits >> CSS_FONT_SIZE_SHIFT;
-    // println(fmt!("css_computed_font_size :: bits after mask and shift == %? " , bits));
 
     if ((bits&0xf)==(CSS_FONT_SIZE_DIMENSION as u8)) {
         length = Some(style.font_size);
         unit = Some(unsafe { transmute((bits >> 4) as int)});
         return ((bits&0xf),length,unit);
     }
-    // println(fmt!("css_computed_font_size :: bits == %? length  == %?  unit == %? " , bits&0xf , length , unit));
     ((bits&0xf),length,unit)
 }
 
