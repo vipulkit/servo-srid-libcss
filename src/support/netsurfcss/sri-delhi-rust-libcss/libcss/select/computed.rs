@@ -345,14 +345,14 @@ pub fn css_computed_border_left_width(
 
 
 pub fn css_computed_background_image(
-                                    style:&~css_computed_style , url: &mut uint)
+                                    style:&~css_computed_style , url: &mut Option<uint>)
                                     -> u8 {
 
     let mut bits = style.bits[CSS_BACKGROUND_IMAGE_INDEX];
     bits = bits & (CSS_BACKGROUND_IMAGE_MASK as u8);
     bits = bits >> CSS_BACKGROUND_IMAGE_SHIFT;
 
-    *url = style.background_image.unwrap();
+    *url = style.background_image;
 
     return bits;
 }
@@ -369,14 +369,14 @@ pub fn css_computed_color(
 }
 
 pub fn css_computed_list_style_image(
-                                    style : &~css_computed_style , url : &mut uint)
+                                    style : &~css_computed_style , url : &mut Option<uint>)
                                     ->u8 {
 
     let mut bits = style.bits[CSS_LIST_STYLE_IMAGE_INDEX];
     bits = bits & (CSS_LIST_STYLE_IMAGE_MASK as u8);
     bits = bits >> CSS_LIST_STYLE_IMAGE_SHIFT;
 
-    *url = style.list_style_image.unwrap();
+    *url = style.list_style_image;
 
     bits
 }
