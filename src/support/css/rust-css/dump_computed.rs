@@ -131,6 +131,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
       debug!(fmt!("\n Entering dump_computed_style ")) ;
     let ptr = buf;
     let mut val:u8;
+    let mut url : uint = 0 ;
     let mut len1: Option<i32> = Some(0);
     let mut len2: Option<i32> = Some(0);
     let mut unit1: Option<css_unit> = Some(CSS_UNIT_PX);
@@ -164,14 +165,14 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* background-image */
-    let mut url : uint = 0 ;
-    let val = css_computed_background_image(style,&mut url);
+    let mut ourl : Option<uint> = Some(0) ;
+    let val = css_computed_background_image(style,&mut ourl);
         if (val == CSS_BACKGROUND_IMAGE_INHERIT as u8) {
             ptr.push_str("background-image: inherit\n");
     }
     else if (val == CSS_BACKGROUND_IMAGE_IMAGE as u8 ) {
         ptr.push_str(fmt!("background-image: url('%s')\n",
-                lwc_ref.lwc_string_data(url)));
+                lwc_ref.lwc_string_data(ourl.expect(reason))));
     }
     else if (val == CSS_BACKGROUND_IMAGE_NONE as u8) {
         ptr.push_str("background-image: none\n");
@@ -1099,13 +1100,13 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
     }
 
     /* list-style-image */
-    let val = css_computed_list_style_image(style,&mut url);
+    let val = css_computed_list_style_image(style,&mut ourl);
         
     if (val == CSS_LIST_STYLE_IMAGE_INHERIT as u8) {
         ptr.push_str("list-style-image: inherit\n");
     }
     else if (lwc_ref.lwc_string_data(url) != ~"") {
-        ptr.push_str(fmt!("list-style-image => url('%s')\n",lwc_ref.lwc_string_data(url)));
+        ptr.push_str(fmt!("list-style-image => url('%s')\n",lwc_ref.lwc_string_data(ourl.expect(reason))));
     }
     else if (val == CSS_LIST_STYLE_IMAGE_URI_OR_NONE as u8) {
         ptr.push_str("list-style-image: none\n");
