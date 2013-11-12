@@ -117,7 +117,7 @@ pub struct css_selector {
     data:~[~css_selector_detail]        /* *< Selector data */
 }
 
-
+#[deriving(DeepClone)]
 pub struct css_style {
     bytecode:~[u32],
     used:uint,                
