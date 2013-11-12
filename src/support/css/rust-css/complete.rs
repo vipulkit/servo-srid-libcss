@@ -18,7 +18,7 @@ use srid_css::include::properties::*;
 use helpers::computed::CssComputedStyle;
 
 
-pub type ComputeFontSizeCb = @fn(mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint) -> ~css_hint;
+pub type ComputeFontSizeCb = @fn(parent: Option<& ~css_hint>, child: &mut ~css_hint) -> ~css_hint;
 
 pub struct CompleteSelectResults {
     inner: SelectResults
@@ -27,24 +27,24 @@ pub struct CompleteSelectResults {
 // Merge parent and child styles into another style. The result
 // pointer may point to the child style, in which case the child
 // style is overwritten
-pub fn compose(parent: &CssComputedStyle, child: &CssComputedStyle,
+pub fn compose(parent: &CssComputedStyle, child: &mut CssComputedStyle,
                     result: &mut CssComputedStyle) {
     println(fmt!("complete.rs :: compose"));
-    let llparent = parent.computed_style;
-    let llchild = child.computed_style;
-    let llresult = result.computed_style;
-    let err = css_computed_style_compose(unsafe{transmute(llparent)}, unsafe{transmute(llchild)}, compute_font_size_cb, unsafe{transmute(llresult)});
+    // let llparent = parent.computed_style;
+    // let llchild = child.computed_style;
+    // let llresult = result.computed_style;
+    let err = css_computed_style_compose(unsafe{transmute(parent.computed_style)}, unsafe{transmute(child.computed_style)}, compute_font_size_cb, unsafe{transmute(result.computed_style)});
     println(fmt!("compose :: err == %?" , err));
     if err as uint != CSS_OK as uint {
         fail!(~"stylesheet composition failed")
     }
 }
 
-fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
+fn compute_font_size_cb(parent: Option<&~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
     println(fmt!("complete.rs :: compute_font_size_cb"));
     //let hlcbptr: *ComputeFontSizeCb = unsafe { transmute(pw) };
     let cb: ComputeFontSizeCb =
-        |mut parent: Option<&mut ~css_hint>, child: &mut ~css_hint| -> ~css_hint {
+        |parent: Option<&~css_hint>, child: &mut ~css_hint| -> ~css_hint {
             println(fmt!("complete.rs :: ComputeFontSizeCb in compute_font_size_cb"));
         if child.length.is_some() {
             // Handle relative units
@@ -52,8 +52,8 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
                 CSS_UNIT_EM | CSS_UNIT_PCT=> {
                     if parent.is_some() {
                         let mut new_value: float = 16.0;
-                        if parent.get_mut_ref().length.is_some() {
-                            new_value = css_fixed_to_float(parent.get_mut_ref().length.get_ref().value);
+                        if parent.get_ref().length.is_some() {
+                            new_value = css_fixed_to_float(parent.get_ref().length.get_ref().value);
                             if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {
                                 new_value *= css_fixed_to_float(child.length.get_ref().value);    
                             }
@@ -68,7 +68,7 @@ fn compute_font_size_cb(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_h
                             clip: None,
                             content: None,
                             counters: None,
-                            length:Some(~css_hint_length { value:new_value as i32, unit:parent.get_mut_ref().length.get_mut_ref().unit}),
+                            length:Some(~css_hint_length { value:new_value as i32, unit:parent.get_ref().length.get_ref().unit}),
                             position: None,
                             color: 0,
                             fixed: 0,
@@ -199,113 +199,140 @@ impl<'self> CompleteStyle<'self> {
     }
 
     pub fn margin_right(&self) -> CSSMargin {
+        println(fmt!("complete.rs :: margin_right"));
         strip(self.inner.margin_right())
     }
 
     pub fn margin_bottom(&self) -> CSSMargin {
+        println(fmt!("complete.rs :: margin_bottom"));
         strip(self.inner.margin_bottom())
     }
 
     pub fn margin_left(&self) -> CSSMargin {
+        println(fmt!("complete.rs :: margin_left"));
         strip(self.inner.margin_left())
     }
 
     pub fn padding_top(&self) -> CSSPadding {
+        println(fmt!("complete.rs :: padding_top"));
         strip(self.inner.padding_top())
     }
 
     pub fn padding_right(&self) -> CSSPadding {
+        println(fmt!("complete.rs :: padding_right"));
         strip(self.inner.padding_right())
     }
 
     pub fn padding_bottom(&self) -> CSSPadding {
+        println(fmt!("complete.rs :: margin_top"));
         strip(self.inner.padding_bottom())
     }
 
     pub fn padding_left(&self) -> CSSPadding {
+        println(fmt!("complete.rs :: padding_left"));
         strip(self.inner.padding_left())
     }
 
     pub fn border_top_style(&self) -> CSSBorderStyle {
+        println(fmt!("complete.rs :: border_top_style"));
         strip(self.inner.border_top_style())
     }
 
     pub fn border_right_style(&self) -> CSSBorderStyle {
+        println(fmt!("complete.rs :: border_right_style"));
         strip(self.inner.border_right_style())
     }
     pub fn border_bottom_style(&self) -> CSSBorderStyle {
+        println(fmt!("complete.rs :: border_bottom_style"));
         strip(self.inner.border_bottom_style())
     }
 
     pub fn border_left_style(&self) -> CSSBorderStyle {
+        println(fmt!("complete.rs :: border_left_style"));
         strip(self.inner.border_left_style())
     }
 
     pub fn border_top_width(&self) -> CSSBorderWidth {
+        println(fmt!("complete.rs :: border_top_width"));
         strip(self.inner.border_top_width())
     }
 
     pub fn border_right_width(&self) -> CSSBorderWidth {
+        println(fmt!("complete.rs :: border_right_width"));
         strip(self.inner.border_right_width())
     }
 
     pub fn border_bottom_width(&self) -> CSSBorderWidth {
+        println(fmt!("complete.rs :: border_bottom_width"));
         strip(self.inner.border_bottom_width())
     }
 
     pub fn border_left_width(&self) -> CSSBorderWidth {
+        println(fmt!("complete.rs :: border_left_width"));
         strip(self.inner.border_left_width())
     }
 
     pub fn border_top_color(&self) -> Color {
+        println(fmt!("complete.rs :: border_top_color"));
         strip(self.inner.border_top_color())
     }
 
     pub fn border_right_color(&self) -> Color {
+        println(fmt!("complete.rs :: border_right_color"));
         strip(self.inner.border_right_color())
     }
 
     pub fn border_bottom_color(&self) -> Color {
+        println(fmt!("complete.rs :: border_bottom_color"));
         strip(self.inner.border_bottom_color())
     }
 
     pub fn border_left_color(&self) -> Color {
+        println(fmt!("complete.rs :: border_left_color"));
         strip(self.inner.border_left_color())
     }
 
     // CSS 2.1, Section 9 - Visual formatting model
 
     pub fn display(&self, root: bool) -> CSSDisplay {
+        println(fmt!("complete.rs :: display"));
         strip(self.inner.display(root))
     }
 
     pub fn position(&self) -> CSSPosition {
+        println(fmt!("complete.rs :: position"));
         strip(self.inner.position())
     }
 
     pub fn float(&self) -> CSSFloat {
+        println(fmt!("complete.rs :: float"));
         strip(self.inner.float())
     }
 
     pub fn clear(&self) -> CSSClear {
+        println(fmt!("complete.rs :: clear"));
         strip(self.inner.clear())
     }
 
     // CSS 2.1, Section 10 - Visual formatting model details
 
     pub fn width(&self) -> CSSWidth {
+        println(fmt!("complete.rs :: width"));
         strip(self.inner.width())
     }
 
     pub fn height(&self) -> CSSHeight {
+        println(fmt!("complete.rs :: height"));
         strip(self.inner.height())
     }
 
     pub fn line_height(&self) -> CSSLineHeight {
+        println(fmt!("complete.rs :: line_height"));
         strip(self.inner.line_height())
     }
 
     pub fn vertical_align(&self) -> CSSVerticalAlign {
+        println(fmt!("complete.rs :: vertical_align"));
         strip(self.inner.vertical_align())
     }
 
@@ -318,38 +345,46 @@ impl<'self> CompleteStyle<'self> {
     // CSS 2.1, Section 14 - Colors and Backgrounds
 
     pub fn background_color(&self) -> Color {
+        println(fmt!("complete.rs :: background_color"));
         strip(self.inner.background_color())
     }
 
     pub fn color(&self) -> Color {
+        println(fmt!("complete.rs :: color"));
         strip(self.inner.color())
     }
 
     // CSS 2.1, Section 15 - Fonts
 
     pub fn font_family(&self) -> ~[CSSFontFamily] {
+        println(fmt!("complete.rs :: font_family"));
         strip(self.inner.font_family())
     }
 
     pub fn font_style(&self) -> CSSFontStyle {
+        println(fmt!("complete.rs :: font_style"));
         strip(self.inner.font_style())
     }
 
     pub fn font_weight(&self) -> CSSFontWeight {
+        println(fmt!("complete.rs :: font_weight"));
         strip(self.inner.font_weight())
     }
 
     pub fn font_size(&self) -> CSSFontSize {
+        println(fmt!("complete.rs :: font_size"));
         strip(self.inner.font_size())
     }
 
     pub fn text_decoration(&self) -> CSSTextDecoration{
+        println(fmt!("complete.rs :: text_decoration"));
         strip(self.inner.text_decoration())
     }
 
     // CSS 2.1, Section 16 - Text
 
     pub fn text_align(&self) -> CSSTextAlign {
+        println(fmt!("complete.rs :: text_align"));
         strip(self.inner.text_align())
     }
 

@@ -1066,7 +1066,7 @@ impl dispatch_table {
 
 // function pointer : used in "css__compute_absolute_values" function 
 ///////////////////////////////////////////////////////////////////////
-pub type css_fnptr_compute_font_size =  ~fn(parent:Option<&mut ~css_hint>,
+pub type css_fnptr_compute_font_size =  ~fn(parent:Option<&~css_hint>,
                                                 size:Option<&mut ~css_hint> ) 
                                                     -> css_error ;
 
@@ -1100,7 +1100,7 @@ pub type  compute_absolute_length_none_set =
             unit:css_unit) ;
 
 pub type  compute_absolute_length_auto_get =  
-    ~fn(style:& ~css_computed_style) -> (u8,Option<i32>,Option<css_unit>);
+    ~fn(style:& ~css_computed_style , &mut i32 , &mut css_unit) -> u8;
 
 pub type  compute_absolute_length_auto_set =
     ~fn(style:&mut ~css_computed_style,
@@ -1118,7 +1118,7 @@ pub type  compute_absolute_length_set =
             unit:css_unit) ;
 
 pub type  compute_absolute_border_side_width_get =  
-    ~fn(style:& ~css_computed_style) -> (u8,Option<i32>,Option<css_unit>);
+    ~fn(style:& ~css_computed_style , &mut i32 , &mut css_unit) -> u8;
 
 pub type  compute_absolute_border_side_width_set =
     ~fn(style:&mut ~css_computed_style,
@@ -1463,7 +1463,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     size.length = Some(length)  ;
     match parent {
         Some(_) => {
-            error = (compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
+            error = (compute_font_size_ptr)(Some(&psize),Some(&mut size));
         }
         None => {
             error = (compute_font_size_ptr)(None,Some(&mut size));        
@@ -1477,7 +1477,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
 
     match size.hint_type {
         HINT_LENGTH=>{
-            println(fmt!("css__compute_absolute_values :: size.length.get_ref().value :: %?" , size.length));
+            // println(fmt!("css__compute_absolute_values :: size.length.get_ref().value :: %?" , size.length));
             if size.length.is_none() {
                 set_font_size(style,size.status,0,CSS_UNIT_PX);
             }
@@ -1485,7 +1485,10 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                 set_font_size(style,size.status,size.length.get_ref().value,size.length.get_ref().unit);
             }
         },
-        _=> return CSS_BADPARM
+        _=> {
+            fail!("css__compute_absolute_values :: hint_type != HINT_LENGTH");
+            // return CSS_BADPARM
+        }
     }
 
     ex_size.status = CSS_FONT_SIZE_DIMENSION as u8;
@@ -1494,7 +1497,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         unit:CSS_UNIT_EX 
     };
     ex_size.length = Some(length);
-    error = (compute_font_size_ptr)(Some(&mut size),Some(&mut ex_size));
+    error = (compute_font_size_ptr)(Some(&size),Some(&mut ex_size));
     match error {
         CSS_OK=>{},
         _=> return error
@@ -1509,7 +1512,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                 ex_size.length.get_mut_ref().value = 0 ;
             }
             else {
-                ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_mut_ref().value,length.value);    
+                ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_ref().value,length.value);    
             }
         }
     }
@@ -1519,7 +1522,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     // in case it is none , all operations below go invalid.
 
     if ex_size.length.is_none() {
-        return CSS_BADPARM ;
+        fail!("css__compute_absolute_values ex_size.length is none") ;
     }
 
     ex_size.length.get_mut_ref().unit = CSS_UNIT_EM ;
@@ -1877,9 +1880,9 @@ pub fn  compute_absolute_border_side_width(style: &mut ~css_computed_style,
                                     setfn : compute_absolute_border_side_width_set
                                     ) -> css_error {
 
-    let (result,olength,ounit) =  (getfn)(style);
-    let mut length = olength.unwrap_or_default(0);
-    let mut unit = ounit.unwrap_or_default(CSS_UNIT_PX);
+    let mut length: i32 = 0;
+    let mut unit: css_unit  = CSS_UNIT_PX;
+    let result =  (getfn)(style , &mut length , &mut unit);
 
     if (result == (CSS_BORDER_WIDTH_THIN as u8) ) {
         length = css_int_to_fixed(1);
@@ -1902,6 +1905,7 @@ pub fn  compute_absolute_border_side_width(style: &mut ~css_computed_style,
 
     (setfn)(style, (CSS_BORDER_WIDTH_WIDTH as u8), length, unit);
     CSS_OK
+
 }
 
 /**
@@ -2271,9 +2275,9 @@ pub fn compute_absolute_length_auto(style: &mut ~css_computed_style,
                                     setfn : compute_absolute_length_auto_set
                                     ) -> css_error {
 
-    let (result,olength,ounit) =  (getfn)(style);
-    let mut length = olength.unwrap_or_default(0);
-    let mut unit = ounit.unwrap_or_default(CSS_UNIT_PX);
+    let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+    let result =  (getfn)(style , &mut length , &mut unit);
 
     if (result != (CSS_BOTTOM_AUTO as u8) ) {
         match unit {

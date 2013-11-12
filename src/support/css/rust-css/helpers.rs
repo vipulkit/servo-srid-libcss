@@ -236,13 +236,13 @@ pub mod hint {
 
     impl CssHint {
 
-        pub fn new(property: CssProperty, mut hint: Option<&mut ~css_hint>) -> CssHint {
+        pub fn new(property: CssProperty, hint: Option<&~css_hint>) -> CssHint {
             println(fmt!("new hint == %?" , hint));
             let status = hint.get_ref().status as u32;
             match property {
                 CssPropFontSize => {
                     if status == CSS_FONT_SIZE_DIMENSION as u32 {
-                        let length: &mut ~css_hint_length = hint.get_mut_ref().length.get_mut_ref();
+                        let length: &~css_hint_length = hint.get_ref().length.get_ref();
                         CssHintLength(ll_unit_to_hl_unit( length.unit,  length.value))
                     } else {
                         CssHintUnknown
@@ -484,7 +484,9 @@ pub mod select {
     use helpers::{/*ToLl,*/ write_ll_qname, ll_qname_to_hl_qname, /*require_ok,*/ VoidPtrLike};
     use helpers::properties::CssProperty;
     use helpers::hint::CssHint;
+    use srid_css::select::common::*;
     use srid_css::libwapcaplet::wapcaplet::*;
+    // use dump_computed::*;
 
     pub enum CssPseudoElement {
     CssPseudoElementNone         = 0,
@@ -549,6 +551,15 @@ pub mod select {
                 if results.is_none() {
                     fail!("Result in None")
                 }
+                // let mut result_string : ~str = ~"" ;
+                // let mut result_unwrap = results.unwrap();
+                // unsafe {
+                // dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
+                // }
+                // println(fmt!("\n=================================================================="));
+                // println(fmt!("\n== Result is ::====%s====",result_string));
+                // println(fmt!("\n=================================================================="));
+
 
                 CssSelectResults {
                     results: results.unwrap()
@@ -779,7 +790,7 @@ pub mod select {
             enter("ua_default_for_property");
             (ph(pw).ua_default_for_property)(property, hint)
         }
-        pub fn compute_font_size(/*_pw: *c_void ,*/ parent: Option<&mut ~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
+        pub fn compute_font_size(/*_pw: *c_void ,*/ parent: Option<&~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
             enter("compute_font_size");
             // FIXME: This should be merged with the one in rust-css, I think. --pcwalton
             let parent_hint;
@@ -939,13 +950,13 @@ pub mod select {
 
     impl<'self> CssSelectResults {
         pub fn computed_style(&'self self, element: CssPseudoElement) -> super::computed::CssComputedStyle<'self> {
-            println(fmt!("helpers.rs :: computed_style"));
+            // println(fmt!("helpers.rs :: computed_style"));
             //let element = element.to_ll();
             //let llstyle = unsafe { *self.results }.styles[element];
             
             // FIXME: Rust #3926
             //assert!((llstyle as *c_void).is_not_null());
-            println(fmt!("helpers.rs :: computed_style :: unsafe{transmute(self.computed_style)} == %?" , self.results.styles[element as uint].get_ref()));
+            println(fmt!("helpers.rs :: computed_style :: unsafe{transmute(self.computed_style)} == %?" , self.results.styles[element as uint]));
             super::computed::CssComputedStyle {
                 result_backref: self,
                 computed_style: unsafe{transmute(self.results.styles[element as uint].get_ref())}
@@ -1200,7 +1211,7 @@ pub mod values {
     impl CssFontFamilyValue {
         pub fn new(type_: u8, names: ~[uint]) -> CssFontFamilyValue {
             if names.len() != 0{
-                println("LEN IS THERE");
+                // println("LEN IS THERE");
                 CssFontFamilyValue(names)
             } else if type_ == CSS_FONT_FAMILY_INHERIT as u8 {
                 CssFontFamilyInherit
@@ -1236,7 +1247,7 @@ pub mod values {
 
     impl CssFontSizeValue {
         pub fn new(type_: u8, length: css_fixed, unit: css_unit) -> CssFontSizeValue {
-            println(fmt!("CssFontSizeValue :: new :: type_ == %? " , type_));
+            // println(fmt!("CssFontSizeValue :: new :: type_ == %? " , type_));
             match type_ {
                 x if x == CSS_FONT_SIZE_INHERIT  as u8=> CssFontSizeInherit,
                 x if x == CSS_FONT_SIZE_XX_SMALL  as u8=> CssFontSizeXXSmall,
@@ -1465,47 +1476,47 @@ pub mod computed {
         pub fn border_top_width(&self) -> CssBorderWidthValue {
             println(fmt!("helpers.rs :: border_top_width"));
 
-            // let mut length = 0;
+            let mut length = 0;
             
-            // let mut unit = 0;
-            let (type_  , length , unit)= css_computed_border_top_width(unsafe{transmute(self.computed_style)});
+            let mut unit = CSS_UNIT_PX;
+            let type_= css_computed_border_top_width(unsafe{transmute(self.computed_style)} , &mut length , &mut unit);
             // let type_ = type_ as css_border_width_e;
 
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssBorderWidthValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn border_right_width(&self) -> CssBorderWidthValue {
             println(fmt!("helpers.rs :: border_right_width"));
 
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_right_width(unsafe{transmute(self.computed_style)});
+            let mut length = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_  = css_computed_border_right_width(unsafe{transmute(self.computed_style)} , &mut length , &mut unit);
             // let type_ = type_ as css_border_width_e;
 
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssBorderWidthValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn border_bottom_width(&self) -> CssBorderWidthValue {
             println(fmt!("helpers.rs :: border_bottom_width"));
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_bottom_width(unsafe{transmute(self.computed_style)});
+            let mut length = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_  = css_computed_border_bottom_width(unsafe{transmute(self.computed_style)} , &mut length , &mut unit);
             // let type_ = type_ as css_border_width_e;
 
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssBorderWidthValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn border_left_width(&self) -> CssBorderWidthValue {
             println(fmt!("helpers.rs :: border_left_width"));
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_border_left_width(unsafe{transmute(self.computed_style)});
+            let mut length = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_  = css_computed_border_left_width(unsafe{transmute(self.computed_style)} , &mut length , &mut unit);
             // let type_ = type_ as css_border_width_e;
 
-            CssBorderWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssBorderWidthValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
@@ -1546,38 +1557,44 @@ pub mod computed {
         #[fixed_stack_segment]
         pub fn margin_top(&self) -> CssMarginValue {
             println(fmt!("helpers.rs :: margin_top"));
-            // let mut length = 0;
-            // let mut unit = 0;
-            let (type_ , length , unit) = css_computed_margin_top(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_ = css_computed_margin_top(unsafe{transmute(self.computed_style)} , &mut length , &mut unit);
             // let type_ = type_ as css_margin_e;
 
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssMarginValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn margin_right(&self) -> CssMarginValue {
             println(fmt!("helpers.rs :: margin_right"));
-            let (type_, length, unit) = css_computed_margin_right(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_ = css_computed_margin_right(unsafe{transmute(self.computed_style)}, &mut length , &mut unit);
             //let type_ = type_ as css_margin_e;
 
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssMarginValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn margin_bottom(&self) -> CssMarginValue {
             println(fmt!("helpers.rs :: margin_bottom"));
-            let (type_, length, unit) = css_computed_margin_bottom(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_ = css_computed_margin_bottom(unsafe{transmute(self.computed_style)}, &mut length , &mut unit);
             //let type_ = type_ as css_margin_e;
 
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssMarginValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn margin_left(&self) -> CssMarginValue {
             println(fmt!("helpers.rs :: margin_left"));
-            let (type_, length, unit) = css_computed_margin_left(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit = CSS_UNIT_PX;
+            let type_ = css_computed_margin_left(unsafe{transmute(self.computed_style)}, &mut length , &mut unit);
             
-            CssMarginValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssMarginValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
@@ -1616,7 +1633,8 @@ pub mod computed {
         pub fn display(&self, root: bool) -> CssDisplayValue {
             println(fmt!("helpers.rs :: display"));
             let type_ = css_computed_display(unsafe{transmute(self.computed_style)}, root);
-
+            println(fmt!("helpers.rs :: display :: type_ == %? " , type_));
+            println(fmt!("helpers.rs :: display :: return type_ == %? " , CssDisplayValue::new(type_)));
             CssDisplayValue::new(type_)
         }
 
@@ -1631,17 +1649,21 @@ pub mod computed {
         #[fixed_stack_segment]
         pub fn width(&self) -> CssWidthValue {
             println(fmt!("helpers.rs :: width"));
-            let (type_, length, unit) = css_computed_width(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit: css_unit = CSS_UNIT_PX;
+            let type_ = css_computed_width(unsafe{transmute(self.computed_style)}, &mut length , &mut unit);
 
-            CssWidthValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssWidthValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
         pub fn height(&self) -> CssHeightValue {
             println(fmt!("helpers.rs :: height"));
-            let (type_, length, unit) = css_computed_height(unsafe{transmute(self.computed_style)});
+            let mut length: i32 = 0;
+            let mut unit: css_unit = CSS_UNIT_PX;
+            let type_ = css_computed_height(unsafe{transmute(self.computed_style)}, &mut length , &mut unit);
 
-            CssHeightValue::new(type_, length.unwrap_or_default(0), unit.unwrap_or_default(CSS_UNIT_PX))
+            CssHeightValue::new(type_, length, unit)
         }
 
         #[fixed_stack_segment]
@@ -1663,7 +1685,7 @@ pub mod computed {
         #[fixed_stack_segment]
         pub fn font_family(&self) -> CssFontFamilyValue {
             println(fmt!("helpers.rs :: font_family"));
-            println(fmt!("font_family :: computed_style == %? " , (self.computed_style)));
+            // println(fmt!("font_family :: computed_style == %? " , (self.computed_style)));
             // let mut names: ~[uint] = ~[];
             let (type_, names) = css_computed_font_family(unsafe{transmute(self.computed_style)});
             // let type_ = type_ as css_font_family_e;

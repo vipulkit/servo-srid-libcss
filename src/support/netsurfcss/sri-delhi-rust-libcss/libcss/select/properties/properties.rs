@@ -1349,23 +1349,17 @@ pub fn css__compose_border_bottom_width(parent:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
-	let (ftype,olength,ounit) = css_computed_border_bottom_width(child);
+	let mut length: i32 = 0;
+	let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_border_bottom_width(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_BORDER_WIDTH_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_border_bottom_width(parent);
-		set_border_bottom_width(result, 
-								ftype2, 
-								olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-								ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_border_bottom_width(parent , &mut length , &mut unit);
 	}
-	else {
-		set_border_bottom_width(result, ftype, 
-							olength.unwrap_or_default(0), 
-							ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_border_bottom_width(result, ftype, length , unit);
+	CSS_OK
 }
+
 
 ///////////////////////////////////////////////////////////////////
 
@@ -1569,22 +1563,15 @@ pub fn css__compose_border_left_width(parent:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
-	let (ftype,olength,ounit) = css_computed_border_left_width(child);
+	let mut length: i32 = 0;
+	let mut unit : css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_border_left_width(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_BORDER_WIDTH_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_border_left_width(parent);
-		set_border_left_width(result, 
-							ftype2, 
-							olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-							ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_border_left_width(parent , &mut length , &mut unit);
 	}
-	else {
-		set_border_left_width(result, ftype, 
-			olength.unwrap_or_default(0), 
-			ounit.unwrap_or_default(CSS_UNIT_PX) );
-		CSS_OK
-	}
+	set_border_left_width(result, ftype , length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -1722,22 +1709,15 @@ pub fn css__compose_border_right_width(parent:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
-	let (ftype,olength,ounit) = css_computed_border_right_width(child);
+	let mut length: i32 = 0;
+	let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_border_right_width(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_BORDER_WIDTH_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_border_right_width(parent);
-		set_border_right_width(result, 
-							ftype2, 
-							olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-							ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_border_right_width(parent , &mut length , &mut unit);
 	}
-	else {
-		set_border_right_width(result, ftype, 
-			olength.unwrap_or_default(0), 
-			ounit.unwrap_or_default(CSS_UNIT_PX) );
-		CSS_OK
-	}
+	set_border_right_width(result, ftype,length , unit );
+	CSS_OK
 }	
 
 ///////////////////////////////////////////////////////////////////
@@ -1971,22 +1951,16 @@ pub fn css__compose_border_top_width(parent:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
-	let (ftype,olength,ounit) = css_computed_border_top_width(child);
+	let mut length: i32 = 0;
+	let mut unit : css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_border_top_width(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_BORDER_WIDTH_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_border_top_width(parent);
-		set_border_top_width(result, 
-							ftype2, 
-							olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-							ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_border_top_width(parent , &mut length , &mut unit);
 	}
-	else {
-		set_border_top_width(result, ftype, 
-			olength.unwrap_or_default(0), 
-			ounit.unwrap_or_default(CSS_UNIT_PX) );
-		CSS_OK
-	}
+
+	set_border_top_width(result, ftype, length, unit);
+	CSS_OK
 }	
 
 ///////////////////////////////////////////////////////////////////
@@ -2030,22 +2004,15 @@ pub fn css__compose_bottom(parent:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
 
-	let (ftype,olength,ounit) = css_computed_bottom(child);
+	let mut length: i32 = 0;
+	let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_bottom(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_BOTTOM_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_bottom(parent);
-		set_bottom(result, 
-				ftype2, 
-				olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-				ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_bottom(parent , &mut length , &mut unit);
 	}
-	else {
-		set_bottom(result, ftype, 
-			olength.unwrap_or_default(0), 
-			ounit.unwrap_or_default(CSS_UNIT_PX) );
-		CSS_OK
-	}
+	set_bottom(result, ftype, length , unit);
+	CSS_OK
 }	
 
 ///////////////////////////////////////////////////////////////////
@@ -3208,7 +3175,7 @@ pub fn css__compose_font_size(parent:&~css_computed_style,
 
 	let (ftype,olength,ounit) = css_computed_font_size(child);
 
-	println(fmt!("css__compose_font_size :: olength == %? " , olength));
+	// println(fmt!("css__compose_font_size :: olength == %? " , olength));
 
 	if (ftype == (CSS_FONT_SIZE_INHERIT as u8) ) {
 		let (ftype2,olength2,ounit2) = css_computed_font_size(parent);
@@ -3482,24 +3449,16 @@ pub fn css__compose_height(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_height(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_height(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_HEIGHT_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_height(parent);
-		set_height(result, 
-					ftype2, 
-					olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-					ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_height(parent , &mut length , &mut unit);
 	}
-	else {
-		set_height(result, 
-					ftype, 
-					olength.unwrap_or_default(0), 
-					ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_height(result, 
+				ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -3543,24 +3502,16 @@ pub fn css__compose_left(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_left(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_left(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_LEFT_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_left(parent);
-		set_left(result, 
-				ftype2, 
-				olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-				ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_left(parent , &mut length , &mut unit);
 	}
-	else {
-		set_left(result, 
-				ftype, 
-				olength.unwrap_or_default(0), 
-				ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_left(result, 
+			ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -3989,24 +3940,16 @@ pub fn css__compose_margin_bottom(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_margin_bottom(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_margin_bottom(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_MARGIN_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_margin_bottom(parent);
-		set_margin_bottom(result, 
-						ftype2, 
-						olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-						ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_margin_bottom(parent , &mut length , &mut unit);
 	}
-	else {
-		set_margin_bottom(result, 
-						ftype, 
-						olength.unwrap_or_default(0), 
-						ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_margin_bottom(result, 
+					ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -4050,24 +3993,16 @@ pub fn css__compose_margin_left(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_margin_left(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_margin_left(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_MARGIN_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_margin_left(parent);
-		set_margin_left(result, 
-						ftype2, 
-						olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-						ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_margin_left(parent , &mut length , &mut unit);
 	}
-	else {
-		set_margin_left(result, 
-						ftype, 
-						olength.unwrap_or_default(0), 
-						ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_margin_left(result, 
+					ftype, length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -4111,24 +4046,16 @@ pub fn css__compose_margin_right(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_margin_right(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_margin_right(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_MARGIN_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_margin_right(parent);
-		set_margin_right(result, 
-						ftype2, 
-						olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-						ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_margin_right(parent , &mut length , &mut unit);
 	}
-	else {
-		set_margin_right(result, 
-						ftype, 
-						olength.unwrap_or_default(0), 
-						ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_margin_right(result, 
+					ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -4171,24 +4098,16 @@ pub fn css__compose_margin_top(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_margin_top(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_margin_top(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_MARGIN_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_margin_top(parent);
-		set_margin_top(result, 
-					ftype2, 
-					olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-					ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_margin_top(parent , &mut length , &mut unit);
 	}
-	else {
-		set_margin_top(result, 
-					ftype, 
-					olength.unwrap_or_default(0), 
-					ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_margin_top(result, 
+				ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -4700,8 +4619,10 @@ pub fn css__compose_outline_width(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
+	let mut length: i32 = 0;
+	let mut unit: css_unit = CSS_UNIT_PX;
 
-	let (ftype,olength,ounit) = css_computed_outline_width(child);
+	let mut ftype = css_computed_outline_width(child , &mut length , &mut unit);
 
 	if ( (child.uncommon.is_none() && parent.uncommon.is_some() ) || 
 			ftype == (CSS_OUTLINE_WIDTH_INHERIT as u8) || 
@@ -4710,21 +4631,14 @@ pub fn css__compose_outline_width(parent:&~css_computed_style,
 		if( ( child.uncommon.is_none() && parent.uncommon.is_some() ) ||
 					ftype == (CSS_OUTLINE_WIDTH_INHERIT as u8) ) {
 
-			let (ftype2,olength2,ounit2) = css_computed_outline_width(parent);
-			set_outline_width(result, 
-							ftype2, 
-							olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-							ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
+			ftype = css_computed_outline_width(parent , &mut length , &mut unit);
 		}
-		else {
 			set_outline_width(result, 
-							ftype, 
-							olength.unwrap_or_default(0), 
-							ounit.unwrap_or_default(CSS_UNIT_PX));
-		}
+							ftype, length , unit);
 	}
 	CSS_OK	
 }
+
 
 ///////////////////////////////////////////////////////////////////
 
@@ -5695,24 +5609,16 @@ pub fn css__compose_right(parent:&~css_computed_style,
 									child:&~css_computed_style,
 									result:&mut ~css_computed_style
 									) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_right(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_right(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_RIGHT_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_right(parent);
-		set_right(result, 
-				ftype2, 
-				olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-				ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_right(parent , &mut length , &mut unit);
 	}
-	else {
-		set_right(result, 
-				ftype, 
-				olength.unwrap_or_default(0), 
-				ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_right(result, 
+			ftype, length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -6383,24 +6289,16 @@ pub fn css__compose_top(parent:&~css_computed_style,
 						child:&~css_computed_style,
 						result:&mut ~css_computed_style
 						) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_top(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype = css_computed_top(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_TOP_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_top(parent);
-		set_top(result, 
-				ftype2, 
-				olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-				ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_top(parent , &mut length , &mut unit);
 	}
-	else {
-		set_top(result, 
-				ftype, 
-				olength.unwrap_or_default(0), 
-				ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_top(result, 
+			ftype,length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////
@@ -6907,23 +6805,15 @@ pub fn css__compose_width(parent:&~css_computed_style,
 							child:&~css_computed_style,
 							result:&mut ~css_computed_style
 							) -> css_error {
-
-	let (ftype,olength,ounit) = css_computed_width(child);
+	let mut length: i32 = 0;
+    let mut unit: css_unit = CSS_UNIT_PX;
+	let mut ftype= css_computed_width(child , &mut length , &mut unit);
 
 	if (ftype == (CSS_WIDTH_INHERIT as u8) ) {
-		let (ftype2,olength2,ounit2) = css_computed_width(parent);
-		set_width(result, 
-				ftype2, 
-				olength2.unwrap_or_default( olength.unwrap_or_default(0) ), 
-				ounit2.unwrap_or_default( ounit.unwrap_or_default(CSS_UNIT_PX) ));
-		CSS_OK
+		ftype = css_computed_width(parent , &mut length , &mut unit);
 	}
-	else {
-		set_width(result, ftype, 
-				olength.unwrap_or_default(0), 
-				ounit.unwrap_or_default(CSS_UNIT_PX));
-		CSS_OK
-	}
+	set_width(result, ftype , length , unit);
+	CSS_OK
 }
 
 ///////////////////////////////////////////////////////////////////

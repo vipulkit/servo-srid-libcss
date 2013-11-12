@@ -805,7 +805,7 @@ pub struct css_select_handler {
     node_presentational_hint: extern fn(node:*c_void, property:u32) -> 
         (css_error,Option<~css_hint>),
 
-    compute_font_size: extern fn(parent: Option<&mut ~css_hint>, size: Option<&mut ~css_hint>) -> css_error,
+    compute_font_size: extern fn(parent: Option<&~css_hint>, size: Option<&mut ~css_hint>) -> css_error,
    
     ua_default_for_property: extern fn(pw:*c_void,property:u32, hint:&mut ~css_hint ) -> css_error,
     handler_version:uint
