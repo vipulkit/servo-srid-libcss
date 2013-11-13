@@ -1640,8 +1640,8 @@ pub mod computed {
         pub fn display(&self, root: bool) -> CssDisplayValue {
             //println(fmt!("helpers.rs :: display"));
             let type_ = css_computed_display(unsafe{transmute(self.computed_style)}, root);
-            println(fmt!("helpers.rs :: display :: type_ == %? " , type_));
-            println(fmt!("helpers.rs :: display :: return type_ == %? " , CssDisplayValue::new(type_)));
+            // println(fmt!("helpers.rs :: display :: type_ == %? " , type_));
+            // println(fmt!("helpers.rs :: display :: return type_ == %? " , CssDisplayValue::new(type_)));
             CssDisplayValue::new(type_)
         }
 

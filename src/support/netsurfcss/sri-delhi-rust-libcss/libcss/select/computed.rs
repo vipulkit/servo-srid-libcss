@@ -1040,14 +1040,14 @@ pub fn css_computed_display(style: &~css_computed_style,
 
     let mut position: u8 ;
     let mut bits = style.bits[CSS_DISPLAY_INDEX];
-    println(fmt!("css_computed_display :: bits == %? " , bits));
-    println(fmt!("css_computed_display :: bits == %? " , style.bits[32]));
+    // println(fmt!("css_computed_display :: bits == %? " , bits));
+    // println(fmt!("css_computed_display :: bits == %? " , style.bits[32]));
     bits = bits & (CSS_DISPLAY_MASK as u8);
     bits = bits >> CSS_DISPLAY_SHIFT ;
 
-    println(fmt!("css_computed_display :: after mask and shift bits == %? " , bits));
+    // println(fmt!("css_computed_display :: after mask and shift bits == %? " , bits));
     position = css_computed_position(style);
-    println(fmt!("css_computed_display :: position == %? " , position));
+    // println(fmt!("css_computed_display :: position == %? " , position));
     if ( bits == (CSS_DISPLAY_NONE as u8) ) {
         return bits;
     }
@@ -1056,10 +1056,10 @@ pub fn css_computed_display(style: &~css_computed_style,
             (position == (CSS_POSITION_FIXED as u8))  ||
             (css_computed_float(style) != (CSS_FLOAT_NONE as u8)) ||
             (root == true) ) {
-        println("css_computed_display :: in ifposition == (CSS_POSITION_ABSOLUTE as u8 ");
+        // println("css_computed_display :: in ifposition == (CSS_POSITION_ABSOLUTE as u8 ");
 
         if ( bits == (CSS_DISPLAY_INLINE_TABLE as u8) ) {
-            println("css_computed_display :: in if   bits == (CSS_DISPLAY_INLINE_TABLE as u8");
+            // println("css_computed_display :: in if   bits == (CSS_DISPLAY_INLINE_TABLE as u8");
             return (CSS_DISPLAY_TABLE as u8);
         } 
         else if (bits == (CSS_DISPLAY_INLINE as u8) ||
@@ -1073,7 +1073,7 @@ pub fn css_computed_display(style: &~css_computed_style,
                 bits == (CSS_DISPLAY_TABLE_CELL as u8) ||
                 bits == (CSS_DISPLAY_TABLE_CAPTION as u8) ||
                 bits == (CSS_DISPLAY_INLINE_BLOCK as u8)) {
-            println("css_computed_display :: in ele if");
+            // println("css_computed_display :: in ele if");
             return (CSS_DISPLAY_BLOCK as u8);
         }
     }
@@ -1084,13 +1084,13 @@ pub fn css_computed_display(style: &~css_computed_style,
 pub fn css_computed_display_static(style:&~css_computed_style)
                                         -> u8 {
     
-    println("css_computed_display_static");
+    // println("css_computed_display_static");
     let mut bits : u8 = style.bits[CSS_DISPLAY_INDEX];
-    println(fmt!("css_computed_display_static :: bits == %? " , bits));
+    // println(fmt!("css_computed_display_static :: bits == %? " , bits));
 
     bits = bits & (CSS_DISPLAY_MASK as u8);
     bits = bits >> CSS_DISPLAY_SHIFT;   
-    println(fmt!("css_computed_display_static :: bits after mask and shift  = %? " , bits));
+    // println(fmt!("css_computed_display_static :: bits after mask and shift  = %? " , bits));
 
     bits
 }
