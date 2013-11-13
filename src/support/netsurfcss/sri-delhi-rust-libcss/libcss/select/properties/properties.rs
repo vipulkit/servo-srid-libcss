@@ -2941,10 +2941,10 @@ pub fn css__cascade_font_family(stylesheet_vector:&mut ~[css_stylesheet], opv:u3
 			if state.handler.is_none() {
 				return CSS_BADPARM ;
 			}
-			println("inside get_ref");
+			// println("inside get_ref");
 			error = (state.handler.get_ref().ua_default_for_property)(state.pw , 
 				(CSS_PROP_FONT_FAMILY as u32), &mut hint);
-			println("outside get_ref");
+			// println("outside get_ref");
 		    match error {
 		        CSS_OK=>{
 		        	value = hint.status as u16 ;
@@ -3093,7 +3093,7 @@ pub fn css__cascade_font_size(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css
 		}
 	}
 
-	println(fmt!("css__cascade_font_size :: size == %? " , size));
+	// println(fmt!("css__cascade_font_size :: size == %? " , size));
 	if (css__outranks_existing( (getOpcode(opv) as u16), isImportant(opv), state,
 			isInherit(opv))) {
 		set_font_size(state.results.styles[state.computed].get_mut_ref(), (value as u8), size, css__to_css_unit(unit) );

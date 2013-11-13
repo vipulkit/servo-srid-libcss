@@ -486,6 +486,7 @@ pub mod select {
     use helpers::properties::CssProperty;
     use helpers::hint::CssHint;
     use srid_css::select::common::*;
+    use srid_css::select::dispatch::css_computed_style_create;
     use srid_css::libwapcaplet::wapcaplet::*;
     use srid_css::select::common::*;
     use dump_computed::*;
@@ -544,22 +545,26 @@ pub mod select {
                                 inline_style,
                                 raw_handler,
                                 unsafe {transmute(to_unsafe_ptr(untyped_handler))} );
-                if error as uint != CSS_OK as uint {
-                    //println(fmt!("%?", error));
-                    fail!("Error in Select Style")
-                }
+                // if error as uint != CSS_OK as uint {
+                //      println(fmt!("%?", error));
+                //      fail!("Error in Select Style")
+                // }
 
-                if results.is_none() {
-                    fail!("Result in None")
-                }
-        	let mut result_string : ~str = ~"" ;
-                let mut result_unwrap = results.unwrap();
-                unsafe {
-                dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
-                }
-                println(fmt!("\n=================================================================="));
-                println(fmt!("\n== Result is ::====%s====",result_string));
-                println(fmt!("\n=================================================================="));
+                
+        	    // let mut result_string : ~str = ~"" ;
+                let mut result_unwrap = if results.is_none() {
+                        ~css_select_results{ 
+                                        styles:~[Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create())] 
+                        }
+                    } else {
+                        results.unwrap()
+                };    
+                // unsafe {
+                // dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
+                // }
+                // println(fmt!("\n=================================================================="));
+                // println(fmt!("\n== Result is ::====%s====",result_string));
+                // println(fmt!("\n=================================================================="));
 
 
                 CssSelectResults {
