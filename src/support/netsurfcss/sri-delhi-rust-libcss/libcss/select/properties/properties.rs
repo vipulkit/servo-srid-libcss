@@ -12,7 +12,6 @@ use utils::errors::*;
 use select::common::*;
 use select::propset::*;
 use select::computed::*;
-use std::vec::from_elem;
 use libwapcaplet::wapcaplet::*;
 //use extra::arc;
 
@@ -25,20 +24,8 @@ pub fn css__outranks_existing(op:u16,
 							important:bool, 
 							state: &mut ~css_select_state,
 							inherit:bool) -> bool {
-	if (state.props[op].is_none()) {
-        let pstate = ~prop_state{
-            specificity:0,
-            set:false,
-            origin:0,
-            important:false,
-            inherit:false    
-        };  
-        let mut prop_vec: ~[Option<~prop_state>] = from_elem(CSS_PSEUDO_ELEMENT_COUNT as uint,None);
-        prop_vec[CSS_PSEUDO_ELEMENT_NONE as uint] = Some(pstate);
-        state.props[op] = Some(prop_vec);
-    }  
-    
-	let existing = &mut state.props[op].get_mut_ref()[state.current_pseudo as uint];
+	   
+	let existing = &mut state.props[op][state.current_pseudo as uint];
 	let mut outranks : bool = false;
 
 	/* Sorting on origin & importance gives the following:
@@ -77,7 +64,7 @@ pub fn css__outranks_existing(op:u16,
 	 * is greater than or equal to that of the existing property.
 	 */
 
-	if !existing.get_ref().set {
+	if !existing.set {
 		/* Property hasn't been set before, new one wins */
 		outranks = true;
 	} 
@@ -85,36 +72,36 @@ pub fn css__outranks_existing(op:u16,
 		assert!( (CSS_ORIGIN_UA as uint) < (CSS_ORIGIN_USER as uint) );
 		assert!( (CSS_ORIGIN_USER as uint) < (CSS_ORIGIN_AUTHOR as uint) );
 
-		if (existing.get_ref().origin < (state.current_origin as u8) ) {
+		if (existing.origin < (state.current_origin as u8) ) {
 			/* New origin has more weight than existing one.
 			 * Thus, new property wins, except when the existing 
 			 * one is USER, i. */
-			if ( (existing.get_ref().important == false) ||
-					(existing.get_ref().origin != (CSS_ORIGIN_USER as u8) ) ) {
+			if ( (existing.important == false) ||
+					(existing.origin != (CSS_ORIGIN_USER as u8) ) ) {
 				outranks = true;
 			}
 		} 
-		else if (existing.get_ref().origin == (state.current_origin as u8) ) {
+		else if (existing.origin == (state.current_origin as u8) ) {
 			/* Origins are identical, consider importance, except 
 			 * for UA stylesheets, when specificity is always 
 			 * considered (as importance is meaningless) */
-			if (existing.get_ref().origin == (CSS_ORIGIN_UA as u8) ) {
+			if (existing.origin == (CSS_ORIGIN_UA as u8) ) {
 				if (state.current_specificity >=
-						existing.get_ref().specificity) {
+						existing.specificity) {
 					outranks = true;
 				}
 			} 
-			else if ((existing.get_ref().important == false) && important) {
+			else if ((existing.important == false) && important) {
 				/* New is more important than old. */
 				outranks = true;
 			} 
-			else if ( existing.get_ref().important && (important == false)) {
+			else if ( existing.important && (important == false)) {
 				/* Old is more important than new */
 			} 
 			else {
 				/* Same importance, consider specificity */
 				if (state.current_specificity >=
-						existing.get_ref().specificity) {
+						existing.specificity) {
 					outranks = true;
 				}
 			}
@@ -132,11 +119,11 @@ pub fn css__outranks_existing(op:u16,
 	if (outranks) {
 		/* The new property is about to replace the old one.
 		 * Update our state to reflect this. */
-		existing.get_mut_ref().set = true;
-		existing.get_mut_ref().specificity = state.current_specificity;
-		existing.get_mut_ref().origin = (state.current_origin as u8);
-		existing.get_mut_ref().important = important;
-		existing.get_mut_ref().inherit = inherit;
+		existing.set = true;
+		existing.specificity = state.current_specificity;
+		existing.origin = (state.current_origin as u8);
+		existing.important = important;
+		existing.inherit = inherit;
 	}
 
 	outranks
@@ -2954,9 +2941,10 @@ pub fn css__cascade_font_family(stylesheet_vector:&mut ~[css_stylesheet], opv:u3
 			if state.handler.is_none() {
 				return CSS_BADPARM ;
 			}
-
+			println("inside get_ref");
 			error = (state.handler.get_ref().ua_default_for_property)(state.pw , 
 				(CSS_PROP_FONT_FAMILY as u32), &mut hint);
+			println("outside get_ref");
 		    match error {
 		        CSS_OK=>{
 		        	value = hint.status as u16 ;

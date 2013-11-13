@@ -1245,10 +1245,21 @@ pub fn css_computed_style_initialise(style:~css_computed_style ,
         n_classes:0,             
         reject_cache: ~[],       
         next_reject:128-1,             
-        props: from_elem(CSS_N_PROPERTIES as uint, None) 
+        props: ~[~[]] 
     };
     
+    let pstate = prop_state{
+            specificity:0,
+            set:false,
+            origin:0,
+            important:false,
+            inherit:false    
+        };  
+
+    let prop_vec: ~[prop_state] = from_elem(CSS_PSEUDO_ELEMENT_COUNT as uint,pstate);
 	
+    state.props = from_elem(CSS_N_PROPERTIES as uint, prop_vec);
+    
     let mut i: uint = 0 ;
     let mut error: css_error;
 

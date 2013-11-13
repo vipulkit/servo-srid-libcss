@@ -290,10 +290,13 @@ impl css_select_ctx {
                                 handler:~css_select_handler,
 								pw:*c_void) 
                                 -> (css_error,Option<~css_select_results>) {
-
+        //println("inside stylesheet_vector_create");                                
         stylesheet_vector_create();
+        //println("outside stylesheet_vector_create");
         let stylesheet_vector = unsafe {stylesheet_vector_ref.get_mut_ref()}; 
+        //println("inside rule_data_list_create");
         rule_data_list_create();
+        //println("outside rule_data_list_create");
         let css_rule_data_list = unsafe {rule_data_list_ref.get_mut_ref()};
         //debug!(fmt!("Entering css_select_style")) ;
         if( node == null() || handler.handler_version != (CSS_SELECT_HANDLER_VERSION_1  as uint) ) {
@@ -305,6 +308,15 @@ impl css_select_ctx {
         let mut error : css_error ;
         //let mut results : Option<@mut css_select_results>  ;
         let mut parent : *c_void = null() ;
+        let pstate = prop_state{
+            specificity:0,
+            set:false,
+            origin:0,
+            important:false,
+            inherit:false    
+        };  
+
+        let prop_vec: ~[prop_state] = from_elem(CSS_PSEUDO_ELEMENT_COUNT as uint,pstate);
 
         let mut state: ~css_select_state = ~css_select_state {
             node:node,
@@ -328,14 +340,17 @@ impl css_select_ctx {
             n_classes:0,             
             reject_cache:~[],       
             next_reject:128-1,             
-            props: from_elem(CSS_N_PROPERTIES as uint, None) 
+            props: from_elem(CSS_N_PROPERTIES as uint, prop_vec) 
         };
 		
         /* Base element style is guaranteed to exist */
+        //println("inside css_computed_style_create");
         state.results.styles[0] = (Some(css_computed_style_create()));
+        //println("outside css_computed_style_create");
 
-
+        //println("inside handler of parent_node");
         error = ((state.handler.get_ref().parent_node))(state.pw , node, &mut parent);
+        //println("outside handler of parent_node");
 
         match error {
             CSS_OK=>{},
@@ -345,8 +360,9 @@ impl css_select_ctx {
         }
 
         /* Get node's name */
-
+        //println("inside handler of node_name");
         error = ((state.handler.get_ref().node_name))(state.pw , node, &mut state.element);
+        //println("outside handler of node_name");
 
         match error {
             CSS_OK=>{},
@@ -356,7 +372,9 @@ impl css_select_ctx {
         }
 
         /* Get node's ID, if any */
+        //println("inside handler of node_id");
         error = ((state.handler.get_ref().node_id))(lwc_ref, pw, node, &mut state.id);
+        //println("outside handler of node_id");
         match error {
             CSS_OK=>{},
             x =>  {
@@ -368,8 +386,10 @@ impl css_select_ctx {
         /* \todo Do we really want to force the client to allocate a new array 
          * every time we call this? It seems hugely inefficient, given they can 
          * cache the data. */
+         //println("inside handler of node_classes");
         error = ((state.handler.get_ref().node_classes))(lwc_ref, pw, node, 
                 &mut (state.classes));
+        //println("outside handler of node_classes");
         match error {
             CSS_OK=>{},
             x =>  {
@@ -390,8 +410,9 @@ impl css_select_ctx {
             if( self.sheets[i].media & media ) != 0 && 
                 stylesheet_vector[self.sheets[i].sheet].disabled == false {
                     //debug!(fmt!("css_select_style : selecting from sheet ")) ;
-                    
+                //println("inside select_from_sheet");    
 				self.select_from_sheet(stylesheet_vector, css_rule_data_list, self.sheets[i].sheet, self.sheets[i].origin, &mut state);  
+                //println("outside of select_from_sheet");
 				match error {
 					CSS_OK=>{},
 					x =>  {
@@ -429,9 +450,10 @@ impl css_select_ctx {
                                 state.current_pseudo = CSS_PSEUDO_ELEMENT_NONE;
                                 state.computed = CSS_PSEUDO_ELEMENT_NONE as uint;
 
-
+                                //println("inside cascade_style");
                                 error = css_select_ctx::cascade_style(stylesheet_vector, css_rule_data_list[r].rule_selector.get_mut_ref().style.get_mut_ref(), 
                                                         &mut state);
+                                //println("outside cascade_style");
                                 match error {
                                     CSS_OK=>{},
                                     x =>  {
@@ -457,15 +479,17 @@ impl css_select_ctx {
         i = 0 ;
         while (i<(CSS_N_PROPERTIES as int)) {
             //debug!(fmt!("css_select_style : setting initial hint of property =%?=",i)) ;
-            //let prop = state.props[i][CSS_PSEUDO_ELEMENT_NONE as uint];
+            let prop = state.props[i][CSS_PSEUDO_ELEMENT_NONE as uint];
 
             /* Apply presentational hints if the property is unset or 
              * the existing property value did not come from an author 
              * stylesheet or a user sheet using !important. */
-            if (state.props[i].is_none() || state.props[i].get_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_ref().set == false ||
-                    (state.props[i].get_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_ref().origin != (CSS_ORIGIN_AUTHOR as u8) &&
-                    state.props[i].get_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_ref().important == false)) {
+            if (prop.set == false ||
+                    (prop.origin != (CSS_ORIGIN_AUTHOR as u8) &&
+                                            prop.important == false)) {
+                //println("inside set_hint");
                 error = css_select_ctx::set_hint(&mut state, i as u32);
+                //println("ouside set_hint");
                 match error {
                     CSS_OK=>{},
                     x =>  {
@@ -477,11 +501,13 @@ impl css_select_ctx {
             /* If the property is still unset or it's set to inherit 
              * and we're the root element, then set it to its initial 
              * value. */
-            if ( state.props[i].is_none() || state.props[i].get_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_ref().set == false || 
+            if ( prop.set == false || 
                     (parent == null() && 
-                    state.props[i].get_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_ref().inherit == true)) {
+                    prop.inherit == true)) {
+                //println("inside set_initial");
                 error = css_select_ctx::set_initial(&mut state, i as uint, 
                         CSS_PSEUDO_ELEMENT_NONE, parent);
+                //println("outside set_initial");
                 match error {
                     CSS_OK=>{},
                     x =>  {
@@ -514,13 +540,15 @@ impl css_select_ctx {
             //     continue;
             i = 0 ;
             while (i < (CSS_N_PROPERTIES as int) ) {
-                //let prop = state.props[i][j];
+                let prop = state.props[i][j];
                 
                 //debug!(fmt!("css_select_style : property =%?=%?="j,i)) ;
                 /* If the property is still unset then set it 
                  * to its initial value. */
-                if (state.props[i].is_none() || state.props[i].get_ref()[j].get_ref().set == false) {
+                if (prop.set == false) {
+                    //println("inside set_initial 2");
                     error = css_select_ctx::set_initial(&mut state, i as uint, unsafe { transmute(j)}, parent);
+                    //println("outside set_initial 2");
                     match error {
                         CSS_OK=>{},
                         x =>  {
@@ -539,9 +567,11 @@ impl css_select_ctx {
          * is set to the computed value of color. */
         if (parent == null()) {
             /* Only compute absolute values for the base element */
+            //println("inside css__compute_absolute_values");
             error = css__compute_absolute_values(None,
                     state.results.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref(),
                     state.handler.get_ref().compute_font_size);
+            //println("outside css__compute_absolute_values");
             match error {
                 CSS_OK=>{},
                 x =>  {
@@ -713,26 +743,13 @@ impl css_select_ctx {
             }
         }
         
-        if (state.props[prop].is_none()) {
-            let pstate = ~prop_state{
-                specificity:0,
-                set:true,
-                origin:CSS_ORIGIN_AUTHOR as u8,
-                important:false,
-                inherit:(hint.status == 0)   
-            };  
-            let mut prop_vec: ~[Option<~prop_state>] = from_elem(CSS_PSEUDO_ELEMENT_COUNT as uint,None);
-            prop_vec[CSS_PSEUDO_ELEMENT_NONE as uint] = Some(pstate);
-            state.props[prop] = Some(prop_vec);
-        }  
-        else {
-            /* Keep selection state in sync with reality */
-            state.props[prop].get_mut_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref().set = true;
-            state.props[prop].get_mut_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref().specificity = 0;
-            state.props[prop].get_mut_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref().origin = CSS_ORIGIN_AUTHOR as u8;
-            state.props[prop].get_mut_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref().important = false;
-            state.props[prop].get_mut_ref()[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref().inherit = (hint.status == 0);
-        }
+        /* Keep selection state in sync with reality */
+        state.props[prop][CSS_PSEUDO_ELEMENT_NONE as uint].set = true;
+        state.props[prop][CSS_PSEUDO_ELEMENT_NONE as uint].specificity = 0;
+        state.props[prop][CSS_PSEUDO_ELEMENT_NONE as uint].origin = CSS_ORIGIN_AUTHOR as u8;
+        state.props[prop][CSS_PSEUDO_ELEMENT_NONE as uint].important = false;
+        state.props[prop][CSS_PSEUDO_ELEMENT_NONE as uint].inherit = (hint.status == 0);
+        
             
         return CSS_OK;
     }
@@ -830,6 +847,7 @@ impl css_select_ctx {
     pub fn select_from_sheet(&mut self, stylesheet_vector:&mut ~[css_stylesheet], css_rule_data_list:&mut ~[~css_rule_data_type], sheet : uint, origin : css_origin, state :&mut ~css_select_state) -> css_error{
 
         //debug!(fmt!("Entering select_from_sheet")) ;
+        //println("inside select_from_sheet");
         let mut s:Option<uint> = Some(sheet);
         let mut rule : Option<uint> = stylesheet_vector[s.expect("")].rule_list;
         let mut sp : u32 = 0;
@@ -839,6 +857,7 @@ impl css_select_ctx {
             /* Find first non-charset rule, if we're at the list head */
             if compare_css_rdt(rule, stylesheet_vector[s.unwrap()].rule_list) {
                 while rule.is_some() && compare_CSS_RULE_TYPEs(Some(&css_rule_data_list[rule.unwrap()]), CSS_RULE_CHARSET) {
+
                     rule = stylesheet_vector[sheet].get_css_rule_next(css_rule_data_list, rule.expect(""));
                 }
             }
@@ -904,7 +923,7 @@ impl css_select_ctx {
             }
  
         }
-
+        //println("inside select_from_sheet");
         CSS_OK
     }
 
@@ -912,6 +931,7 @@ impl css_select_ctx {
     pub fn _rule_applies_to_media(stylesheet_vector:&mut ~[css_stylesheet], css_rule_data_list:&mut ~[~css_rule_data_type], sheet:uint, rule: Option<css_rule_data_index>, media:u64) -> bool {
 
         //debug!(fmt!("Entering _rule_applies_to_media")) ;
+        // //println("inside _rule_applies_to_media");
         let mut applies : bool = true;
         let mut ancestor = rule;
 
@@ -950,6 +970,7 @@ impl css_select_ctx {
                 }
             }
         }
+        // //println("inside _rule_applies_to_media");
         applies
     }
 
@@ -1243,7 +1264,6 @@ impl css_select_ctx {
                                     state :&mut ~css_select_state) -> css_error {
     
         //debug!(fmt!("Entering match_selectors_in_sheet")) ;
-
         let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
         let mut node_selectors_hash_entry : Option<uint> = None ;
         let mut node_selectors_option : Option<uint> = None ;
@@ -1256,7 +1276,9 @@ impl css_select_ctx {
         //let mut error : css_error ;
 
         /* Find hash chain that applies to current node */
+        //println("inside css__selector_hash_find");
         let (sel,error) = stylesheet_vector[sheet].css__selector_hash_find(lwc_ref, state.element.name);
+        //println("outside css__selector_hash_find");
         match error {
             CSS_OK => {},
             err => {
@@ -1275,7 +1297,9 @@ impl css_select_ctx {
             let mut z = 0 ;
             let z_len = state.classes.len();
             while z<z_len {
+                //println("inside css__selector_hash_find_by_class");
                 let (sel_class,error) = stylesheet_vector[sheet].css__selector_hash_find_by_class(lwc_ref, state.classes[z]);
+                //println("outside css__selector_hash_find_by_class");
                 match error {
                     CSS_OK => {},
                     err => {
@@ -1295,7 +1319,9 @@ impl css_select_ctx {
 				
         if ( lwc_ref.lwc_string_length(state.id) != 0 ) {
             /* Find hash chain for node ID */
+            //println("inside css__selector_hash_find_by_id");
             let (sel_id,error) = stylesheet_vector[sheet].css__selector_hash_find_by_id(lwc_ref, state.id);
+            //println("outside css__selector_hash_find_by_id");
             match error {
                 CSS_OK => {},
                 err => {
@@ -1309,7 +1335,9 @@ impl css_select_ctx {
         }
 
         /* Find hash chain for universal selector */
+        //println("inside css__selector_hash_find_universal");
         let (sel_univ,error) = stylesheet_vector[sheet].selectors.css__selector_hash_find_universal();
+        //println("outside css__selector_hash_find_by_universal");
         match error {
             CSS_OK => {},
             err => {
@@ -1322,6 +1350,7 @@ impl css_select_ctx {
         }
 
         // /* Process matching selectors, if any */
+        // //println("inside _selectors_pending");
         while ( css_select_ctx::_selectors_pending(node_selectors_option, 
                                                     id_selectors_option, 
                                                     &class_selectors_option_list,
@@ -1333,6 +1362,7 @@ impl css_select_ctx {
              *
              * Pick the least specific/earliest occurring selector.
              */
+             //println("inside _selector_next");
             let o_selector = css_select_ctx::_selector_next(
                                     stylesheet_vector, 
                                     css_rule_data_list,
@@ -1341,7 +1371,7 @@ impl css_select_ctx {
                                     id_selectors_option,
                                     &class_selectors_option_list, 
                                     univ_selectors_option );
-
+            //println("outside _selector_next");
             if o_selector.is_none() {
                 fail!(~"Error getting selector next ") ;
             }
@@ -1350,7 +1380,9 @@ impl css_select_ctx {
              * of an @media block that doesn't match the current media 
              * requirements. */
             if (css_select_ctx::_rule_applies_to_media(stylesheet_vector, css_rule_data_list, sheet, stylesheet_vector[sheet].css_selectors_list[selector].rule, state.media)) {
+                //println("inside match_selector_chain");
                 let error = self.match_selector_chain(stylesheet_vector, css_rule_data_list, sheet, Some(selector), state);
+                //println("outside match_selector_chain");
                 match error {
                     CSS_OK => {},
                     err => {
@@ -1363,9 +1395,10 @@ impl css_select_ctx {
              * the processed selector from. */
             if ( node_selectors_option.is_some() &&
                 selector == node_selectors_option.expect("") ) {
+                //println("inside _iterate_elements");
                 let (node_next_hash,error) = 
                         stylesheet_vector[sheet]._iterate_elements(lwc_ref, node_selectors_hash_entry.expect(""));
-
+                //println("outside _iterate_elements");        
                 match error {
                     CSS_OK => {},
                     err => {
@@ -1383,8 +1416,10 @@ impl css_select_ctx {
             } 
             else if (   id_selectors_option.is_some() &&
                         selector ==  id_selectors_option.expect("") ){
+                //println("inside _iterate_ids");
                 let (id_next_hash,error) = 
                             stylesheet_vector[sheet]._iterate_ids(lwc_ref, id_selectors_hash_entry.expect(""));
+                //println("outside _iterate_ids");
 
                 match error {
                     CSS_OK => {},
@@ -1403,8 +1438,10 @@ impl css_select_ctx {
             } 
             else if (   univ_selectors_option.is_some() &&
                         selector == univ_selectors_option.expect("") ){
+                //println("inside _iterate_universal");
                 let (univ_next_hash,error) = 
                             stylesheet_vector[sheet].selectors._iterate_universal(univ_selectors_hash_entry.unwrap());
+                            //println("outside _iterate_universal");
 
                 match error {
                     CSS_OK => {},
@@ -1427,9 +1464,11 @@ impl css_select_ctx {
                 while i < n_classes  {
                     if ( class_selectors_option_list[i].is_some() &&
                          selector == class_selectors_option_list[i].expect("")) {
+                        //println("inside _iterate_classes");
                         let (class_next_hash,error) = 
                                         stylesheet_vector[sheet]._iterate_classes(
                                                     lwc_ref, class_selectors_hash_entry[i].unwrap());
+                                        //println("outside _iterate_classes");
 
                         match error {
                             CSS_OK => {},
@@ -1458,7 +1497,6 @@ impl css_select_ctx {
                 }
             }
         }
-
         CSS_OK
     }
     pub fn update_reject_cache(stylesheet_vector:&mut ~[css_stylesheet], sheet:uint, state:&mut ~css_select_state, comb:css_combinator,
@@ -1513,7 +1551,7 @@ impl css_select_ctx {
     pub fn match_named_combinator(&mut self, stylesheet_vector:&mut ~[css_stylesheet], sheet: uint, combinator_type:css_combinator,
         selector:uint, state:&mut ~css_select_state, 
         node:*c_void, next_node:*mut *c_void) -> css_error {
-
+        // //println("inside match_named_combinator");
         //debug!(fmt!("Entering match_named_combinator")) ;
         let mut n = node;
         let mut error:css_error;
@@ -1603,12 +1641,12 @@ impl css_select_ctx {
         }
 
         unsafe { *next_node = n };
-
+        // //println("outside match_named_combinator");
         return CSS_OK;
     }
     pub fn match_selector_chain(&mut self, stylesheet_vector:&mut ~[css_stylesheet], css_rule_data_list:&mut ~[~css_rule_data_type], sheet:uint, selector:Option<uint>,
                             state:&mut ~css_select_state) -> css_error {
-
+        // //println("inside match_selector_chain");
         //debug!(fmt!("Entering match_selector_chain")) ;
         let mut s = selector;
         let mut node = state.node;
@@ -1627,9 +1665,9 @@ impl css_select_ctx {
          * any selector chains containing pseudo elements anywhere 
          * else.
          */
-      
+        //println("inside match_details");
         error = self.match_details(node, (stylesheet_vector[sheet].css_selectors_list[s.unwrap()].data) , state, match_b, Some(&mut pseudo) );
-       
+       //println("outside match_details");
         match error {
             CSS_OK => {},
             err => { 
@@ -1666,9 +1704,10 @@ impl css_select_ctx {
 						_=>{ false }
 					} ;
 				
-
+                    //println("inside match_named_combinator");
 				error = self.match_named_combinator(stylesheet_vector, sheet, stylesheet_vector[sheet].css_selectors_list[s.expect("")].data[0].combinator_type, 
 					   stylesheet_vector[sheet].css_selectors_list[s.expect("")].combinator.expect(""), state, node, &mut next_node);
+                //println("outside match_named_combinator");
 				match error {
 					CSS_OK => {},
 					err => { 
@@ -1695,11 +1734,12 @@ impl css_select_ctx {
 						_=>{ false }
 					} ;
 				
-
+                    //println("inside match_universal_combinator");
 				error = self.match_universal_combinator(stylesheet_vector, sheet, stylesheet_vector[sheet].css_selectors_list[s.expect("")].data[0].combinator_type, 
 												stylesheet_vector[sheet].css_selectors_list[s.expect("")].combinator.expect(""), state, node, 
 												may_optimise, rejected_by_cache,
 												&mut next_node);
+                //println("outside match_universal_combinator");
 				match error {
 					CSS_OK => {},
 					err => { 
@@ -1774,7 +1814,7 @@ impl css_select_ctx {
         
         //debug!(fmt!("Entering match_universal_combinator")) ;
         let mut n:*c_void = node;
-        //println(fmt!("n = %?", n));
+        ////println(fmt!("n = %?", n));
 		if ( n == null()){
 			//debug!("Node Is Null");
 		}
@@ -1823,7 +1863,7 @@ impl css_select_ctx {
             match (combinator_type) {
                 CSS_COMBINATOR_ANCESTOR | 
                 CSS_COMBINATOR_PARENT => {
-					//println(fmt!("n = %?", n));
+					////println(fmt!("n = %?", n));
 
                     error = (state.handler.get_ref().parent_node)(state.pw ,n, &mut n);
 
@@ -2338,6 +2378,7 @@ impl css_select_ctx {
 
             op = getOpcode(opv) as u32;
             //debug!(fmt!("op=%?, opv=%?, op_m=%?", op, opv, op as uint));
+            //println(fmt!("cascade_style :: inside cascade function :: op == %?" , op));
             error =  (prop_dispatch[op as uint].cascade)(stylesheet_vector, opv, s, state);
 
             match error {

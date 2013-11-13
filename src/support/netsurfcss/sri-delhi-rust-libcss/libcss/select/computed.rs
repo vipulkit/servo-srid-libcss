@@ -73,7 +73,7 @@ pub fn css_computed_outline_width(
 pub fn css_computed_border_spacing(
                     style : &~css_computed_style, hlength: &mut i32 , hunit: &mut css_unit , vlength: &mut i32 , vunit: &mut css_unit)
                     -> u8 {
-    let mut bits: u8 = 0;
+    let mut bits: u8;
     if style.uncommon.is_some() {
         bits = style.uncommon.get_ref().bits[CSS_BORDER_SPACING_INDEX];
         bits = bits & (CSS_BORDER_SPACING_MASK as u8);
