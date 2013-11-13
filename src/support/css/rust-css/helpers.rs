@@ -489,6 +489,7 @@ pub mod select {
     use srid_css::select::dispatch::css_computed_style_create;
     use srid_css::libwapcaplet::wapcaplet::*;
     use srid_css::select::common::*;
+    use srid_css::select::dispatch::*;
     use dump_computed::*;
 
     pub enum CssPseudoElement {
@@ -545,6 +546,7 @@ pub mod select {
                                 inline_style,
                                 raw_handler,
                                 unsafe {transmute(to_unsafe_ptr(untyped_handler))} );
+<<<<<<< HEAD
                 // if error as uint != CSS_OK as uint {
                 //      println(fmt!("%?", error));
                 //      fail!("Error in Select Style")
@@ -554,7 +556,7 @@ pub mod select {
         	    // let mut result_string : ~str = ~"" ;
                 let mut result_unwrap = if results.is_none() {
                         ~css_select_results{ 
-                                        styles:~[Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create()),Some(css_computed_style_create())] 
+                                        styles:~[Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create())] 
                         }
                     } else {
                         results.unwrap()
