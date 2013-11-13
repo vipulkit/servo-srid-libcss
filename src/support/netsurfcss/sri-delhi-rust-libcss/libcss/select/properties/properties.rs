@@ -3590,11 +3590,13 @@ pub fn css__set_line_height_from_hint(hint:&mut ~css_hint,
 				CSS_OK
 			}
 			else {
-				CSS_BADPARM
+				set_line_height(style, hint.status, 0,CSS_UNIT_PX);
+				CSS_OK
 			}
 		},
 		_=>{
-			CSS_INVALID 
+			set_line_height(style, hint.status, 0,CSS_UNIT_PX);
+				CSS_OK
 		}
 	}
 }

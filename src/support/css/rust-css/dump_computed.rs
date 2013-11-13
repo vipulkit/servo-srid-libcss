@@ -626,7 +626,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
         ptr.push_str("color: inherit\n");
     }
     else if (val == CSS_COLOR_COLOR as u8) {
-        ptr.push_str(fmt!("color: #%08x\n", color as uint));
+        ptr.push_str(fmt!("color: #%08x\n", color as u32));
     }
 
     /* content */
@@ -1089,7 +1089,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("line-height: normal\n"),
         CSS_LINE_HEIGHT_NUMBER => {
             ptr.push_str("line-height: ");
-            dump_css_fixed(len1, ptr);
+            dump_css_fixed(hlength, ptr);
             ptr.push_str("\n")
         },
         CSS_LINE_HEIGHT_DIMENSION => {
