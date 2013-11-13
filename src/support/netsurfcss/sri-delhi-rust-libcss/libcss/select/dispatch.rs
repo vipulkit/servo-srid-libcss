@@ -1208,6 +1208,64 @@ pub fn css_computed_style_create() -> ~css_computed_style {
     }
 }
 
+#[inline]
+pub fn css_computed_style_inline_create() -> ~css_computed_style {
+    ~css_computed_style {
+        bits:~[1,42,9,9,8,8,10,10,10,10,9,42,6,4,4,4,8,11,8,11,12,9,9,12,8,0,136,136,128,17,17,0,22,0],
+
+        background_color:0,
+
+        background_image:None,
+
+        background_position:~[1,0],
+
+        border_color:~[0,0,0,0],
+        border_width:~[0,0,0,0],
+
+        top:0,
+        right:0,
+        bottom:0,
+        left:0,
+
+        color:16777216,
+
+        font_size:1024,
+
+        height:0,
+
+        line_height:1331,
+
+        list_style_image:None,
+
+        margin:~[0,0,0,0],
+
+        max_height:0,
+        max_width:0,
+
+        min_height:0,
+        min_width:0,
+
+        opacity:1024,
+
+        padding:~[0,0,0,0],
+
+        text_indent:0,
+
+        vertical_align:0,
+
+        width:0,
+
+        z_index:0,
+
+        font_family:~[],
+
+        quotes:~[],
+
+        uncommon:None, 
+        aural:None,         
+        page:None 
+    }
+}
 /**
 * #Description:
 *  Initialize a computed style.
