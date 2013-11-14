@@ -133,6 +133,7 @@ impl css_language {
 
     pub fn handleStartStylesheet(&mut self ) -> css_error {
         //debug!("Entering: handleStartStylesheet");
+
         let entry:context_entry = context_entry {
             event_type: CSS_PARSER_START_STYLESHEET, 
             data:None                                       
@@ -175,13 +176,12 @@ impl css_language {
         
         let curRule = css_stylesheet::css_stylesheet_rule_create(CSS_RULE_SELECTOR);
         
-        //if !vec::is_empty(*tokens) {
-        match self.parseSelectorList(lwc_ref, propstrings_ref, tokens, curRule) {
-            CSS_OK => {},
-            x =>   return x  
-		  
+        if tokens.len() != 0 {
+            match self.parseSelectorList(lwc_ref, propstrings_ref, tokens, curRule) {
+                CSS_OK => {},
+                x =>   return x  
+            }
         }
-        //}
 
         let entry:context_entry = context_entry {
             event_type: CSS_PARSER_START_RULESET, 
