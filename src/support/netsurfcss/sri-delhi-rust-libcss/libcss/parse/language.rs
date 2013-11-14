@@ -173,13 +173,13 @@ impl css_language {
         
         let curRule = stylesheet_vector[self.sheet].css_stylesheet_rule_create(css_rule_data_list, CSS_RULE_SELECTOR);
         
-        //if !vec::is_empty(*tokens) {
-        match self.parseSelectorList(stylesheet_vector, css_rule_data_list, lwc_ref, propstrings_ref, tokens, curRule) {
-            CSS_OK => {},
-            x =>   return x  
-		  
+        if tokens.len() != 0 {
+            match self.parseSelectorList(stylesheet_vector, css_rule_data_list, lwc_ref, propstrings_ref, tokens, curRule) {
+                CSS_OK => {},
+                x =>   return x  
+    		  
+            }
         }
-        //}
 
         let entry:context_entry = context_entry {
             event_type: CSS_PARSER_START_RULESET, 
