@@ -546,7 +546,6 @@ pub mod select {
                                 inline_style,
                                 raw_handler,
                                 unsafe {transmute(to_unsafe_ptr(untyped_handler))} );
-<<<<<<< HEAD
                 // if error as uint != CSS_OK as uint {
                 //      println(fmt!("%?", error));
                 //      fail!("Error in Select Style")
