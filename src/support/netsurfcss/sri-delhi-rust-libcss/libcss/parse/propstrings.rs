@@ -6,6 +6,14 @@ pub enum index_property {
      // Universal selector 
     UNIVERSAL ,
      
+    // Common tokens 
+	COLON, 
+	COMMA, 
+	SEMICOLON, 
+	OPEN_CURLY_BRACE, 
+	CLOSE_CURLY_BRACE,
+	ZERO_VALUE,
+
      // At-rules 
     CHARSET,
     LIBCSS_IMPORT, 
@@ -573,7 +581,8 @@ impl css_propstrings {
 
     pub fn css_propstrings(lwc_ref:&mut ~lwc) -> css_propstrings {
 
-        let propstrings_list = &[&"*", &"charset",&"import",&"media", &"namespace", &"font-face", &"page", &"aural",&"braille", &"embossed",&"handheld", &"print",
+        let propstrings_list = &[&"*", &":", &",", &";", &"{", &"}", &"0", &"charset",&"import",&"media", &"namespace", &"font-face", 
+        	&"page", &"aural",&"braille", &"embossed",&"handheld", &"print",
             &"projection", &"screen", &"speech", &"tty", &"tv", &"all",&"first-child", &"link", &"visited", &"hover", &"active", &"focus",
             &"lang",&"first",&"root", &"nth-child", &"nth-last-child", &"nth-of-type",&"nth-last-of-type", &"last-child",&"first-of-type",
             &"last-of-type", &"only-child", &"only-of-type",&"empty", &"target",&"enabled", &"disabled", &"checked", &"not", &"first-line", 
