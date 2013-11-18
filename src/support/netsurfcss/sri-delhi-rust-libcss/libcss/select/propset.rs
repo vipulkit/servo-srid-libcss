@@ -1135,8 +1135,8 @@ pub fn set_page_break_inside(style:&mut ~css_computed_style,
 
 #[inline]
 pub fn set_orphans(style:&mut ~css_computed_style,
-                            ftype:u8, count : i32) {
-{
+                            ftype:u8, count : css_fixed) {
+
     if (style.page.is_none()) {
         if (ftype == (CSS_ORPHANS_SET as u8)) && (count == css_int_to_fixed(2)) {
             return ;
@@ -1156,10 +1156,10 @@ pub fn set_orphans(style:&mut ~css_computed_style,
 
 #[inline]
 pub fn set_windows(style:&mut ~css_computed_style,
-                            ftype:u8, count : i32) {
-{
+                            ftype:u8, count : css_fixed) {
+
     if (style.page.is_none()) {
-        if (ftype == (CSS_WIDOWS_SET as u8)) && (count == css_int_to_fixed(2)) {
+        if (ftype == (CSS_WINDOWS_SET as u8)) && (count == css_int_to_fixed(2)) {
             return ;
         }
     }
