@@ -5912,20 +5912,20 @@ pub fn css__cascade_text_decoration(_:&mut ~[css_stylesheet], opv:u32, _:&mut ~c
 			value = ( CSS_TEXT_DECORATION_NONE as u16);
 		} 
 		else {
-			if(value == 0) {
-				return CSS_BADPARM ;
-			}
+			// if(value != 0) {
+			// 	return CSS_BADPARM ;
+			// }
 
-			if ( (getValue(opv) & TEXT_DECORATION_UNDERLINE) == 0 ) {
+			if ( (getValue(opv) & TEXT_DECORATION_UNDERLINE) != 0 ) {
 				value |= ( CSS_TEXT_DECORATION_UNDERLINE as u16);
 			}
-			if ( (getValue(opv) & TEXT_DECORATION_OVERLINE) == 0 ) {
+			if ( (getValue(opv) & TEXT_DECORATION_OVERLINE) != 0 ) {
 				value |= ( CSS_TEXT_DECORATION_OVERLINE as u16);
 			}
-			if ( (getValue(opv) & TEXT_DECORATION_LINE_THROUGH) == 0 ) {
+			if ( (getValue(opv) & TEXT_DECORATION_LINE_THROUGH) != 0 ) {
 				value |= ( CSS_TEXT_DECORATION_LINE_THROUGH as u16);
 			}
-			if ( (getValue(opv) & TEXT_DECORATION_BLINK) == 0 ) {
+			if ( (getValue(opv) & TEXT_DECORATION_BLINK) != 0 ) {
 				value |= ( CSS_TEXT_DECORATION_BLINK as u16);
 			}
 		}

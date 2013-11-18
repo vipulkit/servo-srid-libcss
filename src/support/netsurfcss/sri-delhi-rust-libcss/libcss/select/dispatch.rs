@@ -1498,36 +1498,18 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     };
     let mut error : css_error ;
 
-    match parent {
-        Some(parent_style)=>{
+    if parent.is_some() {
             let data = psize.length.get_mut_ref();
-            psize.status = css_computed_font_size(parent_style , &mut data.value , &mut data.unit);
-            // psize.status = a;
-            // let length = ~css_hint_length { 
-            //     value:b.unwrap_or_default(0) , 
-            //     unit:c.unwrap_or_default(CSS_UNIT_PX) 
-            // };
-            //     psize.length = Some(length);
-            // error = (
-
-            // compute_font_size_ptr)(Some(&mut psize),Some(&mut size));
-        },
-        _=>{}
-        // None=>{
-        //     // let (a,b,c) = css_computed_font_size(style);
-        //     // size.status = a;
-        //     // let length = ~css_hint_length { 
-        //     //     value:b.unwrap_or_default(0) , 
-        //     //     unit:c.unwrap_or_default(CSS_UNIT_PX) 
-        //     // };
-        //     // size.length = Some(length)  ;
-        //     error = (compute_font_size_ptr)(None,Some(&mut size));
-        // }
-    }
+            let parent_data = parent.unwrap();
+            psize.status = css_computed_font_size(parent_data, &mut data.value , &mut data.unit);
+            //parent = Some(parent_data);
+    }        
+    
     {
         let data = size.length.get_mut_ref();
         size.status = css_computed_font_size(style, &mut data.value , &mut data.unit);
-    }
+    }    
+    
     // size.status = a;
     // let length = ~css_hint_length { 
     //     value:b.unwrap_or_default(0) , 
@@ -1536,10 +1518,10 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     // size.length = Some(length)  ;
     match parent {
         Some(_) => {
-            error = (compute_font_size_ptr)(Some(&psize),Some(&mut size));
+            error = (compute_font_size_ptr)(Some(&psize),&mut size);
         }
         None => {
-            error = (compute_font_size_ptr)(None,Some(&mut size));        
+            error = (compute_font_size_ptr)(None,&mut size);        
         }
     }
     
@@ -1551,6 +1533,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     match size.hint_type {
         HINT_LENGTH=>{
             if size.length.is_none() {
+                println("This is an invalid scenario in css__compute_absolute_values");
                 set_font_size(style,size.status,0,CSS_UNIT_PX);
             }
             else {    
@@ -1575,29 +1558,16 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         _=> return error
     }
 
-    match size.length {
-        None=>{
-            ex_size.length.get_mut_ref().value = 0 ;
-        },
-        Some(length)=>{
-            if length.value == 0 {
-                ex_size.length.get_mut_ref().value = 0 ;
-            }
-            else {
-                ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_ref().value,length.value);    
-            }
-        }
+    /* Convert ex size into ems */
+    if size.length.is_none() || size.length.get_ref().value == 0 {
+        ex_size.length.get_mut_ref().value = 0 ;
     }
-
-    // All functions called below uses the ex_size.length variable , and this 
-    // variable is option in our case , so for all and once check , if it is none
-    // in case it is none , all operations below go invalid.
-
-    if ex_size.length.is_none() {
-        fail!("css__compute_absolute_values ex_size.length is none") ;
+    else {
+        ex_size.length.get_mut_ref().value = css_divide_fixed(ex_size.length.get_ref().value,size.length.get_ref().value);    
     }
-
     ex_size.length.get_mut_ref().unit = CSS_UNIT_EM ;
+    
+
     /* Fix up background-position */
     error = compute_absolute_length_pair(style, 
             ex_size.length.get_mut_ref(), 
@@ -1736,8 +1706,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
     }
 
     /* Uncommon properties */
-    match style.uncommon {
-        Some(_)=> {
+    if style.uncommon.is_some() {
             /* Fix up border-spacing */
             error = compute_absolute_length_pair(style,
                     ex_size.length.get_mut_ref(),
@@ -1794,8 +1763,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
                 _=> return error
             }
         }
-        None=>{}
-    }
+        
     CSS_OK
 }
 ///////////////////////////////////////////////////////////////////////

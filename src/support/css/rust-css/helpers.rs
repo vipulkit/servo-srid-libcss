@@ -546,13 +546,13 @@ pub mod select {
                                 inline_style,
                                 raw_handler,
                                 unsafe {transmute(to_unsafe_ptr(untyped_handler))} );
-                // if error as uint != CSS_OK as uint {
-                //      println(fmt!("%?", error));
-                //      fail!("Error in Select Style")
-                // }
+                if error as uint != CSS_OK as uint {
+                     println(fmt!("%?", error));
+                     //fail!("Error in Select Style")
+                }
 
                 
-        	    // let mut result_string : ~str = ~"" ;
+        	    let mut result_string : ~str = ~"" ;
                 let mut result_unwrap = if results.is_none() {
                         ~css_select_results{ 
                                         styles:~[Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create())] 
@@ -560,12 +560,12 @@ pub mod select {
                     } else {
                         results.unwrap()
                 };    
-                // unsafe {
-                // dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
-                // }
-                // println(fmt!("\n=================================================================="));
-                // println(fmt!("\n== Result is ::====%s====",result_string));
-                // println(fmt!("\n=================================================================="));
+                unsafe {
+                dump_computed_style((result_unwrap.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref()), lwc_ref.get_mut_ref(), &mut result_string);        
+                }
+                println(fmt!("\n=================================================================="));
+                println(fmt!("\n== Result is ::====%s====",result_string));
+                println(fmt!("\n=================================================================="));
 
 
                 CssSelectResults {
@@ -941,7 +941,7 @@ pub mod select {
         fn ua_default_for_property(&self, property: CssProperty) -> CssHint;
     }
 
-    #[deriving(DeepClone)]
+    //#[deriving(DeepClone)]
     pub struct CssSelectResults {
         results:~css_select_results,
     }

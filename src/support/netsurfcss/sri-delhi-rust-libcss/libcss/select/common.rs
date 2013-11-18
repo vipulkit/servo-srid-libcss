@@ -611,7 +611,7 @@ pub struct css_computed_style {
 }
 
 
-#[deriving(DeepClone)]
+//#[deriving(DeepClone)]
 pub struct css_computed_clip_rect {
     top:i32,
     right:i32,
@@ -630,19 +630,19 @@ pub struct css_computed_clip_rect {
 }
 
 
-#[deriving(DeepClone)]
+//#[deriving(DeepClone)]
 pub struct css_hint_length {
     value:i32,
     unit:css_unit
 }
 
-#[deriving(DeepClone)]
+//#[deriving(DeepClone)]
 pub struct css_hint_length_hv {
     h:css_hint_length,
     v:css_hint_length
 }
 
-#[deriving(DeepClone)]
+//#[deriving(DeepClone)]
 pub struct css_hint {
     hint_type:css_hint_data_type,
     status:u8,
@@ -677,7 +677,7 @@ pub enum css_pseudo_element {
     CSS_PSEUDO_ELEMENT_COUNT    = 5 
 }
 
-#[deriving(DeepClone)]
+//#[deriving(DeepClone)]
 pub struct css_select_results {
     /*
      * Array of pointers to computed styles, 
