@@ -797,7 +797,7 @@ pub mod select {
             enter("ua_default_for_property");
             (ph(pw).ua_default_for_property)(property, hint)
         }
-        pub fn compute_font_size(/*_pw: *c_void ,*/ parent: Option<&~css_hint>, size: Option<&mut ~css_hint>) -> css_error {
+        pub fn compute_font_size(/*_pw: *c_void ,*/ parent: Option<&~css_hint>, size: &mut ~css_hint) -> css_error {
             enter("compute_font_size");
             // FIXME: This should be merged with the one in rust-css, I think. --pcwalton
             let parent_hint;
@@ -806,7 +806,7 @@ pub mod select {
             } else {
                 parent_hint = CssHint::new(CssPropFontSize, parent);
             }
-            parent_hint.write_to_ll(CssPropFontSize, size.unwrap());
+            parent_hint.write_to_ll(CssPropFontSize, size);
             CSS_OK
         }
     }

@@ -40,7 +40,7 @@ pub fn compose(parent: &CssComputedStyle, child: &mut CssComputedStyle,
     }
 }
 
-fn compute_font_size_cb(parent: Option<&~css_hint>, mut size: Option<&mut ~css_hint>) -> css_error {
+fn compute_font_size_cb(parent: Option<&~css_hint>, size: &mut ~css_hint) -> css_error {
     // println(fmt!("complete.rs :: compute_font_size_cb"));
     //let hlcbptr: *ComputeFontSizeCb = unsafe { transmute(pw) };
     let cb: ComputeFontSizeCb =
@@ -133,33 +133,15 @@ fn compute_font_size_cb(parent: Option<&~css_hint>, mut size: Option<&mut ~css_h
         }
     };
     
-     if (size.is_some()) {
-        let new_size = size.unwrap();
-        let new_hint = cb(parent,new_size);
-            new_size.hint_type = HINT_LENGTH;
-            new_size.length.get_mut_ref().unit =  new_hint.length.get_ref().unit ;
-            new_size.length.get_mut_ref().value = new_hint.length.get_ref().value ;
-            new_size.status = new_hint.status ;
-            size = Some(new_size);
-
-    }
-    else {
-        fail!(~"Rust-Css :: size is none in complete.rs");
-    }
-
-    CSS_OK
-    // match size {
-    //     None=>{
-    //         fail!(~"Rust-Css :: size is none in complete.rs");
-    //     },
-    //     Some(x) => {
-    //         let new_hint = cb(parent,x );
-    //         x.length.get_mut_ref().unit =  new_hint.length.get_ref().unit ;
-    //         x.length.get_mut_ref().value = new_hint.length.get_ref().value ;
-    //         x.status = new_hint.status ;
-    //         CSS_OK
-    //     }
-    // }
+     
+    let new_hint = cb(parent,size);
+    size.hint_type = HINT_LENGTH;
+    size.length.get_mut_ref().unit =  new_hint.length.get_ref().unit ;
+    size.length.get_mut_ref().value = new_hint.length.get_ref().value ;
+    size.status = new_hint.status ;
+    
+    
+    CSS_OK    
 }
 
 impl<'self> CompleteSelectResults {

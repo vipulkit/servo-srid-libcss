@@ -1067,7 +1067,7 @@ impl dispatch_table {
 // function pointer : used in "css__compute_absolute_values" function 
 ///////////////////////////////////////////////////////////////////////
 pub type css_fnptr_compute_font_size =  ~fn(parent:Option<&~css_hint>,
-                                                size:Option<&mut ~css_hint> ) 
+                                                size:&mut ~css_hint) 
                                                     -> css_error ;
 
 pub type  compute_absolute_length_pair_get =  
@@ -1552,7 +1552,7 @@ pub fn css__compute_absolute_values(parent: Option<&~css_computed_style>,
         unit:CSS_UNIT_EX 
     };
     ex_size.length = Some(length);
-    error = (compute_font_size_ptr)(Some(&size),Some(&mut ex_size));
+    error = (compute_font_size_ptr)(Some(&size),&mut ex_size);
     match error {
         CSS_OK=>{},
         _=> return error
