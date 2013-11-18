@@ -287,6 +287,12 @@ pub static CSS_PAGE_BREAK_BEFORE_MASK : int =  0x38;
 pub static CSS_PAGE_BREAK_INSIDE_INDEX  : int = 0;
 pub static CSS_PAGE_BREAK_INSIDE_SHIFT : int =  6;
 pub static CSS_PAGE_BREAK_INSIDE_MASK : int =  0xc0;
+pub static CSS_ORPHANS_INDEX : int = 1 ;
+pub static CSS_ORPHANS_SHIFT : int = 0 ;
+pub static CSS_ORPHANS_MASK : int =  0x1 ;
+pub static CSS_WINDOWS_INDEX : int = 1 ; 
+pub static CSS_WINDOWS_SHIFT : int = 1 ; 
+pub static CSS_WINDOWS_MASK  : int = 0x2 ; 
 
 /////////////////////////////////////////////
 
@@ -407,13 +413,15 @@ pub struct css_computed_uncommon {
 #[deriving(DeepClone)]
 pub struct css_computed_page {
 /*
- * page_break_after       3
- * page_break_before          3
- * page_break_inside          2
- *              ---
- *                8 bits
+ * Bit allocations:
+ *
+ *    76543210
+ *  1 aaabbbii  page_break_after | page_break_before | page_break_inside
+ *  2 ......wo  widows  | orphans
  */
     bits:~[u8],//~[u8, ..1]
+    orphans:i32,
+    windows:i32,
 } 
 
 #[deriving(DeepClone)]

@@ -1294,5 +1294,45 @@ pub fn css_computed_page_break_inside(style:&~css_computed_style)
     }
 }
 
+pub fn css_computed_orphans(style:&~css_computed_style, orphans:&mut i32)
+                                        -> u8 {
+
+    if style.page.is_some() {
+        let mut bits : u8 = style.page.get_ref().bits[CSS_ORPHANS_INDEX];
+        bits = bits & (CSS_ORPHANS_MASK as u8);
+        bits = bits >> CSS_ORPHANS_SHIFT;   
+
+        *orphans = (style.page.get_ref().orphans as i32) >> CSS_RADIX_POINT ;
+
+        bits
+    }
+    else {
+        *orphans = 2;
+
+        (CSS_ORPHANS_SET as u8)
+    }
+}
+
+pub fn css_computed_windows(style:&~css_computed_style, windows:&mut i32)
+                                        -> u8 {
+
+    if style.page.is_some() {
+        let mut bits : u8 = style.page.get_ref().bits[CSS_WINDOWS_INDEX];
+        bits = bits & (CSS_WINDOWS_MASK as u8);
+        bits = bits >> CSS_WINDOWS_SHIFT;   
+
+        *windows = (style.page.get_ref().windows as i32) >> CSS_RADIX_POINT ;
+
+        bits
+    }
+    else {
+        *windows = 2;
+
+        (CSS_WINDOWS_SET as u8)
+    }
+}
+
+
+
 //////////////////////////////////////////////////////////////////////
 

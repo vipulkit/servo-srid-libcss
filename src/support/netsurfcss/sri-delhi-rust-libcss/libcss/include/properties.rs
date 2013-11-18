@@ -585,11 +585,6 @@ pub enum css_orphans_e {
     CSS_ORPHANS_SET             = 0x1
 }
 
-pub enum css_orphans_e {
-    CSS_ORPHANS_INHERIT         = 0x0,
-    CSS_ORPHANS_SET             = 0x1
-}
-
 pub enum css_padding_e {
     CSS_PADDING_INHERIT         = 0x0,
     CSS_PADDING_SET             = 0x1
