@@ -1088,7 +1088,7 @@ pub fn dump_computed_style(style:&mut ~css_computed_style, lwc_ref:&mut ~lwc, bu
             ptr.push_str("\n")
         },
         CSS_LINE_HEIGHT_DIMENSION => {
-            ptr.push_str("line-height => ");
+            ptr.push_str("line-height: ");
             dump_css_unit(len1, unit1, ptr);
             ptr.push_str("\n")
         },
