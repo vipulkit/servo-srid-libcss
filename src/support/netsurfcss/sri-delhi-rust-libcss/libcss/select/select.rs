@@ -2378,7 +2378,7 @@ impl css_select_ctx {
 
             op = getOpcode(opv) as u32;
             //debug!(fmt!("op=%?, opv=%?, op_m=%?", op, opv, op as uint));
-            // println(fmt!("cascade_style :: inside cascade function :: op == %?" , op));
+            //println(fmt!("cascade_style :: inside cascade function :: op == %?" , op));
             error =  (prop_dispatch[op as uint].cascade)(stylesheet_vector, opv, s, state);
 
             match error {

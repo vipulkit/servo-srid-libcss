@@ -56,6 +56,7 @@ fn compute_font_size_cb(parent: Option<&~css_hint>, size: &mut ~css_hint) -> css
                             new_value = css_fixed_to_float(parent.get_ref().length.get_ref().value);
                             if child.length.get_ref().unit as uint == CSS_UNIT_EM as uint {
                                 new_value *= css_fixed_to_float(child.length.get_ref().value);    
+                                new_value = float_to_css_fixed(new_value) as float;
                             }
                             else {
                                 new_value *= css_fixed_to_float(child.length.get_ref().value)/100.0;

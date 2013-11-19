@@ -20,6 +20,12 @@ pub fn css_fixed_to_float(f: css_fixed) -> float {
     f as float * 1.0f / ((1i32 << BEFORE) as float)
 }
 
+#[inline]
+pub fn float_to_css_fixed(f: float) -> css_fixed {
+    static BEFORE: i32 = 10;
+    (f * ((1 << BEFORE) as float)) as css_fixed
+}
+
 pub struct ComputedStyle<'self>{
     inner: CssComputedStyle<'self>
 }

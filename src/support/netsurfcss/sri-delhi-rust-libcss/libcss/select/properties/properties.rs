@@ -2042,6 +2042,8 @@ pub fn  css__cascade_color(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css_st
 	let mut inherit = isInherit(opv);
 	let mut value = CSS_COLOR_INHERIT;
 	let mut color = 0;
+	
+	//println(fmt!("Cascade style inherit:%?",inherit));
 
 	if !inherit {
 		match getValue(opv) {
@@ -2079,7 +2081,7 @@ pub fn css__set_color_from_hint(hint:&mut ~css_hint, style:&mut ~css_computed_st
 pub fn css__initial_color(state:&mut ~css_select_state) -> css_error {
 		
 	let mut hint = ~css_hint{
-		        hint_type:HINT_LENGTH,
+		        hint_type:COLOR,
 		        status:0,
 		        clip:None,
 		        content:None,
@@ -2103,7 +2105,7 @@ pub fn css__initial_color(state:&mut ~css_select_state) -> css_error {
 		}
 	}
 
-	css__set_color_from_hint(&mut hint,state.results.styles[state.computed].get_mut_ref())	
+	css__set_color_from_hint(&mut hint, state.results.styles[state.computed].get_mut_ref())	
 }
 
 pub fn css__compose_color(parent:&~css_computed_style, 
@@ -2114,9 +2116,11 @@ pub fn css__compose_color(parent:&~css_computed_style,
 	let mut color_type = css_computed_color(child , &mut color);
 	
 	if color_type == (CSS_COLOR_INHERIT as u8) {
-		color_type = css_computed_color(parent , &mut color);
-		set_color(result, color_type, color);
+		color_type = css_computed_color(parent , &mut color);		
 	}
+
+	set_color(result, color_type, color);
+
 	CSS_OK
 }
 

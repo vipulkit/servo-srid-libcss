@@ -52,7 +52,7 @@ pub fn buildOPV_flag(opcode : css_properties_e , flags :flag , value : u16 ) -> 
 #[inline]
 pub fn getOpcode(OPV : u32 ) -> css_properties_e {
     //((OPV & 0x3ff) as int) as opcode_t
-    let op_code = (OPV & 0x00003ff);
+    let op_code = (OPV & 0x3ff);
     unsafe { cast::transmute(op_code as uint) }
 }
 

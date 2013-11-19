@@ -266,10 +266,12 @@ pub mod hint {
                 }
                 (CssPropColor, &CssHintDefault) => {
                     // let color: &mut css_color = hint_data_field(llhint);
+                    llhint.hint_type = COLOR;
                     llhint.color = unsafe {transmute(CssColor { a: 255, r: 0, g: 0, b: 0 })};
                     llhint.status = CSS_COLOR_COLOR as u8;
                 }
                 (CssPropFontSize, &CssHintLength(val)) => {
+                    llhint.hint_type = HINT_LENGTH;
                     llhint.length = Some(val.to_ll_css_hint_length());
                     llhint.status = CSS_FONT_SIZE_DIMENSION as u8;
                 }
