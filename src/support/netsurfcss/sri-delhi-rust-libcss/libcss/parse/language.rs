@@ -574,8 +574,8 @@ impl css_language {
                                 match stylesheet_vector[self.sheet].css_rule_list[base_rule].parent_rule {
                                     Some(pRule) => 
                                         match stylesheet_vector[self.sheet].css__stylesheet_get_parent_type(css_rule_data_list, pRule) {
-                                            CSS_RULE_PARENT_STYLESHEET  => self.handleEndRuleset(),
-                                            _ => CSS_OK
+                                            CSS_RULE_PARENT_STYLESHEET  => CSS_OK,
+                                            _ => self.handleEndRuleset()
                                         },
                                     None => CSS_OK                      
                                 }
