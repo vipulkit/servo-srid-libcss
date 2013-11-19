@@ -36,10 +36,10 @@ impl MatchMethods for AbstractNode<LayoutView> {
                 };
                 let select_handler = NodeSelectHandler { node: *self };
                 let incomplete_results = select_ctx.select_style(self, inline_style, &select_handler);
-                println(fmt!("restyle_subtree :: incomplete_results == %? " , incomplete_results));
+                //println(fmt!("restyle_subtree :: incomplete_results == %? " , incomplete_results));
                 // Combine this node's results with its parent's to resolve all inherited values
                 let complete_results = compose_results(*self, incomplete_results);
-                println(fmt!("restyle_subtree :: complete_results == %? " , complete_results));
+                //println(fmt!("restyle_subtree :: complete_results == %? " , complete_results));
                 // If there was an existing style, compute the damage that
                 // incremental layout will need to fix.
                 if self.have_css_select_results() {

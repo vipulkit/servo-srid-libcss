@@ -9,6 +9,7 @@ Select matching is performed on generic node types. Client-specific details
 about the DOM are encapsulated in the `SelectHandler` type which the `SelectCtx`
 uses to query various DOM and UA properties.
 */
+extern mod extra ;
 extern mod srid_css;
 
 use computed::ComputedStyle;
@@ -20,6 +21,9 @@ use helpers::properties::*;
 use helpers::hint::*;
 use helpers::types::CssQName;
 use srid_css::libwapcaplet::wapcaplet::*;
+use extra::time;
+
+pub static mut total_time: u64 = 0;
 
 pub struct SelectCtx {
     inner: CssSelectCtx
@@ -62,12 +66,21 @@ impl SelectCtx {
             inner: handler
         };
 
-        SelectResults {
-        inner:self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
+
+	let start_time = time::precise_time_ns();
+	let mut res = self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
                 node,
                 CSS_MEDIA_SCREEN as u64,
                 inline_style,
-                &inner_handler)
+                &inner_handler);
+	let end_time = time::precise_time_ns();
+	unsafe { 
+		total_time += (end_time - start_time); 	
+		println(fmt!("Total-Time incured during style selection is =%?=",total_time));
+	}
+
+        SelectResults {
+        inner: res
         }
     }
 }
