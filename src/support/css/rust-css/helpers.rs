@@ -552,7 +552,9 @@ pub mod select {
                 }
 
                 
-        	    let mut result_string : ~str = ~"" ;
+
+            	let mut result_string : ~str = ~"" ;
+
                 let mut result_unwrap = if results.is_none() {
                         ~css_select_results{ 
                                         styles:~[Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create())] 

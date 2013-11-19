@@ -2,7 +2,7 @@ use include::properties::*;
 use include::types::*;
 
 use select::common::*;
-// use css_fpmath::*;
+use include::fpmath::*;
 
 
 #[inline]
@@ -40,14 +40,22 @@ pub fn ENSURE_UNCOMMON ( style:&mut ~css_computed_style){
 
 #[inline]
 pub fn ENSURE_PAGE ( style:&mut ~css_computed_style){
-    match style.uncommon {
+    match style.page {
         Some(_)=>{},
         None=>{
             let page_struct = ~css_computed_page {
+
                 bits:~[ 
                         ( ((CSS_PAGE_BREAK_INSIDE_AUTO as u8) <<  6) | 
                           ((CSS_PAGE_BREAK_BEFORE_AUTO as u8) << 3) |
-                           (CSS_PAGE_BREAK_AFTER_AUTO as u8) ) ]
+                           (CSS_PAGE_BREAK_AFTER_AUTO as u8) ) , 
+                        ( ((CSS_ORPHANS_SET as u8)) | 
+                          ((CSS_WINDOWS_SET as u8) << 1) ) 
+                ],
+
+                orphans: (2<<CSS_RADIX_POINT),
+                windows: (2<<CSS_RADIX_POINT),
+
             };
             style.page = Some(page_struct);
         }
@@ -1081,6 +1089,14 @@ pub fn set_text_align(style:&mut ~css_computed_style,
 pub fn set_page_break_after(style:&mut ~css_computed_style,
                             ftype:u8) {
 
+    if (style.page.is_none()) {
+        if (ftype == (CSS_PAGE_BREAK_AFTER_AUTO as u8)) {
+            return ;
+        }
+    }
+
+    ENSURE_PAGE(style);
+
     let bits = &mut style.bits[CSS_PAGE_BREAK_AFTER_INDEX];
     let mask_complement = (CSS_PAGE_BREAK_AFTER_MASK as u8) ^ 0xff ;
     *bits = ( *bits & mask_complement ) |
@@ -1091,6 +1107,13 @@ pub fn set_page_break_after(style:&mut ~css_computed_style,
 pub fn set_page_break_before(style:&mut ~css_computed_style,
                             ftype:u8) {
 
+    if (style.page.is_none()) {
+        if (ftype == (CSS_PAGE_BREAK_BEFORE_AUTO as u8)) {
+            return ;
+        }
+    }
+    ENSURE_PAGE(style);
+    
     let bits = &mut style.bits[CSS_PAGE_BREAK_BEFORE_INDEX];
     let mask_complement = (CSS_PAGE_BREAK_BEFORE_MASK as u8) ^ 0xff ;
     *bits = ( *bits & mask_complement ) |
@@ -1101,10 +1124,58 @@ pub fn set_page_break_before(style:&mut ~css_computed_style,
 pub fn set_page_break_inside(style:&mut ~css_computed_style,
                             ftype:u8) {
 
+    if (style.page.is_none()) {
+        if (ftype == (CSS_PAGE_BREAK_INSIDE_AUTO as u8)) {
+            return ;
+        }
+    }
+    ENSURE_PAGE(style);
+    
     let bits = &mut style.bits[CSS_PAGE_BREAK_INSIDE_INDEX];
     let mask_complement = (CSS_PAGE_BREAK_INSIDE_MASK as u8) ^ 0xff ;
     *bits = ( *bits & mask_complement ) |
             ( (ftype & 0x3)  << CSS_PAGE_BREAK_INSIDE_SHIFT);
+}
+
+#[inline]
+pub fn set_orphans(style:&mut ~css_computed_style,
+                            ftype:u8, count : css_fixed) {
+
+    if (style.page.is_none()) {
+        if (ftype == (CSS_ORPHANS_SET as u8)) && (count == css_int_to_fixed(2)) {
+            return ;
+        }
+    }
+
+    ENSURE_PAGE(style);
+
+    let bits = &mut style.bits[CSS_ORPHANS_INDEX];
+    let mask_complement = (CSS_ORPHANS_MASK as u8) ^ 0xff ;
+    *bits = ( *bits & mask_complement ) |
+            ( (ftype & 0x1)  << CSS_ORPHANS_SHIFT);
+
+    style.page.get_mut_ref().orphans = count ;
+}
+
+
+#[inline]
+pub fn set_windows(style:&mut ~css_computed_style,
+                            ftype:u8, count : css_fixed) {
+
+    if (style.page.is_none()) {
+        if (ftype == (CSS_WINDOWS_SET as u8)) && (count == css_int_to_fixed(2)) {
+            return ;
+        }
+    }
+
+    ENSURE_PAGE(style);
+
+    let bits = &mut style.bits[CSS_WINDOWS_INDEX];
+    let mask_complement = (CSS_WINDOWS_MASK as u8) ^ 0xff ;
+    *bits = ( *bits & mask_complement ) |
+            ( (ftype & 0x1)  << CSS_WINDOWS_SHIFT);
+
+    style.page.get_mut_ref().windows = count ;
 }
 
 

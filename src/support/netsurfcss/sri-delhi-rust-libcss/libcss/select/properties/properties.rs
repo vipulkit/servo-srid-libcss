@@ -419,7 +419,7 @@ pub fn css__cascade_length(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css_st
 
 #[inline]
 pub fn css__cascade_number(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css_style, state:&mut ~css_select_state,
-	fun:Option<~fn (&mut ~css_computed_style, u8, css_fixed) -> css_error>) -> css_error {
+	fun:Option<extern fn (&mut ~css_computed_style, u8, css_fixed)>) -> css_error {
 
 	let mut value = 0;
 	let mut length = 0;
@@ -436,7 +436,8 @@ pub fn css__cascade_number(_:&mut ~[css_stylesheet], opv:u32, style:&mut ~css_st
 	// \todo lose fun != NULL once all properties have set routines */
 	match fun {
 		Some(fun_fn) => if css__outranks_existing(getOpcode(opv) as u16, isImportant(opv), state, isInherit(opv)) {
-			return (fun_fn)(state.results.styles[state.computed].get_mut_ref(), value, length as i32)
+			(fun_fn)(state.results.styles[state.computed].get_mut_ref(), value, length as i32) ;
+			return CSS_OK;
 		},
 		None => {}
 	}
@@ -4324,24 +4325,35 @@ pub fn css__cascade_orphans(stylesheet_vector:&mut ~[css_stylesheet], opv:u32 ,
 							state: &mut ~css_select_state 
 							) -> css_error
 {
-	return css__cascade_number(stylesheet_vector, opv, style, state, None );
+	return css__cascade_number(stylesheet_vector, opv, style, state, Some(set_orphans) );
 }
 
-pub fn css__set_orphans_from_hint(_: &mut ~css_hint, 
-		_:&mut ~css_computed_style) -> css_error {
+pub fn css__set_orphans_from_hint(hint: &mut ~css_hint, 
+		style:&mut ~css_computed_style) -> css_error {
 
+	set_orphans(style,hint.status,hint.fixed);
 	CSS_OK
 }
 
-pub fn css__initial_orphans(_:&mut ~css_select_state) -> css_error {
+pub fn css__initial_orphans(state:&mut ~css_select_state) -> css_error {
 
+	set_orphans(state.results.styles[state.computed].get_mut_ref(),(CSS_ORPHANS_SET as u8),css_int_to_fixed(2));
 	CSS_OK
 }
 
-pub fn css__compose_orphans(_:&~css_computed_style,
-							_:&~css_computed_style,
-							_:&mut ~css_computed_style) -> css_error {
+pub fn css__compose_orphans(parent:&~css_computed_style,
+							child:&~css_computed_style,
+							result:&mut ~css_computed_style) -> css_error {
 
+	let mut count: i32 = 0;
+	let mut ftype = css_computed_orphans(child , &mut count);
+
+	if (ftype == (CSS_ORPHANS_INHERIT as u8) ) {
+		ftype = css_computed_orphans(parent , &mut count);
+	}
+
+	set_orphans(result, 
+				ftype,count);
 	CSS_OK
 }
 
@@ -6658,30 +6670,42 @@ pub fn css__compose_width(parent:&~css_computed_style,
 
 // windows
 ///////////////////////////////////////////////////////////////////
+
 pub fn css__cascade_windows(stylesheet_vector:&mut ~[css_stylesheet], opv:u32 , 
 								style:&mut ~css_style ,
 								state: &mut ~css_select_state 
 								) -> css_error {
 
-	return css__cascade_number(stylesheet_vector, opv, style, state, None);
+	return css__cascade_number(stylesheet_vector, opv, style, state, Some(set_windows) );
 }
 
-pub fn css__set_windows_from_hint(_: &mut ~css_hint, 
-								_:&mut ~css_computed_style) 
+pub fn css__set_windows_from_hint(hint: &mut ~css_hint, 
+								style:&mut ~css_computed_style) 
 								-> css_error {
 
+	set_windows(style,hint.status,hint.fixed);
 	CSS_OK
 }
 
-pub fn css__initial_windows(_:&mut ~css_select_state) -> css_error {
+pub fn css__initial_windows(state:&mut ~css_select_state) -> css_error {
 
+	set_windows(state.results.styles[state.computed].get_mut_ref(),(CSS_WINDOWS_SET as u8),css_int_to_fixed(2));
 	CSS_OK
 }
 
-pub fn css__compose_windows(_:&~css_computed_style,
-							_:&~css_computed_style,
-							_:&mut ~css_computed_style) -> css_error {
+pub fn css__compose_windows(parent:&~css_computed_style,
+							child:&~css_computed_style,
+							result:&mut ~css_computed_style) -> css_error {
 
+	let mut count: i32 = 0;
+	let mut ftype = css_computed_windows(child , &mut count);
+
+	if (ftype == (CSS_WINDOWS_INHERIT as u8) ) {
+		ftype = css_computed_windows(parent , &mut count);
+	}
+
+	set_windows(result, 
+				ftype,count);
 	CSS_OK
 }
 

@@ -1333,15 +1333,15 @@ impl css_stylesheet {
         if (self.css_selectors_list[selector].data.len() > 0) {
             let class_lwc_string = self._class_name(lwc_ref, selector);
             let id_lwc_string = self._id_name(lwc_ref, selector);
-            // Named Element
-            if ( lwc_ref.lwc_string_length(self.css_selectors_list[selector].data[0].qname.name) != 1) || 
-                (lwc_ref.lwc_string_data(self.css_selectors_list[selector].data[0].qname.name).char_at(0) != '*' ) {
-                    //debug!("Entering: css__selector_hash_insert:: Named Element");
-                    mask = self.selectors.default_slots-1 ;
-                    index = css_selector_hash::_hash_name(self.css_selectors_list[selector].data[0].qname.name, lwc_ref) & mask ;
-                    return self._insert_into_chain(css_rule_data_list, Element,index,selector);
-            }
 
+            // Named Id
+            if lwc_ref.lwc_string_length(id_lwc_string) != 0 {
+                //debug!("Entering: css__selector_hash_insert:: Named Id");
+                name = self._id_name( lwc_ref, selector);
+                mask = self.selectors.default_slots-1 ;
+                index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
+                return self._insert_into_chain(css_rule_data_list, Ids,index,selector);
+            }
             // Named Class
             else if lwc_ref.lwc_string_length(class_lwc_string) != 0  {
                 //debug!("Entering: css__selector_hash_insert:: Named Class");
@@ -1350,14 +1350,13 @@ impl css_stylesheet {
                 index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
                 return self._insert_into_chain(css_rule_data_list, Class,index,selector);
             }
-
-            // Named Id
-            else if lwc_ref.lwc_string_length(id_lwc_string) != 0 {
-                //debug!("Entering: css__selector_hash_insert:: Named Id");
-                name = self._id_name( lwc_ref, selector);
-                mask = self.selectors.default_slots-1 ;
-                index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
-                return self._insert_into_chain(css_rule_data_list, Ids,index,selector);
+            // Named Element
+            else if ( lwc_ref.lwc_string_length(self.css_selectors_list[selector].data[0].qname.name) != 1) || 
+                (lwc_ref.lwc_string_data(self.css_selectors_list[selector].data[0].qname.name).char_at(0) != '*' ) {
+                    //debug!("Entering: css__selector_hash_insert:: Named Element");
+                    mask = self.selectors.default_slots-1 ;
+                    index = css_selector_hash::_hash_name(self.css_selectors_list[selector].data[0].qname.name, lwc_ref) & mask ;
+                    return self._insert_into_chain(css_rule_data_list, Element,index,selector);
             }
             else {
                 //debug!("Entering: css__selector_hash_insert:: else Universal");
@@ -1494,14 +1493,14 @@ impl css_stylesheet {
         if (self.css_selectors_list[selector].data.len() > 0){
             let class_lwc_string = self._class_name(lwc_ref, selector);
             let id_lwc_string = self._id_name(lwc_ref, selector);
-            // Named Element
-            if ( lwc_ref.lwc_string_length(self.css_selectors_list[selector].data[0].qname.name) != 1) || 
-                (lwc_ref.lwc_string_data(self.css_selectors_list[selector].data[0].qname.name).char_at(0) != '*' ) {
-                    mask = self.selectors.default_slots-1 ;
-                    index = css_selector_hash::_hash_name(self.css_selectors_list[selector].data[0].qname.name, lwc_ref) & mask ;
-                    return self.selectors._remove_from_chain(Element,index,selector);
-            }
 
+            // Named Id
+            if lwc_ref.lwc_string_length(id_lwc_string) == 0 {
+                name = self._id_name(lwc_ref, selector);
+                mask = self.selectors.default_slots-1 ;
+                index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
+                return self.selectors._remove_from_chain(Ids,index,selector);
+            }
             // Named Class
             else if lwc_ref.lwc_string_length(class_lwc_string) == 0  {
                 name = self._class_name(lwc_ref, selector);
@@ -1509,14 +1508,14 @@ impl css_stylesheet {
                 index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
                 return self.selectors._remove_from_chain(Class,index, selector);
             }
-
-            // Named Id
-            else if lwc_ref.lwc_string_length(id_lwc_string) == 0 {
-                name = self._id_name(lwc_ref, selector);
-                mask = self.selectors.default_slots-1 ;
-                index = css_selector_hash::_hash_name(name, lwc_ref) & mask ;
-                return self.selectors._remove_from_chain(Ids,index,selector);
+            // Named Element
+            else if ( lwc_ref.lwc_string_length(self.css_selectors_list[selector].data[0].qname.name) != 1) || 
+                (lwc_ref.lwc_string_data(self.css_selectors_list[selector].data[0].qname.name).char_at(0) != '*' ) {
+                    mask = self.selectors.default_slots-1 ;
+                    index = css_selector_hash::_hash_name(self.css_selectors_list[selector].data[0].qname.name, lwc_ref) & mask ;
+                    return self.selectors._remove_from_chain(Element,index,selector);
             }
+
             else {
                 return self.selectors._remove_from_chain(Universal,index,selector);
             }

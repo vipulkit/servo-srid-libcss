@@ -717,9 +717,9 @@ pub enum css_white_space_e {
     CSS_WHITE_SPACE_PRE_LINE        = 0x5
 }
 
-pub enum css_widows_e {
-    CSS_WIDOWS_INHERIT          = 0x0,
-    CSS_WIDOWS_SET              = 0x1
+pub enum css_windows_e {
+    CSS_WINDOWS_INHERIT          = 0x0,
+    CSS_WINDOWS_SET              = 0x1
 }   
 
 pub enum css_width_e {
