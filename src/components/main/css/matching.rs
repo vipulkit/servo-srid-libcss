@@ -46,7 +46,9 @@ impl MatchMethods for AbstractNode<LayoutView> {
                 let end_time = time::precise_time_ns();
                 unsafe { 
                     total_time += (end_time - start_time);  
-                    println(fmt!("style selection time is = %?",total_time));
+                    let sec = (total_time/ 1000000000) as int;
+                    let milisec = (total_time / 1000000) as int;    
+                    println(fmt!("style selection time is sec: %d  , milisec: %d  , nano-sec: %d ",sec,milisec,total_time as int));
                 }
                 //println(fmt!("restyle_subtree :: complete_results == %? " , complete_results));
                 // If there was an existing style, compute the damage that
