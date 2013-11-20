@@ -13,6 +13,9 @@ use newcss::complete::CompleteSelectResults;
 use newcss::select::SelectCtx;
 use newcss::select::SelectResults;
 use servo_util::tree::TreeNodeRef;
+use extra::time;
+
+pub static mut total_time: u64 = 0;
 
 pub trait MatchMethods {
     fn restyle_subtree(&self, select_ctx: &mut SelectCtx);
@@ -35,10 +38,16 @@ impl MatchMethods for AbstractNode<LayoutView> {
                     Some(ref sheet) => Some(sheet.inner),
                 };
                 let select_handler = NodeSelectHandler { node: *self };
+                let start_time = time::precise_time_ns();
                 let incomplete_results = select_ctx.select_style(self, inline_style, &select_handler);
                 //println(fmt!("restyle_subtree :: incomplete_results == %? " , incomplete_results));
                 // Combine this node's results with its parent's to resolve all inherited values
                 let complete_results = compose_results(*self, incomplete_results);
+                let end_time = time::precise_time_ns();
+                unsafe { 
+                    total_time += (end_time - start_time);  
+                    println(fmt!("style selection time is = %?",total_time));
+                }
                 //println(fmt!("restyle_subtree :: complete_results == %? " , complete_results));
                 // If there was an existing style, compute the damage that
                 // incremental layout will need to fix.

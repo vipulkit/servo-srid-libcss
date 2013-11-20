@@ -3,9 +3,6 @@ use srid_css::utils::errors::*;
 use srid_css::stylesheet::*;
 use std::libc::*;
 use srid_css::libwapcaplet::wapcaplet::*;
-use dump_computed::*;
-
-
 
 pub trait VoidPtrLike {
     fn from_void_ptr(ptr: *c_void) -> Self;
@@ -474,25 +471,17 @@ pub mod select {
     use srid_css::include::types::css_origin;
     use helpers::types::CssQName;
     use srid_css::stylesheet::css_qname;
-    // use properties::CssProperty;
-    // use helpers::computed::CssComputedStyle;
-    // use ll::select::{CSS_SELECT_HANDLER_VERSION_1, css_select_results_destroy};
     use std::ptr::{null, /*to_mut_unsafe_ptr,*/ to_unsafe_ptr};
-    // use srid_css::select::select::*;
     use std::cast::transmute;
     use srid_css::utils::errors::{css_error, CSS_OK};
-    use srid_css::select::common::css_hint;
     use srid_css::select::select::css_select_ctx;
-    use srid_css::select::common::{css_select_handler,css_select_results,CSS_SELECT_HANDLER_VERSION_1};
     use helpers::{/*ToLl,*/ write_ll_qname, ll_qname_to_hl_qname, /*require_ok,*/ VoidPtrLike};
     use helpers::properties::CssProperty;
     use helpers::hint::CssHint;
-    use srid_css::select::common::*;
-    use srid_css::select::dispatch::css_computed_style_create;
     use srid_css::libwapcaplet::wapcaplet::*;
     use srid_css::select::common::*;
     use srid_css::select::dispatch::*;
-    use dump_computed::*;
+    // use dump_computed::*;
 
     pub enum CssPseudoElement {
     CssPseudoElementNone         = 0,
@@ -557,7 +546,7 @@ pub mod select {
 
             	//let mut result_string : ~str = ~"" ;
 
-                let mut result_unwrap = if results.is_none() {
+                let result_unwrap = if results.is_none() {
                         ~css_select_results{ 
                                         styles:~[Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create())] 
                         }

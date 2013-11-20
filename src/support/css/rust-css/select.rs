@@ -21,9 +21,9 @@ use helpers::properties::*;
 use helpers::hint::*;
 use helpers::types::CssQName;
 use srid_css::libwapcaplet::wapcaplet::*;
-use extra::time;
+// use extra::time;
 
-pub static mut total_time: u64 = 0;
+// pub static mut total_time: u64 = 0;
 
 pub struct SelectCtx {
     inner: CssSelectCtx
@@ -67,17 +67,17 @@ impl SelectCtx {
         };
 
 
-	let start_time = time::precise_time_ns();
-	let mut res = self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
+	// let start_time = time::precise_time_ns();
+	let res = self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
                 node,
                 CSS_MEDIA_SCREEN as u64,
                 inline_style,
                 &inner_handler);
-	let end_time = time::precise_time_ns();
-	unsafe { 
-		total_time += (end_time - start_time); 	
-		println(fmt!("Total-Time incured during style selection is =%?=",total_time));
-	}
+	// let end_time = time::precise_time_ns();
+	// unsafe { 
+		// total_time += (end_time - start_time); 	
+		// println(fmt!("Total-Time incured during style selection is =%?=",total_time));
+	// }
 
         SelectResults {
         inner: res

@@ -1,7 +1,6 @@
 
 use srid_css::select::common::*;
 use srid_css::select::computed::*;
-use srid_css::stylesheet::*;
 use srid_css::include::types::*;
 use srid_css::include::properties::*;
 use srid_css::include::fpmath::*;
