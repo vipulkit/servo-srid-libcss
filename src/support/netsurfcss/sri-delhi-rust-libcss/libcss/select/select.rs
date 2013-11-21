@@ -1239,8 +1239,8 @@ impl css_select_ctx {
         ret
     }
 
-    pub fn _rule_good_for_element_name(selector:&mut css_selector, lwc_ref:&mut ~lwc,
-        src:&mut css_select_rule_source, state:&css_select_state) -> bool {
+    pub fn _rule_good_for_element_name(selector:&mut css_selector, 
+		src:&mut css_select_rule_source, state:&mut ~css_select_state) -> bool {
         /* If source of rule is element or universal hash, we know the
          * element name is a match.  If it comes from the class or id hash,
          * we have to test for a match */
@@ -1249,13 +1249,15 @@ impl css_select_ctx {
             CSS_SELECT_RULE_SRC_ID | CSS_SELECT_RULE_SRC_CLASS => true,
             _ => false }) {
             
-            if ( lwc_ref.lwc_string_length(selector.data[0].qname.name) != 1 ||
-                   lwc_ref.lwc_string_data(selector.data[0].qname.name)[0] != ('*' as u8) ) {
-                
-                if selector.data[0].qname.name == state.element.name {
-                    return false;
-                }
-            }
+	    unsafe {
+		    if (  lwc_ref.get_mut_ref().lwc_string_length(selector.data[0].qname.name) != 1 ||
+		           lwc_ref.get_mut_ref().lwc_string_data(selector.data[0].qname.name)[0] != ('*' as u8) ) {
+		        
+		        if selector.data[0].qname.name == state.element.name {
+		            return false;
+		        }
+		    }
+	    }
         }    
         return true;
     }        
@@ -1273,6 +1275,7 @@ impl css_select_ctx {
         let mut class_selectors_option_list : ~[Option<uint>] = ~[] ;
         let mut univ_selectors_hash_entry : Option<uint> = None ;
         let mut univ_selectors_option : Option<uint> = None ;
+	let mut src = css_select_rule_source{ source:CSS_SELECT_RULE_SRC_ELEMENT, source_class:0 };
         //let mut error : css_error ;
 
         /* Find hash chain that applies to current node */
@@ -1375,21 +1378,32 @@ impl css_select_ctx {
             if o_selector.is_none() {
                 fail!(~"Error getting selector next ") ;
             }
-            selector = o_selector.expect("") ; 
-            /* Ignore any selectors contained in rules which are a child 
-             * of an @media block that doesn't match the current media 
-             * requirements. */
-            if (css_select_ctx::_rule_applies_to_media(stylesheet_vector, css_rule_data_list, sheet, stylesheet_vector[sheet].css_selectors_list[selector].rule, state.media)) {
-                // println("inside match_selector_chain");
-                let error = self.match_selector_chain(stylesheet_vector, css_rule_data_list, sheet, Some(selector), state);
-                // println("outside match_selector_chain");
-                match error {
-                    CSS_OK => {},
-                    err => {
-                        return err;
-                    }
-                }
-            }
+            selector = o_selector.expect("") ;
+
+	    
+	/* No bytecode if rule body is empty or wholly invalid --
+        * Only interested in rules with bytecode */
+	if( (stylesheet_vector[sheet].css_selectors_list[selector].rule.is_none()) ||
+	    (css_rule_data_list[stylesheet_vector[sheet].css_selectors_list[selector].rule.unwrap()].rule_type as uint != CSS_RULE_SELECTOR as uint)	|| 
+	    (css_rule_data_list[stylesheet_vector[sheet].css_selectors_list[selector].rule.unwrap()].rule_selector.get_mut_ref().style.is_none()) ||
+	    (css_rule_data_list[stylesheet_vector[sheet].css_selectors_list[selector].rule.unwrap()].rule_selector.get_mut_ref().style.get_ref().bytecode.len()==0)	) {
+	}
+	else{
+		    /* Ignore any selectors contained in rules which are a child 
+		     * of an @media block that doesn't match the current media 
+		     * requirements. */
+		    if (css_select_ctx::_rule_applies_to_media(stylesheet_vector, css_rule_data_list, sheet, stylesheet_vector[sheet].css_selectors_list[selector].rule, state.media)) {
+			if (css_select_ctx::_rule_good_for_element_name( (stylesheet_vector[sheet].css_selectors_list[selector]), &mut src,state)) {
+				let error = self.match_selector_chain(stylesheet_vector, css_rule_data_list, sheet, Some(selector), state);
+				match error {
+				    CSS_OK => {},
+				    err => {
+				        return err;
+				    }
+				}
+			}
+		    }
+	    }
 
             /* Advance to next selector in whichever chain we extracted 
              * the processed selector from. */
@@ -1772,12 +1786,12 @@ impl css_select_ctx {
         /* If we got here, then the entire selector chain matched, so cascade */
         state.current_specificity = stylesheet_vector[sheet].css_selectors_list[selector.expect("")].specificity;
 
-        /* No bytecode if rule body is empty or wholly invalid */
+        // No bytecode if rule body is empty or wholly invalid 
         if ( stylesheet_vector[sheet].css_selectors_list[selector.expect("")].rule.is_none() ) {
             return CSS_OK;
         }
 
-         /* No bytecode if rule body is empty or wholly invalid */
+        // No bytecode if rule body is empty or wholly invalid 
         let x_rule = stylesheet_vector[sheet].css_selectors_list[selector.expect("")].rule.unwrap();
         
         if css_rule_data_list[x_rule].rule_type as uint != CSS_RULE_SELECTOR as uint {
@@ -1791,14 +1805,14 @@ impl css_select_ctx {
             return CSS_OK ;
         }
  
-		if( state.results.styles.len() <= pseudo as uint ) {
-			return CSS_INVALID ;
-		}
+	if( state.results.styles.len() <= pseudo as uint ) {
+	    return CSS_INVALID ;
+	}
 
-		/* Ensure that the appropriate computed style exists */
-		if ( state.results.styles[pseudo as uint].is_none() ) {
-			state.results.styles[pseudo as uint] = Some(css_computed_style_create()); 
-		}
+	/* Ensure that the appropriate computed style exists */
+	if ( state.results.styles[pseudo as uint].is_none() ) {
+		state.results.styles[pseudo as uint] = Some(css_computed_style_create()); 
+	}
       
         state.current_pseudo = pseudo;
         state.computed = pseudo as uint;
