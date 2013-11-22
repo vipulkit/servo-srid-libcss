@@ -18,9 +18,7 @@ use css::*;
 use std::ptr::*;
 use std::libc::*;
 use std::cast::*;
-use std::vec::from_elem;
 //use extra::arc;
-
 
 static IMPORT_STACK_SIZE : int = 256 ;
 
@@ -308,16 +306,7 @@ impl css_select_ctx {
         let mut error : css_error ;
         //let mut results : Option<@mut css_select_results>  ;
         let mut parent : *c_void = null() ;
-        let pstate = prop_state{
-            specificity:0,
-            set:false,
-            origin:0,
-            important:false,
-            inherit:false    
-        };  
-
-        let prop_vec: ~[prop_state] = from_elem(CSS_PSEUDO_ELEMENT_COUNT as uint,pstate);
-
+        
         let mut state: ~css_select_state = ~css_select_state {
             node:node,
             media:media,       
@@ -340,7 +329,7 @@ impl css_select_ctx {
             n_classes:0,             
             reject_cache:~[],       
             next_reject:128-1,             
-            props: from_elem(CSS_N_PROPERTIES as uint, prop_vec) 
+            props: initialize_style() 
         };
 		
         /* Base element style is guaranteed to exist */

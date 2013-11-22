@@ -6,7 +6,9 @@ use utils::errors::*;
 use libwapcaplet::wapcaplet::*;
 use std::libc::*;
 use std::clone::Clone;
+use include::properties::*;
 
+static mut select_state:Option<~[~[prop_state]]> = None;
 //#[deriving(DeepClone)]
 pub enum css_computed_content_item_type {
     CSS_COMPUTED_CONTENT_NONE       = 0,
@@ -846,6 +848,40 @@ pub struct css_select_state {
 
     props: ~[~[prop_state]] 
 } 
+
+
+pub fn initialize_style()-> ~[~[prop_state]] {
+
+    unsafe{
+        if select_state.is_none() { 
+            
+            let pstate = prop_state{
+                specificity:0,
+                set:false,
+                origin:0,
+                important:false,
+                inherit:false    
+            };  
+
+            let prop_vec: ~[prop_state] = ~[pstate.clone(), pstate.clone(), pstate.clone(), pstate.clone(), pstate];
+            
+            let mut props_vec:~[~[prop_state]] = ~[];
+
+            let mut index = 0;
+            
+            while index < CSS_N_PROPERTIES as int -1 {
+                props_vec.push(prop_vec.clone());
+                index += 1;
+            }
+
+            props_vec.push(prop_vec);
+
+            select_state = Some(props_vec);
+        }
+            
+        select_state.get_ref().clone()
+    }    
+}
 
 /*
  * Font face selection result set
