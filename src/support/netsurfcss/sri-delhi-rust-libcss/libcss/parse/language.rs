@@ -167,7 +167,12 @@ impl css_language {
             let cur:&context_entry = &self.context[self.context.len()-1];
             match cur.event_type {
                 CSS_PARSER_START_STYLESHEET =>{},
-                _=>{parent_rule = cur.data;}
+                _=>{
+                        if (cur.data.is_some() && css_rule_data_list[cur.data.expect("")].rule_type as uint == CSS_RULE_MEDIA as uint)
+                        {
+                            parent_rule = cur.data;
+                        }
+                    }
             }
         }
         
@@ -571,13 +576,14 @@ impl css_language {
                         match css_rule_data_list[curRule.unwrap()].rule_type {
                             CSS_RULE_SELECTOR => {
                                 let base_rule = css_rule_data_list[curRule.unwrap()].rule_selector.get_ref().base;
-                                match stylesheet_vector[self.sheet].css_rule_list[base_rule].parent_rule {
-                                    Some(pRule) => 
-                                        match stylesheet_vector[self.sheet].css__stylesheet_get_parent_type(css_rule_data_list, pRule) {
-                                            CSS_RULE_PARENT_STYLESHEET  => CSS_OK,
-                                            _ => self.handleEndRuleset()
-                                        },
-                                    None => CSS_OK                      
+                                match stylesheet_vector[self.sheet].css_rule_list[base_rule].parent_stylesheet {
+                                     false =>
+                                     {
+                                        self.handleEndRuleset()    
+                                     },                                                 true => 
+                                    {
+                                        CSS_OK
+                                    }
                                 }
                             },
                             _ =>    CSS_OK
