@@ -9,7 +9,7 @@ use std::clone::Clone;
 use include::properties::*;
 
 static mut select_state:Option<~[~[prop_state]]> = None;
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub enum css_computed_content_item_type {
     CSS_COMPUTED_CONTENT_NONE       = 0,
     CSS_COMPUTED_CONTENT_STRING     = 1,
@@ -298,7 +298,7 @@ pub static CSS_WINDOWS_MASK  : int = 0x2 ;
 
 /////////////////////////////////////////////
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_counter {
     name:uint ,
     value:i32
@@ -313,14 +313,14 @@ impl Clone for css_computed_counter {
     }  
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_content_item_counter {
     name:uint,
     sep:Option<uint>,
     style:u8
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_content_item {
   
     item_type:css_computed_content_item_type,
@@ -339,7 +339,7 @@ impl Clone for css_computed_content_item {
     }  
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_uncommon {
 /*
  * border_spacing         1 + 2(4)    2(4)
@@ -412,7 +412,7 @@ pub struct css_computed_uncommon {
     content:~[~css_computed_content_item],
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_page {
 /*
  * Bit allocations:
@@ -426,10 +426,10 @@ pub struct css_computed_page {
     windows:i32,
 } 
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_aural ;
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_style {
 /*
  * background_attachment      2
@@ -687,7 +687,7 @@ pub enum css_pseudo_element {
     CSS_PSEUDO_ELEMENT_COUNT    = 5 
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_select_results {
     /*
      * Array of pointers to computed styles, 
