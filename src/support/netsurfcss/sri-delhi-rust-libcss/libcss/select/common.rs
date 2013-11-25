@@ -6,8 +6,11 @@ use utils::errors::*;
 use libwapcaplet::wapcaplet::*;
 use std::libc::*;
 use std::clone::Clone;
+use include::properties::*;
 
-//#[deriving(DeepClone)]
+static mut select_state:Option<~[~[prop_state]]> = None;
+
+#[deriving(DeepClone)]
 pub enum css_computed_content_item_type {
     CSS_COMPUTED_CONTENT_NONE       = 0,
     CSS_COMPUTED_CONTENT_STRING     = 1,
@@ -296,7 +299,7 @@ pub static CSS_WINDOWS_MASK  : int = 0x2 ;
 
 /////////////////////////////////////////////
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_counter {
     name:uint ,
     value:i32
@@ -311,14 +314,14 @@ impl Clone for css_computed_counter {
     }  
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_content_item_counter {
     name:uint,
     sep:Option<uint>,
     style:u8
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_content_item {
   
     item_type:css_computed_content_item_type,
@@ -337,7 +340,7 @@ impl Clone for css_computed_content_item {
     }  
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_uncommon {
 /*
  * border_spacing         1 + 2(4)    2(4)
@@ -410,7 +413,7 @@ pub struct css_computed_uncommon {
     content:~[~css_computed_content_item],
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_page {
 /*
  * Bit allocations:
@@ -424,10 +427,10 @@ pub struct css_computed_page {
     windows:i32,
 } 
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_aural ;
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_computed_style {
 /*
  * background_attachment      2
@@ -685,7 +688,7 @@ pub enum css_pseudo_element {
     CSS_PSEUDO_ELEMENT_COUNT    = 5 
 }
 
-//#[deriving(DeepClone)]
+#[deriving(DeepClone)]
 pub struct css_select_results {
     /*
      * Array of pointers to computed styles, 
@@ -847,6 +850,40 @@ pub struct css_select_state {
     props: ~[~[prop_state]] 
 } 
 
+
+pub fn initialize_style()-> ~[~[prop_state]] {
+
+    unsafe{
+        if select_state.is_none() { 
+            
+            let pstate = prop_state{
+                specificity:0,
+                set:false,
+                origin:0,
+                important:false,
+                inherit:false    
+            };  
+
+            let prop_vec: ~[prop_state] = ~[pstate.clone(), pstate.clone(), pstate.clone(), pstate.clone(), pstate];
+            
+            let mut props_vec:~[~[prop_state]] = ~[];
+
+            let mut index = 0;
+            
+            while index < CSS_N_PROPERTIES as int -1 {
+                props_vec.push(prop_vec.clone());
+                index += 1;
+            }
+
+            props_vec.push(prop_vec);
+
+            select_state = Some(props_vec);
+        }
+            
+        select_state.get_ref().clone()
+    }    
+}
+
 /*
  * Font face selection result set
  */
@@ -861,25 +898,25 @@ pub struct css_select_font_faces_results {
 #[inline]
 pub fn advance_bytecode(style: &mut ~css_style) {
     
-	// if (style.bytecode.len() - style.used > 0) {
-		style.used += 1 
-	// }
-	// else {
-	// 	fail!(~"Advancing Bytecode vector after end index")
-	// }
+    // if (style.bytecode.len() - style.used > 0) {
+        style.used += 1 
+    // }
+    // else {
+    //  fail!(~"Advancing Bytecode vector after end index")
+    // }
     
 }   
 
 #[inline]
 pub fn peek_bytecode(style: &mut ~css_style) -> u32 {
     
-	// if style.bytecode.len() - style.used > 0 {
-		//debug!(fmt!("bytecode=%?",style.bytecode)); 
-		style.bytecode[style.used] 
-	// }
-	// else {
-	// 	fail!(~"Advancing Bytecode vector after end index")
-	// }
+    // if style.bytecode.len() - style.used > 0 {
+        //debug!(fmt!("bytecode=%?",style.bytecode)); 
+        style.bytecode[style.used] 
+    // }
+    // else {
+    //  fail!(~"Advancing Bytecode vector after end index")
+    // }
     
 }
 

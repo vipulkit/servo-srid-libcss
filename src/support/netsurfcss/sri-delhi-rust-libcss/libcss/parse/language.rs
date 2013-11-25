@@ -168,11 +168,10 @@ impl css_language {
             match cur.event_type {
                 CSS_PARSER_START_STYLESHEET =>{},
                 _=>{
-                        if (cur.data.is_some() && css_rule_data_list[cur.data.expect("")].rule_type as uint == CSS_RULE_MEDIA as uint)
-                        {
-                            parent_rule = cur.data;
-                        }
+                    if (cur.data.is_some() && css_rule_data_list[cur.data.expect("")].rule_type as uint == CSS_RULE_MEDIA as uint) {
+                        parent_rule = cur.data;
                     }
+                }
             }
         }
         
@@ -576,18 +575,14 @@ impl css_language {
                         match css_rule_data_list[curRule.unwrap()].rule_type {
                             CSS_RULE_SELECTOR => {
                                 let base_rule = css_rule_data_list[curRule.unwrap()].rule_selector.get_ref().base;
-                                match stylesheet_vector[self.sheet].css_rule_list[base_rule].parent_stylesheet {
-                                     false =>
-                                     {
-                                        self.handleEndRuleset()    
-                                     },                                                 true => 
-                                    {
-                                        CSS_OK
-                                    }
+                                if !stylesheet_vector[self.sheet].css_rule_list[base_rule].parent_stylesheet {
+                                    self.handleEndRuleset()
+                                }
+                                else {
+                                    CSS_OK                      
                                 }
                             },
                             _ =>    CSS_OK
-                        
                         }
                     } 
                     else {
