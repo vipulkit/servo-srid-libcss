@@ -43,33 +43,33 @@ pub struct css_select_sheet {
 pub struct css_select_ctx {
     sheets:~[~css_select_sheet],
     /* Useful interned strings */
-    universal:Option<uint>,
-    first_child:Option<uint>,
-    link:Option<uint>,
-    visited:Option<uint>,
-    hover:Option<uint>,
-    active:Option<uint>,
-    focus:Option<uint>,
-    nth_child:Option<uint>,
-    nth_last_child:Option<uint>,
-    nth_of_type:Option<uint>,
-    nth_last_of_type:Option<uint>,
-    last_child:Option<uint>,
-    first_of_type:Option<uint>,
-    last_of_type:Option<uint>,
-    only_child:Option<uint>,
-    only_of_type:Option<uint>,
-    root:Option<uint>,
-    empty:Option<uint>,
-    target:Option<uint>,
-    lang:Option<uint>,
-    enabled:Option<uint>,
-    disabled:Option<uint>,
-    checked:Option<uint>,
-    first_line:Option<uint>,
-    first_letter:Option<uint>,
-    before:Option<uint>,
-    after:Option<uint>
+    universal:uint,
+    first_child:uint,
+    link:uint,
+    visited:uint,
+    hover:uint,
+    active:uint,
+    focus:uint,
+    nth_child:uint,
+    nth_last_child:uint,
+    nth_of_type:uint,
+    nth_last_of_type:uint,
+    last_child:uint,
+    first_of_type:uint,
+    last_of_type:uint,
+    only_child:uint,
+    only_of_type:uint,
+    root:uint,
+    empty:uint,
+    target:uint,
+    lang:uint,
+    enabled:uint,
+    disabled:uint,
+    checked:uint,
+    first_line:uint,
+    first_letter:uint,
+    before:uint,
+    after:uint
 }
 
 
@@ -112,40 +112,41 @@ impl css_select_ctx {
     */
     pub fn css_select_ctx_create() -> ~css_select_ctx {
         lwc();
-        let mut result = ~css_select_ctx {
+        
+        let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
+        ~css_select_ctx {
             sheets:~[],
-            universal:None,
-            first_child:None,
-            link:None,
-            visited:None,
-            hover:None,
-            active:None,
-            focus:None,
-            nth_child:None,
-            nth_last_child:None,
-            nth_of_type:None,
-            nth_last_of_type:None,
-            last_child:None,
-            first_of_type:None,
-            last_of_type:None,
-            only_child:None,
-            only_of_type:None,
-            root:None,
-            empty:None,
-            target:None,
-            lang:None,
-            enabled:None,
-            disabled:None,
-            checked:None,
-            first_line:None,
-            first_letter:None,
-            before:None,
-            after:None
-        };
-
-
-        result.intern_strings();
-        return result 
+            /* Universal selector */
+            universal : lwc_ref.lwc_intern_string("*"),
+            /* Pseudo classes */
+            first_child : lwc_ref.lwc_intern_string("first-child"),
+            link : lwc_ref.lwc_intern_string("link"),
+            visited : lwc_ref.lwc_intern_string("visited"),
+            hover : lwc_ref.lwc_intern_string("hover"),
+            active : lwc_ref.lwc_intern_string("active"),
+            focus : lwc_ref.lwc_intern_string("focus"),
+            nth_child : lwc_ref.lwc_intern_string("nth-child"),
+            nth_last_child : lwc_ref.lwc_intern_string("nth-last-child"),
+            nth_of_type : lwc_ref.lwc_intern_string("nth-of-type"),
+            nth_last_of_type : lwc_ref.lwc_intern_string("nth-last-of-type"),
+            last_child : lwc_ref.lwc_intern_string("last-child"),
+            first_of_type : lwc_ref.lwc_intern_string("first-of-type"),
+            last_of_type : lwc_ref.lwc_intern_string("last-of-type"),
+            only_child : lwc_ref.lwc_intern_string("only-child"),
+            only_of_type : lwc_ref.lwc_intern_string("only-of-type"),
+            root : lwc_ref.lwc_intern_string("root"),
+            empty : lwc_ref.lwc_intern_string("empty"),
+            target : lwc_ref.lwc_intern_string("target"),
+            lang : lwc_ref.lwc_intern_string("lang"),
+            enabled : lwc_ref.lwc_intern_string("enabled"),
+            disabled : lwc_ref.lwc_intern_string("disabled"),
+            checked : lwc_ref.lwc_intern_string("checked"),
+            /* Pseudo elements */
+            first_line : lwc_ref.lwc_intern_string("first-line"),
+            first_letter : lwc_ref.lwc_intern_string("first-letter"),
+            before : lwc_ref.lwc_intern_string("before"),
+            after : lwc_ref.lwc_intern_string("after")
+        }
     }
 
 
@@ -720,51 +721,7 @@ impl css_select_ctx {
     /******************************************************************************
      * Selection engine internals below here                                      *
      ******************************************************************************/
-    #[inline]
-    pub fn intern_strings(&mut self) {
-
-
-        let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
-        
-                    /* Universal selector */
-        self.universal = Some(lwc_ref.lwc_intern_string("*"));
-
-
-        /* Pseudo classes */
-        self.first_child = Some(lwc_ref.lwc_intern_string("first-child"));
-        self.link = Some(lwc_ref.lwc_intern_string("link"));
-        self.visited = Some(lwc_ref.lwc_intern_string("visited"));
-        self.hover = Some(lwc_ref.lwc_intern_string("hover"));
-        self.active = Some(lwc_ref.lwc_intern_string("active"));
-        self.focus = Some(lwc_ref.lwc_intern_string("focus"));
-        self.nth_child = Some(lwc_ref.lwc_intern_string("nth-child"));
-        self.nth_last_child = Some(lwc_ref.lwc_intern_string("nth-last-child"));
-        self.nth_of_type = Some(lwc_ref.lwc_intern_string("nth-of-type"));
-        self.nth_last_of_type = Some(lwc_ref.lwc_intern_string("nth-last-of-type"));
-        self.last_child = Some(lwc_ref.lwc_intern_string("last-child"));
-        self.first_of_type = Some(lwc_ref.lwc_intern_string("first-of-type"));
-        self.last_of_type = Some(lwc_ref.lwc_intern_string("last-of-type"));
-        self.only_child = Some(lwc_ref.lwc_intern_string("only-child"));
-        self.only_of_type = Some(lwc_ref.lwc_intern_string("only-of-type"));
-        self.root = Some(lwc_ref.lwc_intern_string("root"));
-        self.empty = Some(lwc_ref.lwc_intern_string("empty"));
-        self.target = Some(lwc_ref.lwc_intern_string("target"));
-        self.lang = Some(lwc_ref.lwc_intern_string("lang"));
-        self.enabled = Some(lwc_ref.lwc_intern_string("enabled"));
-        self.disabled = Some(lwc_ref.lwc_intern_string("disabled"));
-        self.checked = Some(lwc_ref.lwc_intern_string("checked"));
-
-
-        /* Pseudo elements */
-        self.first_line = Some(lwc_ref.lwc_intern_string("first-line"));
-        self.first_letter = Some(lwc_ref.lwc_intern_string("first-letter"));
-        self.before = Some(lwc_ref.lwc_intern_string("before"));
-        self.after = Some(lwc_ref.lwc_intern_string("after"));
-
-
-    }
-
-
+   
     #[inline]
     pub fn set_hint(state:&mut ~css_select_state, prop:u32) -> css_error {
         
@@ -1805,8 +1762,7 @@ impl css_select_ctx {
         let rejected_by_cache : &mut bool = &mut true ;
         let mut pseudo : css_pseudo_element = CSS_PSEUDO_ELEMENT_NONE ;
         let mut error : css_error ;
-        let universal_string = self.universal.expect("") ;
-          
+                 
         
         /* Match the details of the first selector in the chain. 
          *
@@ -1845,9 +1801,8 @@ impl css_select_ctx {
                                         _=>{true} }
                                  ) && 
                                  (stylesheet_vector[sheet].css_selectors_list[s.expect("")].combinator.is_some() ) &&
-                                 (self.universal.is_some() ) &&
                                  (stylesheet_vector[sheet].css_selectors_list[stylesheet_vector[sheet].css_selectors_list[s.expect("")].combinator.expect("")].data[0].qname.name != 
-                                  universal_string) ) {
+                                  self.universal) ) {
 
 
                                 /* Named combinator */
@@ -2243,16 +2198,12 @@ impl css_select_ctx {
                     }
                 }
                                                                 
-                                if (is_root == false && 
-                                           lwc_ref.lwc_string_isequal(lwc_name , self.first_child.get_ref().clone() ) ) { 
-
+                if (is_root == false && 
+                           lwc_name == self.first_child ) { 
 
                     let num_before:&mut i32 =&mut 0;
-
-
                     error = (state.handler.get_ref().node_count_siblings)( 
                             lwc_ref, node, false, false, num_before);
-
 
                     match error {
                         CSS_OK => {
@@ -2267,10 +2218,9 @@ impl css_select_ctx {
                     }
                 }
                 else if (is_root == false && 
-                                                        lwc_ref.lwc_string_isequal(lwc_name , self.nth_child.expect("") )
-                                           ) { 
-                    let num_before:&mut i32 =&mut 0;
+                            lwc_name == self.nth_child) { 
 
+                    let num_before:&mut i32 =&mut 0;
 
                     error = (state.handler.get_ref().node_count_siblings)( 
                             lwc_ref, node, false, false, num_before);
@@ -2286,9 +2236,9 @@ impl css_select_ctx {
                         _ => {}
                     }
                 }
-                else if (is_root == false && 
-                                                  lwc_ref.lwc_string_isequal(lwc_name , self.nth_last_child.expect("") )
-                                                )  { 
+                else if (!is_root && 
+                            lwc_name == self.nth_last_child) {
+
                     let mut num_after:i32 = 0;
 
 
@@ -2307,9 +2257,9 @@ impl css_select_ctx {
                     }
                 }
                 else if (is_root == false && 
-                        lwc_ref.lwc_string_isequal(lwc_name , self.nth_of_type.expect("") ) ) { 
-                    let mut num_before:i32 = 0;
+                            lwc_name == self.nth_of_type) {
 
+                    let mut num_before:i32 = 0;
 
                     error = (state.handler.get_ref().node_count_siblings)( 
                             lwc_ref, node, true, false, &mut num_before);
@@ -2326,7 +2276,7 @@ impl css_select_ctx {
                     }
                 } 
                 else if (is_root == false && 
-                        lwc_ref.lwc_string_isequal(lwc_name , self.nth_last_of_type.expect("") ) ) { 
+                            lwc_name == self.nth_last_of_type) { 
                     let mut num_after:i32 = 0;
 
 
@@ -2344,7 +2294,7 @@ impl css_select_ctx {
                         _ => {}
                     }
                 } else if (is_root == false &&
-                        lwc_ref.lwc_string_isequal(lwc_name , self.last_child.expect("") ) ) { 
+                                lwc_name == self.last_child) { 
                     let mut num_after:i32 = 0;
 
 
@@ -2363,7 +2313,7 @@ impl css_select_ctx {
                             }
                 } 
                 else if (is_root == false &&
-                        lwc_ref.lwc_string_isequal(lwc_name , self.first_of_type.get_ref().clone() ) ) { 
+                            lwc_name == self.first_of_type) { 
                     let mut num_before:i32 = 0;
 
 
@@ -2385,7 +2335,7 @@ impl css_select_ctx {
                     }
                 } 
                 else if (is_root == false &&
-                        lwc_ref.lwc_string_isequal(lwc_name , self.last_of_type.get_ref().clone() ) ) { 
+                            lwc_name == self.last_of_type) { 
                     let mut num_after:i32 = 0;
 
 
@@ -2405,7 +2355,7 @@ impl css_select_ctx {
                     }
                 }
                 else if (is_root == false && 
-                        lwc_ref.lwc_string_isequal(lwc_name , self.only_child.expect("") ) ) { 
+                        lwc_name == self.only_child) { 
                     
                     let mut num_before = 0;
                     let mut num_after = 0;
@@ -2436,7 +2386,7 @@ impl css_select_ctx {
                     }
                 } 
                 else if (is_root == false && 
-                        lwc_ref.lwc_string_isequal(lwc_name , self.only_of_type.expect("") ) ) { 
+                            lwc_name == self.only_of_type) { 
                 
                     let mut num_before = 0;
                     let mut num_after = 0;
@@ -2463,52 +2413,50 @@ impl css_select_ctx {
                         }       
                     }
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.root.expect("") ) ) { 
+                else if ( lwc_name == self.root) { 
                     *matched = is_root;
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.empty.expect("") ) ) {
+                else if ( lwc_name == self.empty) {
                     error = (state.handler.get_ref().node_is_empty)(
                             node, matched);
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.link.expect("") ) ) { 
-
-
+                else if ( lwc_name == self.link) { 
                     error = (state.handler.get_ref().node_is_link)(state.pw ,
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.visited.expect("") ) ) { 
+                else if ( lwc_name == self.visited) { 
                     error = (state.handler.get_ref().node_is_visited)(state.pw ,
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.hover.expect("") ) ) { 
+                else if ( lwc_name == self.hover) { 
                     error = (state.handler.get_ref().node_is_hover)(
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.active.expect("") ) ) { 
+                else if ( lwc_name == self.active) { 
                     error = (state.handler.get_ref().node_is_active)(
                             node, matched);
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.focus.expect("") ) ) { 
+                else if ( lwc_name == self.focus) { 
                     error = (state.handler.get_ref().node_is_focus)(
                             node, matched);
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.target.expect("") ) ) { 
+                else if ( lwc_name == self.target) { 
                     error = (state.handler.get_ref().node_is_target)(
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.lang.expect("") ) ) { 
+                else if ( lwc_name == self.lang) { 
                     error = (state.handler.get_ref().node_is_lang)(
                             node, (detail.string).get_ref().clone(), matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.enabled.expect("") ) ) { 
+                else if ( lwc_name == self.enabled) { 
                     error = (state.handler.get_ref().node_is_enabled)(
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.disabled.expect("") ) ) { 
+                else if ( lwc_name == self.disabled) { 
                     error = (state.handler.get_ref().node_is_disabled)(
                             node, matched);
                 }
-                else if ( lwc_ref.lwc_string_isequal(lwc_name , self.checked.expect("") ) ) { 
+                else if ( lwc_name == self.checked) { 
                     error = (state.handler.get_ref().node_is_checked)(
                             node, matched);
                 }
@@ -2518,16 +2466,16 @@ impl css_select_ctx {
             }
             CSS_SELECTOR_PSEUDO_ELEMENT => {
                 *matched = true;
-                if ( lwc_ref.lwc_string_isequal(lwc_name,  self.first_line.expect("") ) ) { 
+                if ( lwc_name ==  self.first_line) { 
                     *pseudo_element = CSS_PSEUDO_ELEMENT_FIRST_LINE;
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name, self.first_letter.expect("") ) ){ 
+                else if ( lwc_name == self.first_letter){ 
                     *pseudo_element = CSS_PSEUDO_ELEMENT_FIRST_LETTER;
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name,  self.before.expect("") ) ) { 
+                else if (lwc_name ==  self.before) { 
                     *pseudo_element = CSS_PSEUDO_ELEMENT_BEFORE;
                 } 
-                else if ( lwc_ref.lwc_string_isequal(lwc_name, self.after.expect("") ) ) { 
+                else if ( lwc_name == self.after) { 
                     *pseudo_element = CSS_PSEUDO_ELEMENT_AFTER;
                 } 
                 else {
