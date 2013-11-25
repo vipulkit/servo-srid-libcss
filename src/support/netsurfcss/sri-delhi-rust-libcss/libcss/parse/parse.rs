@@ -2513,7 +2513,7 @@ impl css_parser {
                 } /* Initial */
 
                 1 /* WS */ => {
-                    current_substate = WS as uint; // TODO review
+                    // current_substate = WS as uint; // TODO review
                     parser.update_current_substate(WS as uint);
                     let eat_ws_result = parser.eat_ws(lwc_ref);
                     match (eat_ws_result) {
