@@ -1029,7 +1029,7 @@ impl css_lexer {
                     token_type = CSS_TOKEN_CHAR;
                 }
                 
-                self.emit_token(Some(token_type));
+                return self.emit_token(Some(token_type));
             }
 
             let (cptr , counter, clen) = pu_peek_result.unwrap();
