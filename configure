@@ -316,12 +316,12 @@ else
     step_msg "processing $CFG_SELF args"
 fi
 
-opt optimize 1 "build optimized rust code"
-opt optimize-cxx 1 "build optimized C++ code"
+opt optimize 0 "build optimized rust code"
+opt optimize-cxx 0 "build optimized C++ code"
 opt manage-submodules 1 "let the build manage the git submodules"
 opt fast-make 0 "use .gitmodules as timestamp for submodule deps"
-opt debug 0 "build with debugging code and symbols"
-opt debug-skia 0 "build Skia and Azure for debugging (significant performance hit)"
+opt debug 1 "build with debugging code and symbols"
+opt debug-skia 1 "build Skia and Azure for debugging (significant performance hit)"
 valopt local-rust-root "" "set prefix for local rust binary"
 valopt target-triples "${DEFAULT_TARGET_TRIPLE}" "target triple to be compiled"
 valopt android-cross-path "/opt/ndk_standalone" "Android NDK cross compiler path"
