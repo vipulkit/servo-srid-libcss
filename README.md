@@ -16,7 +16,7 @@ of current version of servo and its submodule is available in
 File "CommitHashes"  in the current directory.
 
 ## Building
-sudo apt-get install autoconf2.13 curl freeglut3-dev libtool libfreetype6-dev libfontconfig1-dev libgl1-mesa-dri libglib2.0-dev xorg-dev msttcorefonts
+sudo apt-get install autoconf2.13 curl freeglut3-dev libtool libfreetype6-dev libfontconfig1-dev libgl1-mesa-dri libglib2.0-dev xorg-dev msttcorefonts build-essential 
 sudo apt-get install autoconf2.13 curl libtool ia32-libs
 
 ./sri_delhi_build.sh
