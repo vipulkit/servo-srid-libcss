@@ -559,7 +559,7 @@ impl css_select_ctx {
             }
         }
 
-        if (inline_style.is_none() && id == 0u && classes == ~[]){
+        if (inline_style.is_none() && id == 0u && state.classes == ~[]){
             unsafe{
                 if style_list.is_none() {
                     style_list = Some(~[style{node_name:element.name,result:state.results.deep_clone()}]);    
