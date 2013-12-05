@@ -1217,7 +1217,8 @@ impl css_select_ctx {
                             node: Option<uint>, 
                             id: Option<uint>,
                             classes: &~[Option<uint>], 
-                            univ: Option<uint>) 
+                            univ: Option<uint>,
+                            src:&mut css_select_rule_source) 
                             -> Option<uint> {
 
 
@@ -1227,16 +1228,19 @@ impl css_select_ctx {
 
         if (css_select_ctx::_selector_less_specific(stylesheet_vector, css_rule_data_list, sheet, ret, node)) {
             ret = Some(node.expect(""));
+            src.source = CSS_SELECT_RULE_SRC_ELEMENT;
         }
 
 
         if (css_select_ctx::_selector_less_specific(stylesheet_vector, css_rule_data_list, sheet, ret, id)) {
             ret = Some(id.expect(""));
+            src.source = CSS_SELECT_RULE_SRC_ID;
         }
 
 
         if (css_select_ctx::_selector_less_specific(stylesheet_vector, css_rule_data_list, sheet, ret, univ)) {
             ret = Some(univ.expect(""));
+            src.source = CSS_SELECT_RULE_SRC_UNIVERSAL;
         }
 
 
@@ -1245,6 +1249,7 @@ impl css_select_ctx {
         while i < classes_len {
             if (css_select_ctx::_selector_less_specific(stylesheet_vector, css_rule_data_list, sheet, ret,classes[i])){
                 ret = Some(classes[i].expect(""));
+                src.source = CSS_SELECT_RULE_SRC_CLASS;
             }
             i += 1;
         }
@@ -1266,7 +1271,7 @@ impl css_select_ctx {
                     if (  lwc_ref.get_mut_ref().lwc_string_length(selector.data[0].qname.name) != 1 ||
                            lwc_ref.get_mut_ref().lwc_string_data(selector.data[0].qname.name)[0] != ('*' as u8) ) {
                         
-                        if selector.data[0].qname.name == state.element.name {
+                        if selector.data[0].qname.name != state.element.name {
                             return false;
                         }
                     }
@@ -1392,7 +1397,8 @@ impl css_select_ctx {
                                     node_selectors_option, 
                                     id_selectors_option,
                                     &class_selectors_option_list, 
-                                    univ_selectors_option );
+                                    univ_selectors_option,
+                                    &mut src );
             // println("outside _selector_next");
             if o_selector.is_none() {
                 fail!(~"Error getting selector next ") ;
