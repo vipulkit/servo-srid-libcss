@@ -60,6 +60,7 @@ fn compute_font_size_cb(parent: Option<&~css_hint>, size: &mut ~css_hint) -> css
                             }
                             else {
                                 new_value *= css_fixed_to_float(child.length.get_ref().value)/100.0;
+                                new_value = float_to_css_fixed(new_value) as float;
                             }
                             
                         }

@@ -1,37 +1,36 @@
-Servo-srid-libcss
+## About
+Servo-srid-libcss is integration of servo-browser-engine with libcss(developed in SRI-Delhi) purely in rust.
 
 Servo Browser Engine : taken from https://github.com/mozilla/servo
+Integrated with sri-delhi-rust-libcss https://github.com/webconvforge/sri-delhi-rust-libcss
 
-with integration of sri-delhi-rust-libcss https://github.com/webconvforge/sri-delhi-rust-libcss
+Servo source code imported from servo(github repository) changed so that it can build offline 
+without dependency on other projects including rust compiler source and rust-compiler-snapshot-build
+required for rust-compiler bootstraping.
 
-modified to build servo/rust offline and integrate our libcss library.
+Original Servo code used for integration is available in "original" branch.
 
-
+## Status and Origin
 Location / URL / Release Info / Commit Info 
-or cuurent version of servo and its submodule is available in 
+of current version of servo and its submodule is available in 
 File "CommitHashes"  in the current directory.
 
+## Building
+sudo apt-get install autoconf2.13 curl freeglut3-dev libtool libfreetype6-dev libfontconfig1-dev libgl1-mesa-dri libglib2.0-dev xorg-dev msttcorefonts build-essential 
+sudo apt-get install autoconf2.13 curl libtool ia32-libs
 
-to build the servo-srid-libcss run 
 ./sri_delhi_build.sh
 
-to run servo 
+## Running
 cd build
 ./servo <PATH_TO_HTML_FILE>
 
 
 
 
-
-
-
-
-
-
-
-===================================================
-Readme from servo browser engine start here :->
-===================================================
+=============================================================================
+please find text of README from servo-browser-engine below:->
+=============================================================================
 
 
 
