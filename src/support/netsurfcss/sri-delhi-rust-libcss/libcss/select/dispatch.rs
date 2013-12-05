@@ -1302,7 +1302,7 @@ pub fn css_computed_style_initialise(style:~css_computed_style ,
         n_classes:0,             
         reject_cache: ~[],       
         next_reject:128-1,             
-        props: initialize_style() 
+        props: unsafe{select_state.get_ref().clone()} 
     };
     
         

@@ -8,7 +8,7 @@ use std::libc::*;
 use std::clone::Clone;
 use include::properties::*;
 
-static mut select_state:Option<~[~[prop_state]]> = None;
+pub static mut select_state:Option<~[~[prop_state]]> = None;
 
 #[deriving(DeepClone)]
 pub enum css_computed_content_item_type {
@@ -851,7 +851,7 @@ pub struct css_select_state {
 } 
 
 
-pub fn initialize_style()-> ~[~[prop_state]] {
+pub fn initialize_style() {
 
     unsafe{
         if select_state.is_none() { 
@@ -878,9 +878,7 @@ pub fn initialize_style()-> ~[~[prop_state]] {
             props_vec.push(prop_vec);
 
             select_state = Some(props_vec);
-        }
-            
-        select_state.get_ref().clone()
+        }            
     }    
 }
 
@@ -898,25 +896,25 @@ pub struct css_select_font_faces_results {
 #[inline]
 pub fn advance_bytecode(style: &mut ~css_style) {
     
-    // if (style.bytecode.len() - style.used > 0) {
-        style.used += 1 
-    // }
-    // else {
-    //  fail!(~"Advancing Bytecode vector after end index")
-    // }
+	// if (style.bytecode.len() - style.used > 0) {
+		style.used += 1 
+	// }
+	// else {
+	// 	fail!(~"Advancing Bytecode vector after end index")
+	// }
     
 }   
 
 #[inline]
 pub fn peek_bytecode(style: &mut ~css_style) -> u32 {
     
-    // if style.bytecode.len() - style.used > 0 {
-        //debug!(fmt!("bytecode=%?",style.bytecode)); 
-        style.bytecode[style.used] 
-    // }
-    // else {
-    //  fail!(~"Advancing Bytecode vector after end index")
-    // }
+	// if style.bytecode.len() - style.used > 0 {
+		//debug!(fmt!("bytecode=%?",style.bytecode)); 
+		style.bytecode[style.used] 
+	// }
+	// else {
+	// 	fail!(~"Advancing Bytecode vector after end index")
+	// }
     
 }
 

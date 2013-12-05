@@ -481,6 +481,7 @@ pub mod select {
     use srid_css::libwapcaplet::wapcaplet::*;
     use srid_css::select::common::*;
     use srid_css::select::dispatch::*;
+    use extra::time;
     // use dump_computed::*;
 
     pub enum CssPseudoElement {
@@ -524,28 +525,42 @@ pub mod select {
         #[fixed_stack_segment]
         pub fn select_style<N: VoidPtrLike, H: CssSelectHandler<N>>(&mut self, node: &N, media: u64,
                                                             inline_style: Option<uint>,
-                                                            handler: &H) -> CssSelectResults {
+                                                            handler: &H , total_time: &mut u64) -> CssSelectResults {
+
+            let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
+            
             do with_untyped_handler(handler) |untyped_handler| {
                 let raw_handler = build_raw_handler();
                 
-                // let inline_sheet = match inline_style {
-                //     None => null(),
-                //     Some(sheet) => stylesheet_vector_ref.get_ref()[sheet],
-                // };
+                let pw:*c_void = unsafe {transmute(to_unsafe_ptr(untyped_handler))};
+                
+                let mut node_name = css_qname{ 
+                    name:lwc_ref.lwc_intern_string("") , 
+                    ns:lwc_ref.lwc_intern_string("")
+                };
+                ((raw_handler.node_name))(pw , node.to_void_ptr(), &mut node_name);
+
+                let mut node_id : uint = 0;
+                ((raw_handler.node_id))(lwc_ref , pw , node.to_void_ptr(), &mut node_id);
+
+                let mut classes: ~[uint] = ~[];
+                ((raw_handler.node_classes))(lwc_ref, pw, node.to_void_ptr(), 
+                        &mut classes);
+
+                let start_time = time::precise_time_ns();
                 let (error, results) = self.select_ctx.css_select_style(node.to_void_ptr(),
                                 media,
                                 inline_style,
                                 raw_handler,
-                                unsafe {transmute(to_unsafe_ptr(untyped_handler))} );
+                                pw  , node_name , node_id , classes);
                 if error as uint != CSS_OK as uint {
                      println(fmt!("%?", error));
                      //fail!("Error in Select Style")
                 }
-
+                let end_time = time::precise_time_ns();
                 
-
-            	//let mut result_string : ~str = ~"" ;
-
+                *total_time += (end_time - start_time);  
+                
                 let result_unwrap = if results.is_none() {
                         ~css_select_results{ 
                                         styles:~[Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create()),Some(css_computed_style_inline_create())] 

@@ -25,7 +25,12 @@ use std::libc::*;
 use std::cast::*;
 
 static IMPORT_STACK_SIZE : int = 256 ;
+static mut style_list:Option<~[style]> = None;
 
+struct style {
+    node_name: uint,
+    result: ~css_select_results
+}
 
 /*
  * Container for stylesheet selection info
@@ -112,7 +117,8 @@ impl css_select_ctx {
     */
     pub fn css_select_ctx_create() -> ~css_select_ctx {
         lwc();
-        
+        initialize_style();
+
         let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
         ~css_select_ctx {
             sheets:~[],
@@ -216,6 +222,7 @@ impl css_select_ctx {
 
 
         self.sheets.push(select_sheet);
+        unsafe{style_list = None};
         CSS_OK
     }
 
@@ -237,6 +244,7 @@ impl css_select_ctx {
             i = i - 1 ;
             if ( self.sheets[i].sheet == csheet ) {
                 self.sheets.remove(i);
+                unsafe{style_list = None};
                 return CSS_OK ;
             }
         }
@@ -305,31 +313,46 @@ impl css_select_ctx {
         * update the fully computed style for a node when layout changes.
         */
     pub fn css_select_style(&mut self,
-                                /*stylesheet_vector: &mut ~[css_stylesheet], */
-                                /*css_rule_data_list:&mut ~[~css_rule_data_type],*/
                                 node:*c_void,
                                 media:u64,
                                 inline_style:Option<uint>,
                                 handler:~css_select_handler,
-                                                                pw:*c_void) 
+                                pw:*c_void , 
+                                element: css_qname , 
+                                id: uint , 
+                                classes: ~[uint]) 
                                 -> (css_error,Option<~css_select_results>) {
-        // println("inside stylesheet_vector_create");                                
-        stylesheet_vector_create();
-        // println("outside stylesheet_vector_create");
-        let stylesheet_vector = unsafe {stylesheet_vector_ref.get_mut_ref()}; 
-        // println("inside rule_data_list_create");
-        rule_data_list_create();
-        // println("outside rule_data_list_create");
-        let css_rule_data_list = unsafe {rule_data_list_ref.get_mut_ref()};
-        //debug!(fmt!("Entering css_select_style")) ;
+        
         if( node == null() || handler.handler_version != (CSS_SELECT_HANDLER_VERSION_1  as uint) ) {
             return (CSS_BADPARM,None) ;
         }
+
         let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
+        
+        if(inline_style.is_none() && id == 0u && classes == ~[] && element.name!= lwc_ref.lwc_intern_string("html")){
+            unsafe{
+                if style_list.is_some(){
+                    let len = style_list.get_ref().len();
+                    let mut i = 0;
+                    while i < len {
+                        if (style_list.get_ref())[i].node_name == element.name {
+                            return (CSS_OK, Some(style_list.get_ref()[i].result.deep_clone()));
+                        }
+                        i += 1; 
+                    }
+                }    
+            }
+        }
+
+        stylesheet_vector_create();
+        let stylesheet_vector = unsafe {stylesheet_vector_ref.get_mut_ref()}; 
+        rule_data_list_create();
+        let css_rule_data_list = unsafe {rule_data_list_ref.get_mut_ref()};
+        //debug!(fmt!("Entering css_select_style")) ;
+        
         let mut i : int  ;
         let mut j :int;
         let mut error : css_error ;
-        //let mut results : Option<@mut css_select_results>  ;
         let mut parent : *c_void = null() ;
         
         let mut state: ~css_select_state = ~css_select_state {
@@ -345,102 +368,42 @@ impl css_select_ctx {
             sheet:None,   
             current_origin:CSS_ORIGIN_UA,  
             current_specificity:0,   
-            element:css_qname{ 
-                name:lwc_ref.lwc_intern_string("") , 
-                ns:lwc_ref.lwc_intern_string("") 
-            },
-            id:lwc_ref.lwc_intern_string(""),
-            classes:~[],
+            element:element,
+            id:id,
+            classes:classes,
             n_classes:0,             
             reject_cache:~[],       
             next_reject:128-1,             
-            props: initialize_style() 
+            props: unsafe{select_state.get_ref().clone()} 
         };
                 
         /* Base element style is guaranteed to exist */
-        // println("inside css_computed_style_create");
         state.results.styles[0] = (Some(css_computed_style_create()));
-        // println("outside css_computed_style_create");
-
-
-        // println("inside handler of parent_node");
         error = ((state.handler.get_ref().parent_node))(state.pw , node, &mut parent);
-        // println("outside handler of parent_node");
-
-
         match error {
             CSS_OK=>{},
             x =>  {
                 return (x,None) ;
             }
         }
-
-
-        /* Get node's name */
-        // println("inside handler of node_name");
-        error = ((state.handler.get_ref().node_name))(state.pw , node, &mut state.element);
-        // println("outside handler of node_name");
-
-
-        match error {
-            CSS_OK=>{},
-            x =>  {
-                return (x,None) ;
-            }
-        }
-
-
-        /* Get node's ID, if any */
-        // println("inside handler of node_id");
-        error = ((state.handler.get_ref().node_id))(lwc_ref, pw, node, &mut state.id);
-        // println("outside handler of node_id");
-        match error {
-            CSS_OK=>{},
-            x =>  {
-                return (x,None) ;
-            }
-        }
-
-
-        /* Get node's classes, if any */
-        /* \todo Do we really want to force the client to allocate a new array 
-         * every time we call this? It seems hugely inefficient, given they can 
-         * cache the data. */
-         // println("inside handler of node_classes");
-        error = ((state.handler.get_ref().node_classes))(lwc_ref, pw, node, 
-                &mut (state.classes));
-        // println("outside handler of node_classes");
-        match error {
-            CSS_OK=>{},
-            x =>  {
-                return (x,None) ;
-            }
-        }
-
 
         /* Iterate through the top-level stylesheets, selecting styles
          * from those which apply to our current media requirements and
          * are not disabled */
         i=0;
         let sheets_len = self.sheets.len() as int;
-        //let (out,in): (Port<~>, Chan<~>) = stream();
-                //let (out1,in1): (Port<~[int]>, Chan<~[int]>) = stream();
-                
-                while i< sheets_len {
+        while i< sheets_len {
             
             if( self.sheets[i].media & media ) != 0 && 
                 stylesheet_vector[self.sheets[i].sheet].disabled == false {
-                    //debug!(fmt!("css_select_style : selecting from sheet ")) ;
-                // println("inside select_from_sheet");    
-                                self.select_from_sheet(stylesheet_vector, css_rule_data_list, self.sheets[i].sheet, self.sheets[i].origin, &mut state);  
-                // println("outside of select_from_sheet");
-                                match error {
-                                        CSS_OK=>{},
-                                        x =>  {
-                                                return (x,None) ;
-                                        }
-                                }
-                                                
+                //debug!(fmt!("css_select_style : selecting from sheet ")) ;
+                self.select_from_sheet(stylesheet_vector, css_rule_data_list, self.sheets[i].sheet, self.sheets[i].origin, &mut state);  
+                match error {
+                        CSS_OK=>{},
+                        x =>  {
+                                return (x,None) ;
+                        }
+                }                
             }
 
 
@@ -465,20 +428,13 @@ impl css_select_ctx {
                 Some(r) => {
                     match css_rule_data_list[r].rule_type {
                         CSS_RULE_SELECTOR=>{
-                            // Complete 
-
-
                             /* No bytecode if input was empty or wholly invalid */
                             if(css_rule_data_list[r].rule_selector.get_mut_ref().style.is_some()){
                                 /* Inline style applies to base element only */
                                 state.current_pseudo = CSS_PSEUDO_ELEMENT_NONE;
                                 state.computed = CSS_PSEUDO_ELEMENT_NONE as uint;
-
-
-                                // println("inside cascade_style");
                                 error = css_select_ctx::cascade_style(stylesheet_vector, css_rule_data_list[r].rule_selector.get_mut_ref().style.get_mut_ref(), 
                                                         &mut state);
-                                // println("outside cascade_style");
                                 match error {
                                     CSS_OK=>{},
                                     x =>  {
@@ -515,9 +471,7 @@ impl css_select_ctx {
             if (prop.set == false ||
                     (prop.origin != (CSS_ORIGIN_AUTHOR as u8) &&
                                             prop.important == false)) {
-                // println("inside set_hint");
                 error = css_select_ctx::set_hint(&mut state, i as u32);
-                // println("ouside set_hint");
                 match error {
                     CSS_OK=>{},
                     x =>  {
@@ -533,10 +487,8 @@ impl css_select_ctx {
             if ( prop.set == false || 
                     (parent == null() && 
                     prop.inherit == true)) {
-                // println("inside set_initial");
                 error = css_select_ctx::set_initial(&mut state, i as uint, 
                         CSS_PSEUDO_ELEMENT_NONE, parent);
-                // println("outside set_initial");
                 match error {
                     CSS_OK=>{},
                     x =>  {
@@ -576,9 +528,7 @@ impl css_select_ctx {
                 /* If the property is still unset then set it 
                  * to its initial value. */
                 if (prop.set == false) {
-                    // println("inside set_initial 2");
                     error = css_select_ctx::set_initial(&mut state, i as uint, unsafe { transmute(j)}, parent);
-                    // println("outside set_initial 2");
                     match error {
                         CSS_OK=>{},
                         x =>  {
@@ -598,11 +548,9 @@ impl css_select_ctx {
          * is set to the computed value of color. */
         if (parent == null()) {
             /* Only compute absolute values for the base element */
-            // println("inside css__compute_absolute_values");
             error = css__compute_absolute_values(None,
                     state.results.styles[CSS_PSEUDO_ELEMENT_NONE as uint].get_mut_ref(),
                     state.handler.get_ref().compute_font_size);
-            // println("outside css__compute_absolute_values");
             match error {
                 CSS_OK=>{},
                 x =>  {
@@ -611,6 +559,16 @@ impl css_select_ctx {
             }
         }
 
+        if (inline_style.is_none() && id == 0u && classes == ~[]){
+            unsafe{
+                if style_list.is_none() {
+                    style_list = Some(~[style{node_name:element.name,result:state.results.deep_clone()}]);    
+                }
+                else{
+                    style_list.get_mut_ref().push(style{node_name:element.name,result:state.results.deep_clone()});
+                }
+            }
+        }    
 
         (CSS_OK,Some(state.results))
     }

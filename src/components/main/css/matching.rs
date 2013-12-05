@@ -13,12 +13,9 @@ use newcss::complete::CompleteSelectResults;
 use newcss::select::SelectCtx;
 use newcss::select::SelectResults;
 use servo_util::tree::TreeNodeRef;
-use extra::time;
-
-pub static mut total_time: u64 = 0;
 
 pub trait MatchMethods {
-    fn restyle_subtree(&self, select_ctx: &mut SelectCtx);
+    fn restyle_subtree(&self, select_ctx: &mut SelectCtx , total_time: &mut u64);
 }
 
 impl MatchMethods for AbstractNode<LayoutView> {
@@ -29,7 +26,7 @@ impl MatchMethods for AbstractNode<LayoutView> {
      * the node (the reader-auxiliary box in the COW model) with the
      * computed style.
      */
-    fn restyle_subtree(&self, select_ctx: &mut SelectCtx) {
+    fn restyle_subtree(&self, select_ctx: &mut SelectCtx , total_time: &mut u64) {
         // Only elements have styles
         if self.is_element() {
             do self.with_imm_element |elem| {
@@ -38,19 +35,11 @@ impl MatchMethods for AbstractNode<LayoutView> {
                     Some(ref sheet) => Some(sheet.inner),
                 };
                 let select_handler = NodeSelectHandler { node: *self };
-                let start_time = time::precise_time_ns();
-                let incomplete_results = select_ctx.select_style(self, inline_style, &select_handler);
-                //println(fmt!("restyle_subtree :: incomplete_results == %? " , incomplete_results));
+                               
+                let incomplete_results = select_ctx.select_style(self, inline_style, &select_handler , total_time);
                 // Combine this node's results with its parent's to resolve all inherited values
                 let complete_results = compose_results(*self, incomplete_results);
-                let end_time = time::precise_time_ns();
-                unsafe { 
-                    total_time += (end_time - start_time);  
-                    let sec = (total_time as float/ 1000000000.0) as float;
-                    let milisec = (total_time as float/ 1000000.0) as float;    
-                    println(fmt!("style selection time is sec: %0.3f  , milisec: %0.3f  , nano-sec: %d ",sec,milisec,total_time as int));
-                }
-                //println(fmt!("restyle_subtree :: complete_results == %? " , complete_results));
+                
                 // If there was an existing style, compute the damage that
                 // incremental layout will need to fix.
                 if self.have_css_select_results() {
@@ -62,7 +51,7 @@ impl MatchMethods for AbstractNode<LayoutView> {
         }
 
         for kid in self.children() {
-            kid.restyle_subtree(select_ctx); 
+            kid.restyle_subtree(select_ctx , total_time); 
         }
     }
 }

@@ -21,9 +21,6 @@ use helpers::properties::*;
 use helpers::hint::*;
 use helpers::types::CssQName;
 use srid_css::libwapcaplet::wapcaplet::*;
-// use extra::time;
-
-// pub static mut total_time: u64 = 0;
 
 pub struct SelectCtx {
     inner: CssSelectCtx
@@ -60,27 +57,22 @@ impl SelectCtx {
     pub fn select_style<N: VoidPtrLike, H: SelectHandler<N>>(&mut self,
                                                              node: &N,
                                                              inline_style: Option<uint>,
-                                                           handler: &H) -> SelectResults {
-        //println(fmt!("select.rs : select_style"));
+                                                           handler: &H , total_time : &mut u64) -> SelectResults {
+        
         let inner_handler = SelectHandlerWrapper {
             inner: handler
         };
 
 
-	// let start_time = time::precise_time_ns();
-	let res = self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
-                node,
-                CSS_MEDIA_SCREEN as u64,
-                inline_style,
-                &inner_handler);
-	// let end_time = time::precise_time_ns();
-	// unsafe { 
-		// total_time += (end_time - start_time); 	
-		// println(fmt!("Total-Time incured during style selection is =%?=",total_time));
-	// }
+	
+    	let res = self.inner.select_style::<N, SelectHandlerWrapper<N, H>>(
+                    node,
+                    CSS_MEDIA_SCREEN as u64,
+                    inline_style,
+                    &inner_handler , total_time);
 
         SelectResults {
-        inner: res
+            inner: res
         }
     }
 }
