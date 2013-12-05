@@ -57,7 +57,7 @@ impl SelectCtx {
     pub fn select_style<N: VoidPtrLike, H: SelectHandler<N>>(&self,
                                                              node: &N,
                                                              inline_style: Option<&Stylesheet>,
-                                                             handler: &H) -> SelectResults {
+                                                             handler: &H, total_time : &mut u64) -> SelectResults {
         let inner_handler = SelectHandlerWrapper {
             inner: handler
         };
@@ -70,7 +70,7 @@ impl SelectCtx {
                 node,
                 n::ll::t::CSS_MEDIA_SCREEN,
                 inner_inline_style,
-                &inner_handler)
+                &inner_handler , total_time)
         }
     }
 }

@@ -611,6 +611,7 @@ pub mod select {
     use wapcaplet::LwcString;
     use conversions::{ToLl, write_ll_qname, ll_qname_to_hl_qname};
     use wapcaplet::from_lwc_string;
+    use extra::time;
 
     pub enum CssPseudoElement {
 	CssPseudoElementNone         = 0,
@@ -670,7 +671,7 @@ pub mod select {
 	    #[fixed_stack_segment]
         pub fn select_style<N: VoidPtrLike, H: CssSelectHandler<N>>(&self, node: &N, media: uint64_t,
                                                             inline_style: Option<&CssStylesheet>,
-                                                            handler: &H) -> CssSelectResults {
+                                                            handler: &H, total_time: &mut u64) -> CssSelectResults {
             do with_untyped_handler(handler) |untyped_handler| {
                 let raw_handler = build_raw_handler();
                 let mut results: *css_select_results = null();
@@ -678,6 +679,7 @@ pub mod select {
                     None => null(),
                     Some(sheet) => sheet.ll_sheet(),
                 };
+                let start_time = time::precise_time_ns();
                 let code = unsafe { css_select_style(self.select_ctx,
                                                      node.to_void_ptr(),
                                                      media,
@@ -685,6 +687,9 @@ pub mod select {
                                                      to_unsafe_ptr(&raw_handler),
                                                      transmute(to_unsafe_ptr(untyped_handler)),
                                                      to_mut_unsafe_ptr(&mut results)) };
+                let end_time = time::precise_time_ns();
+                
+                *total_time += (end_time - start_time);  
                 require_ok(code, "selecting style");
 
                 CssSelectResults {

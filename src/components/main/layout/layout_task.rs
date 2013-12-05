@@ -48,6 +48,8 @@ use servo_util::time;
 use servo_util::range::Range;
 use extra::url::Url;
 
+pub static mut total_time: u64 = 0;
+
 struct LayoutTask {
     id: PipelineId,
     port: Port<Msg>,
@@ -218,9 +220,14 @@ impl LayoutTask {
             ReflowDocumentDamage => {}
             MatchSelectorsDocumentDamage => {
                 do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
-                    node.restyle_subtree(self.css_select_ctx);
+                    node.restyle_subtree(self.css_select_ctx, unsafe{&mut total_time});
                 }
             }
+        }
+        unsafe {
+            let sec = (total_time as float/ 1000000000.0) as float;
+            let milisec = (total_time as float/ 1000000.0) as float;    
+            println(fmt!("style selection time is sec: %0.3f  , milisec: %0.3f  , nano-sec: %d ",sec,milisec,total_time as int));
         }
 
         // Construct the flow tree.
