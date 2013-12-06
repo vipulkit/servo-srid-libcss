@@ -47,6 +47,7 @@ use servo_util::time::{ProfilerChan, profile};
 use servo_util::time;
 use servo_util::range::Range;
 use extra::url::Url;
+use extra;
 
 pub static mut total_time: u64 = 0;
 
@@ -219,9 +220,15 @@ impl LayoutTask {
         match data.damage.level {
             ReflowDocumentDamage => {}
             MatchSelectorsDocumentDamage => {
-                do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
+                 do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
+                    let s = extra::time::precise_time_ns();
                     node.restyle_subtree(self.css_select_ctx , unsafe{&mut total_time});
+                    let e = extra::time::precise_time_ns();
+                    println(fmt!("%?", (e-s) as float / 1000000.0));
                 }
+                // do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
+                //     node.restyle_subtree(self.css_select_ctx , unsafe{&mut total_time});
+                // }
             }
         }
         unsafe {
