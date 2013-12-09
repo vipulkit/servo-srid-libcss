@@ -112,7 +112,8 @@ pub fn function_header(fp:@Writer, descriptor:~str, parser_id:&keyval, is_generi
 
 pub fn output_token_type_check(fp:@Writer, do_token_check:bool, IDENT:~[keyval], URI:~[keyval], NUMBER:~[keyval]) {
     let mut output : ~str = ~"\tlet orig_ctx = *ctx;\n";
-    output.push_str( "\tlet mut error:css_error=CSS_OK;\n");
+    output.push_str( "\tlet mut error:css_error;\n");
+    output.push_str( "\terror=CSS_OK;\n");
     output.push_str( "\tlet mut token: &~css_token;\n\n");
     
     output.push_str( "\tif *ctx >= vector.len() {\n");

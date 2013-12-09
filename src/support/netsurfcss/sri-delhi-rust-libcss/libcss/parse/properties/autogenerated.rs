@@ -2691,7 +2691,8 @@ pub fn css__parse_counter_increment(_stylesheet_vector:&mut ~[css_stylesheet], _
 {
 //debug!("Entering: css__parse_counter_increment");
 	let orig_ctx = *ctx;
-	let mut error:css_error=CSS_OK;
+	let mut error:css_error;
+	error=CSS_OK;
 	let mut token: &~css_token;
 
 	if *ctx >= vector.len() {
