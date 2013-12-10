@@ -221,10 +221,10 @@ impl LayoutTask {
             ReflowDocumentDamage => {}
             MatchSelectorsDocumentDamage => {
                  do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
-                    let s = extra::time::precise_time_ns();
+                    //let s = extra::time::precise_time_ns();
                     node.restyle_subtree(self.css_select_ctx , unsafe{&mut total_time});
-                    let e = extra::time::precise_time_ns();
-                    println(fmt!("%?", (e-s) as float / 1000000.0));
+                    // let e = extra::time::precise_time_ns();
+                    // println(fmt!("%?", (e-s) as float / 1000000.0));
                 }
                 // do profile(time::LayoutSelectorMatchCategory, self.profiler_chan.clone()) {
                 //     node.restyle_subtree(self.css_select_ctx , unsafe{&mut total_time});
