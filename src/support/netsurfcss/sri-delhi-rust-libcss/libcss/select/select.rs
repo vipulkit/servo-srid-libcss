@@ -26,6 +26,7 @@ use std::cast::*;
 
 static IMPORT_STACK_SIZE : int = 256 ;
 static mut style_list:Option<~[style]> = None;
+static mut allow_style_caching : bool = true;
 
 struct style {
     node_name: uint,
@@ -328,8 +329,15 @@ impl css_select_ctx {
         }
 
         let lwc_ref = unsafe {lwc_ref.get_mut_ref()};
+
+        if element.name == lwc_ref.lwc_intern_string("iframe") {
+            unsafe {
+                allow_style_caching = false;
+                style_list = None 
+            }    
+        }
         
-        if(inline_style.is_none() && id == 0u && classes == ~[] && element.name!= lwc_ref.lwc_intern_string("html")){
+        if( unsafe{allow_style_caching} && inline_style.is_none() && id == 0u && classes == ~[] && element.name!= lwc_ref.lwc_intern_string("html")){
             unsafe{
                 if style_list.is_some(){
                     let len = style_list.get_ref().len();
@@ -372,8 +380,7 @@ impl css_select_ctx {
             id:id,
             classes:classes,
             n_classes:0,             
-            reject_cache:~[],       
-            next_reject:128-1,             
+            reject_cache:~[],              
             props: unsafe{select_state.get_ref().clone()} 
         };
                 
@@ -559,7 +566,7 @@ impl css_select_ctx {
             }
         }
 
-        if (inline_style.is_none() && id == 0u && state.classes == ~[]){
+        if ( unsafe{allow_style_caching} && inline_style.is_none() && id == 0u && state.classes == ~[]){
             unsafe{
                 if style_list.is_none() {
                     style_list = Some(~[style{node_name:element.name,result:state.results.deep_clone()}]);    
@@ -1561,7 +1568,7 @@ impl css_select_ctx {
                 }
 
 
-                if ( (state.next_reject < 0) ||
+                if ( (state.reject_cache.len() > 127) ||
 
 
                         (match comb {   
@@ -1601,8 +1608,7 @@ impl css_select_ctx {
             value: next_detail.expect("").qname.name ,
             sel_type: next_detail.expect("").selector_type
         };
-        state.reject_cache[state.next_reject] = Some(item) ;
-        state.next_reject -= 1;
+        state.reject_cache.push(Some(item)) ;
     }
 
 
@@ -1927,11 +1933,9 @@ impl css_select_ctx {
                 (match next_detail.get_ref().selector_type { CSS_SELECTOR_CLASS | CSS_SELECTOR_ID => true, _ => false})) {
 
 
-                let mut reject = state.next_reject + 1;
-                let last : int = (state.reject_cache.len() -1) as int ;
-
-
-                while (reject <= last) {
+                let mut reject = (state.reject_cache.len() - 1)  as int;
+                
+                while (reject >= 0) {
                     /* Perform pessimistic matching (may hurt quirks) */
                     if ((state.reject_cache[reject]).get_ref().sel_type as uint == next_detail.get_ref().selector_type as uint) &&
                        ((state.reject_cache[reject]).get_ref().value ==next_detail.get_ref().qname.name ) {
@@ -1941,9 +1945,7 @@ impl css_select_ctx {
                         *rejected_by_cache = true;
                         return CSS_OK;
                     }
-
-
-                    reject += 1;
+                    reject -= 1;
                 }
             }
         }
@@ -1986,7 +1988,7 @@ impl css_select_ctx {
             if (n != null()) {
                 /* Match its details */
                 let length = stylesheet_vector[sheet].css_selectors_list[selector].data.len();
-                error = self.match_details(n, stylesheet_vector[sheet].css_selectors_list[selector].data.mut_slice(1,length), state, &mut match_result, None);
+                error = self.match_details(n, stylesheet_vector[sheet].css_selectors_list[selector].data.mut_slice(0,length), state, &mut match_result, None);
                 match error {
                     CSS_OK => {},
                     err => return err
@@ -2009,13 +2011,13 @@ impl css_select_ctx {
                     },
                     _  => {}
                 }    
-
-
-                if n == null() {
-                break
-            }    
-        }
-    } 
+               
+            }
+            else
+            {
+                break;
+            }
+        } 
 
 
         unsafe { *next_node = n };
